@@ -291,120 +291,121 @@
 
 
 
-"use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
-import React from 'react';
-import { MdOutlineHeadsetMic } from "react-icons/md";
-import { CgArrowsExchange } from "react-icons/cg";
-import { IoReceiptOutline } from "react-icons/io5";
-// Define type for Product data
-type Product = {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-};
+  "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
-// Icon components for better readability and potential reusability
-const ReceiptIcon = () => <IoReceiptOutline className="w-8 h-8 text-primary" />;
-const ExchangeAltIcon = () => <CgArrowsExchange className="w-10 h-10 text-primary" />;
-const HeadsetIcon = () => <MdOutlineHeadsetMic className="w-8 h-8 text-primary" />;
+  import React from 'react';
+  import { MdOutlineHeadsetMic } from "react-icons/md";
+  import { CgArrowsExchange } from "react-icons/cg";
+  import { IoReceiptOutline } from "react-icons/io5";
+  // Define type for Product data
+  type Product = {
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+  };
 
-// Data for the "individuals" products
-const individualsProductsData: Product[] = [
-  {
-    icon: <ReceiptIcon />,
-    title: 'No Hidden Fees',
-    description: 'Transparent transfers with No hidden Charges.',
-  },
-  {
-    icon: <ExchangeAltIcon />,
-    title: 'Superior Exchange Rates',
-    description: 'Always get the best value, guaranteed.',
-  },
-  {
-    icon: <HeadsetIcon />,
-    title: '24/7 Expert Support',
-    description: 'Help when you need it, not bots.',
-  },
-];
+  // Icon components for better readability and potential reusability
+  const ReceiptIcon = () => <IoReceiptOutline className="w-8 h-8 text-primary" />;
+  const ExchangeAltIcon = () => <CgArrowsExchange className="w-10 h-10 text-primary" />;
+  const HeadsetIcon = () => <MdOutlineHeadsetMic className="w-8 h-8 text-primary" />;
 
-const InternationalTransferSection: React.FC = () => {
-  return (
-    <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
-      <div className="container mx-auto px-4">
-        {/* Header Section */}
-        <div className="text-center lg:text-left">
-          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-5xl max-w-full">
-            Why Thousands Choose{" "}<span className="text-primary">Remityn</span>
-          </h3>
-          <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-            Experience unmatched convenience, reliability,and security, trusted by businesses and individuals alike.
-          </p>
-        </div>
+  // Data for the "individuals" products
+  const individualsProductsData: Product[] = [
+    {
+      icon: <ReceiptIcon />,
+      title: 'No Hidden Fees',
+      description: 'Transparent transfers with No hidden Charges.',
+    },
+    {
+      icon: <ExchangeAltIcon />,
+      title: 'Superior Exchange Rates',
+      description: 'Always get the best value, guaranteed.',
+    },
+    {
+      icon: <HeadsetIcon />,
+      title: '24/7 Expert Support',
+      description: 'Help when you need it, not bots.',
+    },
+  ];
 
-        {/* 
-          Products Grid:
-          - Mobile (default): 1 column
-          - Tablet (md): 2 columns, with the last item spanning both
-          - Desktop (lg): 3 columns
-        */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
-          {individualsProductsData.map((product, index) => {
-            const totalItems = individualsProductsData.length;
+  const InternationalTransferSection: React.FC = () => {
+    return (
+      <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
+        <div className="container mx-auto px-4">
+          {/* Header Section */}
+          <div className="text-center lg:text-left">
+            <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-5xl max-w-full">
+              Why Thousands Choose{" "}<span className="text-primary">Remityn</span>
+            </h3>
+            <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+              Experience unmatched convenience, reliability,and security, trusted by businesses and individuals alike.
+            </p>
+          </div>
 
-            // Specific check for the third item in a list of three to apply the full-width span on tablets.
-            const isThirdItem = totalItems === 3 && index === 2;
+          {/* 
+            Products Grid:
+            - Mobile (default): 1 column
+            - Tablet (md): 2 columns, with the last item spanning both
+            - Desktop (lg): 3 columns
+          */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
+            {individualsProductsData.map((product, index) => {
+              const totalItems = individualsProductsData.length;
 
-            const itemWrapperClasses = `
-              relative 
-              ${isThirdItem ? 'md:col-span-2 lg:col-span-1' : ''}
-            `;
+              // Specific check for the third item in a list of three to apply the full-width span on tablets.
+              const isThirdItem = totalItems === 3 && index === 2;
 
-            return (
-              <div
-                key={product.title + index}
-                className={itemWrapperClasses}
-              >
-                {/* Content Area with Padding */}
-                <div className="px-5 py-8 text-center space-y-4">
-                  <div className="flex justify-center">
-                    <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                      <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
-                        {product.icon}
+              const itemWrapperClasses = `
+                relative 
+                ${isThirdItem ? 'md:col-span-2 lg:col-span-1' : ''}
+              `;
+
+              return (
+                <div
+                  key={product.title + index}
+                  className={itemWrapperClasses}
+                >
+                  {/* Content Area with Padding */}
+                  <div className="px-5 py-8 text-center space-y-4">
+                    <div className="flex justify-center">
+                      <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+                        <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
+                          {product.icon}
+                        </div>
                       </div>
                     </div>
+                    <h3 className="text-2xl text-mainheadingWhite font-semibold">
+                      {product.title}
+                    </h3>
+                    <p className="text-subheadingWhite lg:text-lg text-base">
+                      {product.description}
+                    </p>
                   </div>
-                  <h3 className="text-2xl text-mainheadingWhite font-semibold">
-                    {product.title}
-                  </h3>
-                  <p className="text-subheadingWhite lg:text-lg text-base">
-                    {product.description}
-                  </p>
+
+                  {/* --- SEPARATE BORDER DIVS --- */}
+
+                  {/* Vertical Border: Show ONLY on large screens (lg) between items */}
+                  {/* It will appear after items 1 and 2 in a 3-column layout */}
+                  { (index + 1) % 3 !== 0 && index < totalItems - 1 && (
+                    <div className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block" aria-hidden="true" />
+                  )}
+
+                  {/* Horizontal Border: Show on mobile and tablet, but hide on large screens */}
+                  {/* This applies a bottom border to the first two items, fulfilling the request. */}
+                  { index < 2 && (
+                    <div
+                        className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
+                        aria-hidden="true"
+                    />
+                  )}
                 </div>
-
-                {/* --- SEPARATE BORDER DIVS --- */}
-
-                {/* Vertical Border: Show ONLY on large screens (lg) between items */}
-                {/* It will appear after items 1 and 2 in a 3-column layout */}
-                { (index + 1) % 3 !== 0 && index < totalItems - 1 && (
-                   <div className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block" aria-hidden="true" />
-                )}
-
-                {/* Horizontal Border: Show on mobile and tablet, but hide on large screens */}
-                {/* This applies a bottom border to the first two items, fulfilling the request. */}
-                { index < 2 && (
-                   <div
-                      className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
-                      aria-hidden="true"
-                   />
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  };
 
-export default React.memo(InternationalTransferSection);
+  export default React.memo(InternationalTransferSection);

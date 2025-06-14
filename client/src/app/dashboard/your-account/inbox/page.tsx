@@ -4073,8 +4073,6 @@
 
 // export default InboxPage;
 
-
-
 // "use client";
 // import React, {
 //   useState,
@@ -4639,8 +4637,6 @@
 
 // export default InboxPage;
 
-
-
 "use client";
 import React, {
   useState,
@@ -4653,12 +4649,7 @@ import { useAuth } from "@/app/contexts/AuthContext"; // Ensure this path is cor
 import inboxService from "../../../services/inbox";
 import type { InboxMessage, InboxListResponse } from "../../../services/inbox";
 import { Separator } from "@/components/ui/separator";
-import {
-  Inbox,
-  RefreshCw,
-  Bell,
-  AlertCircle,
-} from "lucide-react";
+import { Inbox, RefreshCw, Bell, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { InboxSkeleton } from "../../components/inbox/InboxSkeleton";
@@ -4778,8 +4769,8 @@ const InboxPage: React.FC = () => {
       try {
         await inboxService.markAsRead(message._id);
         if (fetchUnreadInboxCount) {
-            await fetchUnreadInboxCount();
-            // console.log("InboxPage: Unread count refreshed after marking message as read.");
+          await fetchUnreadInboxCount();
+          // console.log("InboxPage: Unread count refreshed after marking message as read.");
         }
       } catch (err) {
         console.error("Failed to mark as read:", err);
@@ -4805,18 +4796,21 @@ const InboxPage: React.FC = () => {
       const isDeletingSelected = selectedMessage?._id === messageId;
 
       let wasMessageUnread = false;
-      if (originalData) { 
-          const messageToDelete = originalData.messages.find(msg => msg._id === messageId);
-          if (messageToDelete && !messageToDelete.isRead) {
-              wasMessageUnread = true;
-          }
+      if (originalData) {
+        const messageToDelete = originalData.messages.find(
+          (msg) => msg._id === messageId
+        );
+        if (messageToDelete && !messageToDelete.isRead) {
+          wasMessageUnread = true;
+        }
       }
 
       let pageToNavigateTo = currentPage;
       let shouldRefetchCurrentPage = false;
       // This variable will store the total messages *after* the optimistic update.
-      let newTotalMessagesAfterOptimisticUpdate = originalData ? originalData.totalMessages -1 : 0;
-
+      let newTotalMessagesAfterOptimisticUpdate = originalData
+        ? originalData.totalMessages - 1
+        : 0;
 
       setInboxData((prev) => {
         if (!prev) return null;
@@ -4838,7 +4832,7 @@ const InboxPage: React.FC = () => {
         if (
           newMessages.length === 0 && // Current page becomes empty
           prev.messages.length > 0 && // But there were messages on it before
-          currentPage > 1 &&          // And it's not the first page
+          currentPage > 1 && // And it's not the first page
           currentPage === prev.totalPages // And it was the last page
         ) {
           pageToNavigateTo = Math.max(1, currentPage - 1);
@@ -4872,8 +4866,10 @@ const InboxPage: React.FC = () => {
         await inboxService.deleteMessage(messageId);
 
         if (wasMessageUnread && fetchUnreadInboxCount) {
-            await fetchUnreadInboxCount();
-            console.log("InboxPage: Unread count refreshed after deleting an unread message.");
+          await fetchUnreadInboxCount();
+          console.log(
+            "InboxPage: Unread count refreshed after deleting an unread message."
+          );
         }
 
         if (pageToNavigateTo !== currentPage) {
@@ -4885,7 +4881,8 @@ const InboxPage: React.FC = () => {
           // Check if the inbox became empty (total messages is now 0)
           // and we were on page 1.
           // `originalData.totalMessages === 1` implies it will become 0 after this delete.
-          originalData && originalData.totalMessages === 1 &&
+          originalData &&
+          originalData.totalMessages === 1 &&
           currentPage === 1
           // ---- END CORRECTION ----
         ) {
@@ -4905,7 +4902,14 @@ const InboxPage: React.FC = () => {
         handleActionEnd(messageId);
       }
     },
-    [inboxData, selectedMessage, currentPage, actionLoading, fetchInbox, fetchUnreadInboxCount]
+    [
+      inboxData,
+      selectedMessage,
+      currentPage,
+      actionLoading,
+      fetchInbox,
+      fetchUnreadInboxCount,
+    ]
   );
 
   const handleSelectMessage = useCallback(
@@ -4932,10 +4936,10 @@ const InboxPage: React.FC = () => {
   };
 
   const handleRefresh = useCallback(() => {
-    if (loading && !isInitialLoad.current) return; 
+    if (loading && !isInitialLoad.current) return;
     setSelectedMessage(null);
     fetchInbox(currentPage, true);
-  }, [loading, currentPage, fetchInbox]); 
+  }, [loading, currentPage, fetchInbox]);
 
   const { unreadMessages, readMessages } = useMemo(() => {
     if (!inboxData?.messages) return { unreadMessages: [], readMessages: [] };
@@ -4972,7 +4976,6 @@ const InboxPage: React.FC = () => {
       </div>
     );
   }
-
 
   return (
     <section className="Your-Inbox ">

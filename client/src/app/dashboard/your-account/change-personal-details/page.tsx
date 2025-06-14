@@ -2514,7 +2514,7 @@ export default function ChangePersonalDetails() {
                   {/* Personal details Section */}
                   <div className="space-y-6">
                     <h3 className="lg:text-lg text-base font-semibold text-white/90 mb-4 border-b pb-2">
-                      Personal Details
+                      Personal Detailsd
                     </h3>
 
                     <FormField

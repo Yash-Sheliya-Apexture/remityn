@@ -366,6 +366,10 @@
 // };
 // export default SecuritySection;
 
+
+
+
+
 "use client"; // Keep "use client" if you plan to add client-side animations (e.g., Framer Motion variants for scroll reveal) later.
 // If it's purely static content with no client-side JS, this could be a Server Component.
 // However, given its placement in a components directory often shared by client components, "use client" is safe.
