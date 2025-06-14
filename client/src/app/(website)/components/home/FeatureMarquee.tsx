@@ -97,14 +97,18 @@
 import React from 'react';
 
 const allFeatures = [
-  "Flexible Payments",
-  "Real-Time Rate",
-  "24/7 Support",
-  "Secure Transaction",
-  "Zero Hidden Fees",
-  "Multiple Recipient",
-  "Live Tracking",
-  "Currency Wallet",
+  "No Hidden Charges",
+  "Seamless Delivery",
+  "Quick Resolve",
+  "Money Mobility",
+  "Multi-Currency Wallet",
+  "Easy Tracking",
+  "Secure Transfers",
+  "Quick Setup",
+  "Eco-Friendly",
+  "Zero Transfer Fees",
+  "Live Rate Updates",
+  "Live Insights",
 ];
 
 const FeatureTag = ({ text }: { text: string }) => (
@@ -138,8 +142,8 @@ const MarqueeRow = ({ features, toRight = false }: { features: string[]; toRight
 
 const FeatureMarquee = () => {
   return (
-    <section className="FeatureMarqueeSection bg-background sm:py-16 py-10 relative">
-      <div className="max-w-screen-2xl mx-auto px-4">
+    <section className="FeatureMarqueeSection bg-background sm:py-16 py-10 ">
+      <div className="container mx-auto px-4 relative">
         <div className="flex flex-col gap-6">
           {/* Row 1: Scrolls Left */}
           <MarqueeRow features={allFeatures} />
@@ -148,8 +152,8 @@ const FeatureMarquee = () => {
         </div>
 
         {/* Add the gradient overlays */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background from-35% to-transparent"></div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background from-35% to-transparent"></div>
+        <div className="pointer-events-none absolute inset-y-0 left-0 xl:w-[30%] w-[40%] bg-gradient-to-r from-background lg:from-10% from-15% to-transparent"></div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 xl:w-[30%] w-[40%] bg-gradient-to-l from-background lg:from-10% from-15% to-transparent"></div>
 
       </div>
     </section>

@@ -396,7 +396,7 @@ const SecuritySection: React.FC = () => {
               </div>
 
               <div className="flex justify-center md:justify-start mt-8">
-                <Link href="/faqs" className="inline-block">
+                <Link href="/faqs#safety-and-security" className="inline-block">
                   <button className="bg-primary hover:bg-primaryhover text-mainheading cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                     How we keep your money safe
                   </button>
