@@ -2083,7 +2083,6 @@
 //           </nav>
 //         </div>
 
-
 //         {/* Mobile Navigation Links (appears below logo, above contact on mobile) */}
 //         <nav className="sm:hidden flex flex-wrap items-center justify-center gap-3.5 sm:mb-10 mb-7.5">
 //           {navLinks.map((link) => (
@@ -2096,7 +2095,6 @@
 //             </Link>
 //           ))}
 //         </nav>
-
 
 //         {/* Middle Section: Contact Info */}
 //         <div className="flex items-center flex-row justify-center gap-3.5 sm:text-lg text-base mb-7.5 sm:mb-12.5 shrink-0 flex-wrap border-t border-b py-12.5">
@@ -2131,7 +2129,6 @@
 //           ))}
 //         </div>
 
-
 //         <div className="Currency-Convertors text-center sm:text-left mb-7.5 sm:mb-12.5">
 //           <div className="flex flex-wrap justify-center gap-3.5">
 //             {currencyConverterLinksData.map((pair, index) => (
@@ -2148,7 +2145,6 @@
 //             ))}
 //           </div>
 //         </div>
-
 
 //         {/* Bottom Bar: Social, Copyright, Legal */}
 //         <div className="bg-primary-foreground border-gray-700/50 sm:p-3 p-4 mt-16 pb-8 sm:mt-0 border rounded-xl sm:rounded-full ">
@@ -2201,12 +2197,11 @@
 
 // export default Footer;
 
-
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
 import { IconType } from "react-icons";
-import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
+import { MdEmail } from "react-icons/md";
 import { FaTwitter } from "react-icons/fa";
 import Image from "next/image";
 import { FaFacebook, FaLinkedin } from "react-icons/fa6";
@@ -2239,7 +2234,6 @@ const navLinks: NavLinkItem[] = [
   { href: "/faqs", label: "FAQ" },
   { href: "/contact-us", label: "Contact-Us" },
 ];
-
 
 const contactInfo: ContactInfoItem[] = [
   {
@@ -2295,7 +2289,7 @@ const Footer: React.FC = () => {
             <Link href="/" className="relative">
               <Image
                 src="/assets/images/mobile-logo.svg"
-                alt="Remityn Logo" 
+                alt="Remityn Logo"
                 width={160}
                 height={50}
                 priority
@@ -2318,7 +2312,6 @@ const Footer: React.FC = () => {
           </nav>
         </div>
 
-
         {/* Mobile Navigation Links (appears below logo, above contact on mobile) */}
         <nav className="sm:hidden flex flex-wrap items-center justify-center gap-3.5 sm:mb-10 mb-7.5">
           {navLinks.map((link) => (
@@ -2332,85 +2325,74 @@ const Footer: React.FC = () => {
           ))}
         </nav>
 
-
-        {/* Middle Section: Contact Info */}
-        <div className="flex items-center flex-row justify-center gap-3.5 sm:text-lg text-base mb-7.5 sm:mb-12.5 shrink-0 flex-wrap border-t border-b py-12.5">
-          {contactInfo.map((item, index) => (
-            <a
-              key={index}
-              href={item.href}
-              aria-label={item.ariaLabel}
-              target={
-                item.href &&
-                (item.href.startsWith("mailto:") ||
-                  item.href.startsWith("tel:"))
-                  ? "_blank"
-                  : undefined
-              }
-              rel={
-                item.href &&
-                (item.href.startsWith("mailto:") ||
-                  item.href.startsWith("tel:"))
-                  ? "noopener noreferrer"
-                  : undefined
-              }
-              className={`flex items-center ${
-                item.href ? "hover:text-[#A5CC3D]" : "cursor-default"
-              } transition-colors duration-200 group`}
-            >
-              <item.icon className="sm:size-6 size-5 text-primary mr-1.5 transition-colors duration-200 shrink-0" /> {/* Added shrink-0 */}
-              <span className="text-subheadingWhite max-w-48 sm:max-w-full">
-                {item.text}
-              </span>
-            </a>
-          ))}
-        </div>
-
-
-        <div className="Currency-Convertors text-center sm:text-left mb-7.5 sm:mb-12.5">
+        <div className="Currency-Convertors text-center sm:text-left border-t py-10">
           <div className="flex flex-wrap justify-center gap-3.5">
-            {currencyConverterLinksData.map((pair) => ( // Removed index as it wasn't used
-              <div className="flex items-center" key={pair}>
-                <div className="relative group inline-block">
-                  <button
-                    className="relative z-10 cursor-pointer bg-primarybox font-semibold hover:bg-primaryhover px-4 py-2  rounded-full sm:text-base text-sm text-mainheadingWhite transition-all duration-150 ease-linear hover:text-subheading"
-                    onClick={() => handleCurrencyConverterClick(pair)}
-                  >
-                    {pair}
-                  </button>
+            {currencyConverterLinksData.map(
+              (
+                pair // Removed index as it wasn't used
+              ) => (
+                <div className="flex items-center" key={pair}>
+                  <div className="relative group inline-block">
+                    <button
+                      className="relative z-10 cursor-pointer bg-primarybox font-semibold hover:bg-primaryhover px-4 py-2  rounded-full sm:text-base text-sm text-mainheadingWhite transition-all duration-150 ease-linear hover:text-subheading"
+                      onClick={() => handleCurrencyConverterClick(pair)}
+                    >
+                      {pair}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         </div>
 
-
         {/* Bottom Bar: Social, Copyright, Legal */}
-        <div className="bg-primary-foreground border-gray-700/50 sm:p-3 p-4 mt-16 pb-8 sm:mt-0 border rounded-xl sm:rounded-full ">
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-5 sm:space-y-0">
-            {/* Social Media Icons */}
-            <div className="flex space-x-3.5 items-center order-1 sm:order-none -mt-10 sm:mt-0"> {/* Adjusted order for desktop */}
-              {socialLinks.map((link) => (
+        <div className="bg-primary-foreground border-gray-700/50  sm:p-6 p-4 rounded-xl sm:rounded-full ">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center flex-row justify-center gap-3.5 sm:text-lg text-base shrink-0 flex-wrap">
+              {contactInfo.map((item, index) => (
                 <a
-                  key={link.label}
-                  href={link.href}
-                  aria-label={link.label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-primary text-mainheading rounded-full flex items-center justify-center sm:size-13 size-11 transition-all duration-300 hover:opacity-80" // Added hover effect
+                  key={index}
+                  href={item.href}
+                  aria-label={item.ariaLabel}
+                  target={
+                    item.href &&
+                    (item.href.startsWith("mailto:") ||
+                      item.href.startsWith("tel:"))
+                      ? "_blank"
+                      : undefined
+                  }
+                  rel={
+                    item.href &&
+                    (item.href.startsWith("mailto:") ||
+                      item.href.startsWith("tel:"))
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
+                  className={`flex items-center ${
+                    item.href ? "hover:text-[#A5CC3D]" : "cursor-default"
+                  } transition-colors duration-200 group`}
                 >
-                  <link.icon className="w-5 h-5 sm:size-6" />
+                  <item.icon className="sm:size-6 size-5 text-primary mr-1.5 transition-colors duration-200 shrink-0" />{" "}
+                  {/* Added shrink-0 */}
+                  <span className="text-subheadingWhite max-w-48 sm:max-w-full">
+                    {item.text}
+                  </span>
                 </a>
               ))}
             </div>
 
             {/* Copyright Text */}
-            <p className="text-subheadingWhite text-center order-2 sm:order-none"> {/* Adjusted order for desktop */}
+            <p className="text-subheadingWhite text-center order-2 sm:order-none">
+              {" "}
+              {/* Adjusted order for desktop */}
               {copyrightText} © {currentYear}
             </p>
 
             {/* Legal Links */}
-            <div className="flex sm:flex-row items-center gap-3 order-3 sm:order-none"> {/* Adjusted order for desktop */}
+            <div className="flex sm:flex-row items-center gap-3 order-3 sm:order-none">
+              {" "}
+              {/* Adjusted order for desktop */}
               <Link
                 href="/privacy-policy"
                 className="text-base text-subheadingWhite hover:text-primary transition-colors duration-200"

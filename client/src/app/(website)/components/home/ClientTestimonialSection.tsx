@@ -1544,7 +1544,7 @@ const testimonialsData: Testimonial[] = [
     id: 1,
     imageSrc: "/assets/images/nelson-dunk.jpg",
     quote:
-      "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+      "Remityn has been a game changer for me when it comes to sending money abroad. The platform is super easy to use, transparent with fees, and the exchange rates are way better than traditional banks. Transfers are fast and I always feel confident my money is safe.",
     name: "Nelson Dunk",
     trustpilotRating: 5, // Example: 4.8 out of 5
   },
@@ -1552,7 +1552,7 @@ const testimonialsData: Testimonial[] = [
     id: 2,
     imageSrc: "/assets/images/ben-cane.jpg",
     quote:
-      "Impressed with the ease of creating a EUR wallet. Bank transfer for funding was clear. Adding my family's Indian bank details (IFSC code and all) was simple. Transfer status tracking is very helpful.",
+      "Remityn provides a smooth, user-friendly experience with quick transfers and low fees. The Euro to USD exchange rate is always fair and clearly displayed. I've used it multiple times and it never disappoints — highly recommended!",
     name: "Ben Cane",
     trustpilotRating: 4.5, // Example: 5 out of 5
   },
@@ -1560,23 +1560,23 @@ const testimonialsData: Testimonial[] = [
     id: 3,
     imageSrc: "/assets/images/deshawn-robinson.jpg",
     quote:
-      "I've used a few services to send AED to India, but this one stands out for its simplicity. The signup really is quick, and the KYC verification didn't take long at all. Once that was done, setting up my AED wallet and transferring funds into it from my bank was smooth.",
-    name: "Deshawn Robinson",
+      "I have been using Remitly for my international money transfers, and I am more than happy with their service. The transfer process is fast, secure, and user-friendly. My funds arrived earlier than expected, and the exchange rates were very competitive.",
+    name: "Anitha Kaipally",
     trustpilotRating: 4.5, // Example: 4.2 out of 5
   },
   {
     id: 4,
     imageSrc: "/assets/images/Tom.jpg",
     quote:
-      "I was a bit apprehensive about online money transfers, but this website made it so easy. The initial sign-up asked for just basic details. The KYC was a simple verification step, and after that, I had full access to create my GBP wallet.",
-    name: "Tom Diaz",
+      "I love Remityn! It has completely changed the way I send money to my family. Transfers are always fast, reliable, and easy to track. Whether I need to send funds immediately or schedule something in advance, Remityn gives me peace of mind.",
+    name: "Catherine Luna",
     trustpilotRating: 5, // Example: 4 out of 5
   },
   {
     id: 5,
     imageSrc: "/assets/images/Sofia.png",
     quote:
-      "The instant account setup was genuinely fast. KYC was simpler than I expected. Funding my USD wallet and sending to India was straightforward. Being able to save recipient details is a huge time saver.",
+      "Besides the pricing has been good, I had an issue one time and someone from Remityn was so helpful in resolving my issue. When I had my problem, the person helping me spoke perfect English, which helped more than you could imagine.",
     name: "Sofia Vyas",
     trustpilotRating: 5, // Example: 3.5 out of 5
   },
@@ -1584,7 +1584,7 @@ const testimonialsData: Testimonial[] = [
     id: 6,
     imageSrc: "/assets/images/Sofia.png", // Assuming this is a placeholder or different Sofia
     quote:
-      "Used this for a EUR transfer. The process of adding my recipient and their bank details was very clear. I like that I can save them for next time. The digital wallet system is also very convenient.",
+      "I had a great experience using Remityn. The app is very easy to use, and the process of sending money was smooth and quick. One of the best things is the excellent exchange rate, which is better than many other services.",
     name: "Chelsy Desai",
     trustpilotRating: 4.5, // Example: 4.7 out of 5
   },
@@ -1667,13 +1667,6 @@ const ClientTestimonialSection: React.FC = () => {
           <div className="lg:flex lg:items-center lg:gap-12 xl:gap-20">
             <div className="lg:w-2/5 xl:w-[38%] text-center lg:text-left mb-12 lg:mb-0">
               <div className="space-y-4 text-center md:text-left">
-                {/* <div className="text-subheadingWhite font-medium text-sm uppercase mb-1">
-                  <span className="text-subheadingWhite/30">[</span> Built for
-                  safety. Trusted worldwide{" "}
-                  <span className="text-subheadingWhite/30">]</span>
-                </div> */}
-
-
                 <div className="space-y-4 text-center md:text-left max-w-4xl mx-auto md:mx-0">
                   <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
                     Real Stories,{" "}
@@ -1691,7 +1684,7 @@ const ClientTestimonialSection: React.FC = () => {
                   <Link href="/reviews" className="inline-block">
                     <button className="bg-primary hover:bg-primaryhover text-neutral-900 cursor-pointer font-medium text-base lg:text-lg py-3 px-8 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center">
                       Read Their Stories
-                      </button>
+                    </button>
                   </Link>
                 </div>
               </div>
@@ -1738,7 +1731,7 @@ const ClientTestimonialSection: React.FC = () => {
                           </div>
 
                           <div className="flex justify-between items-center mb-4 sm:mb-5 z-20">
-                            <div className="sm:px-6 px-4 sm:py-2.5 py-2 bg-secondarybox transition-all ease-linear duration-150 rounded-full sm:text-sm font-medium text-mainheadingWhite">
+                            <div className="px-5 sm:py-2 py-1.5 text-xs bg-secondarybox transition-all ease-linear duration-150 rounded-full sm:text-sm font-medium text-mainheadingWhite">
                               {`${currentSlideNumberForDisplay} of ${testimonialsData.length}`}
                             </div>
                           </div>
@@ -1746,7 +1739,7 @@ const ClientTestimonialSection: React.FC = () => {
                           <div className="flex-grow overflow-y-auto my-6 z-10 relative">
                             {" "}
                             {/* Adjusted sm:py-5 to sm:my-3 */}
-                            <p className="text-lg lg:text-2xl text-mainheadingWhite font-normal leading-normal">
+                            <p className="text-base lg:text-2xl text-mainheadingWhite font-normal">
                               {" "}
                               {/* Adjusted text size for quote */}
                               {testimonial.quote}
