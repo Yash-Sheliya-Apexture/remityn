@@ -6153,29 +6153,29 @@ const LoadingSkeleton = () => (
         </div>
       </div>
 
-      <div className="border rounded-lg overflow-hidden">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 border-b">
+      <div className="border rounded-lg overflow-hidden bg-primarybox">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5">
           <div className="flex items-center gap-4 flex-1">
-            <Skeleton className="h-14 w-14 sm:h-16 sm:w-16 rounded-full flex-shrink-0" />
+            <Skeleton className="h-14 w-14 sm:h-16 sm:w-16 rounded-full flex-shrink-0 bg-background/50" />
             <div className="space-y-1.5 flex-1">
-              <Skeleton className="h-6 w-3/4 rounded" />
-              <Skeleton className="h-4 w-1/2 rounded" />
-              <Skeleton className="h-8.5 w-27 rounded-full" />
+              <Skeleton className="h-6 w-3/4 rounded bg-background/50" />
+              <Skeleton className="h-4 w-1/2 rounded bg-background/50" />
+              <Skeleton className="h-8.5 w-27 rounded-full bg-background/50" />
             </div>
           </div>
           <div className="space-y-1 text-right flex-shrink-0">
-            <Skeleton className="h-3 w-28 rounded" />
-            <Skeleton className="h-3 w-24 rounded" />
-            <Skeleton className="h-3 w-32 rounded" />
+            <Skeleton className="h-3 w-28 rounded bg-background/50" />
+            <Skeleton className="h-3 w-24 rounded bg-background/50" />
+            <Skeleton className="h-3 w-32 rounded bg-background/50" />
           </div>
         </div>
         <div className="p-4 sm:p-6">
-          <Skeleton className="h-5 w-1/4 rounded mb-4" />
+          <Skeleton className="h-5 w-1/4 rounded mb-4 bg-background/50" />
           <div className="flex flex-nowrap overflow-x-auto space-x-4 pb-2 sm:grid sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 sm:space-x-0 sm:pb-0 sm:overflow-x-visible">
             {[...Array(5)].map((_, i) => (
               <Skeleton
                 key={i}
-                className="flex-shrink-0 w-36 sm:w-auto h-24 rounded-lg"
+                className="flex-shrink-0 w-36 sm:w-auto h-24 rounded-lg bg-background/50"
               />
             ))}
           </div>

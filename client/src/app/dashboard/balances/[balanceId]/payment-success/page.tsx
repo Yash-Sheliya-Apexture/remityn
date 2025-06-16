@@ -475,12 +475,12 @@ const PaymentSuccessPage = () => {
       <div className="flex flex-col items-center justify-center bg-background text-subheadingWhite mt-10">
         <div className="md:mb-8 mb-6">
           <Image
-            src="/assets/images/planes.png"
+            src="/assets/images/plane.png"
             alt="Wise Logo"
-            width={200}
-            height={200}
+            width={1000}
+            height={1000}
             priority
-            className="md:size-36 size-26"
+            className="md:size-46 size-36"
           />
         </div>
 
@@ -494,8 +494,7 @@ const PaymentSuccessPage = () => {
             paymentDetails &&
             !error && ( // Show even if details are partial but essential ID is there
               <p className="sm:text-lg text-base leading-tight text-subheadingWhite">
-                Track your transfers in real-time and enjoy fast, secure
-                delivery to your recipients — anytime, anywhere.
+                Your funds have been securely added to your Wallet. You can now start sending or managing your balance effortlessly.
                 {/* Conditionally display amount/currency only if valid */}
                 {
                   paymentDetails.amountToAdd > 0 &&
