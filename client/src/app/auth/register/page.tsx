@@ -3708,12 +3708,12 @@
 //               variants={itemVariants}
 //               className="text-center text-neutral-900 dark:text-gray-300 pb-6 text-sm"
 //             >
-//               By registering, you accept our  
+//               By registering, you accept our
 //               <Link
 //                 href="/terms-and-conditions"
 //                 className="text-primary font-medium underline underline-offset-4"
 //               >
-//                 Terms of use 
+//                 Terms of use
 //               </Link>
 //               and
 //               <Link
@@ -3731,9 +3731,6 @@
 //     </div>
 //   );
 // }
-
-
-
 
 // "use client";
 
@@ -4022,7 +4019,7 @@
 //       {/* Right Panel - Register Form */}
 //       <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 overflow-y-auto">
 //         <div className="lg:hidden mb-10 self-center">
-//           <Link href={"/"}>          
+//           <Link href={"/"}>
 //             <Image
 //               src="/assets/images/mobile-logo.svg"
 //               width={150}
@@ -4178,7 +4175,7 @@
 //                   id="email"
 //                   placeholder="eg. john.doe@example.com"
 //                   autoComplete="email"
-//                   className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear 
+//                   className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear
 //                     ${
 //                       emailError
 //                         ? "border-red-600 ring-1 ring-red-600"
@@ -4309,7 +4306,7 @@
 //               <motion.div variants={itemVariants} className="pt-2">
 //                 <button
 //                   type="submit"
-//                   className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center 
+//                   className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center
 //                     ${
 //                       isSubmitting
 //                         ? "opacity-70 cursor-not-allowed"
@@ -4419,7 +4416,6 @@
 //   );
 // }
 
-
 // "use client";
 
 // import { useState, useEffect, FormEvent } from "react";
@@ -4513,7 +4509,7 @@
 //             router.replace('/auth/register', { scroll: false }); // Clean URL
 //         }
 //     }, [searchParams, router]);
-    
+
 //     useEffect(() => {
 //         let timer: NodeJS.Timeout;
 //         if (resendCooldown > 0) {
@@ -4586,7 +4582,7 @@
 //             setIsSubmitting(false);
 //         }
 //     };
-    
+
 //     const handleGoogleRegister = () => {
 //         window.location.href = `${apiConfig.baseUrl}/auth/google`;
 //     };
@@ -4597,7 +4593,7 @@
 //                 <h2 className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">Create Account.</h2>
 //                 <p className="text-gray-400">Already have an account? <Link href="/auth/login" className="text-primary hover:text-primaryhover font-medium underline underline-offset-2 transition-all duration-75 ease-linear">Log in</Link></p>
 //             </motion.div>
-            
+
 //             <AnimatePresence>
 //                 {generalError && (
 //                     <motion.div className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 mb-5" variants={errorVariants} initial="initial" animate="animate" exit="exit">
@@ -4606,7 +4602,7 @@
 //                     </motion.div>
 //                 )}
 //             </AnimatePresence>
-            
+
 //             <form className="space-y-4" onSubmit={handleRegisterSubmit} noValidate>
 //                 <motion.div variants={itemVariants}>
 //                     <button type="button" onClick={handleGoogleRegister} disabled={isSubmitting} className="flex hover:bg-primarybox transition-all duration-75 ease-linear border justify-center rounded-lg h-14 text-white w-full cursor-pointer font-medium gap-2.5 items-center px-4 py-3"><Image src="/assets/icon/google.svg" width={25} height={24} alt="Google" />Sign up with Google</button>
@@ -4618,13 +4614,13 @@
 //                     <input type="text" id="fullName" value={fullName} onChange={e => {setFullName(e.target.value); if(fullNameError) setFullNameError("")}} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${fullNameError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
 //                     {fullNameError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{fullNameError}</p>}
 //                 </motion.div>
-                
+
 //                 <motion.div variants={itemVariants}>
 //                     <label htmlFor="email" className="text-white inline-block mb-1.5">Your email address <span className="text-red-500">*</span></label>
 //                     <input type="email" id="email" value={email} onChange={e => {setEmail(e.target.value); if(emailError) setEmailError("")}} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${emailError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
 //                     {emailError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{emailError}</p>}
 //                 </motion.div>
-                
+
 //                 <motion.div variants={itemVariants}>
 //                     <label htmlFor="password" className="text-white inline-block mb-1.5">Password <span className="text-red-500">*</span></label>
 //                     <div className="relative">
@@ -4642,7 +4638,7 @@
 //                     </div>
 //                     {confirmPasswordError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{confirmPasswordError}</p>}
 //                 </motion.div>
-                
+
 //                 <motion.div variants={itemVariants} className="pt-2">
 //                     <button type="submit" disabled={isSubmitting} className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center ${isSubmitting ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}>{isSubmitting ? "Creating Account..." : "Create Account"}</button>
 //                 </motion.div>
@@ -4655,7 +4651,7 @@
 //             <motion.div variants={itemVariants} className="flex justify-center mb-4"><div className="bg-primary/10 p-3 rounded-full"><FiMail className="text-primary size-8"/></div></motion.div>
 //             <motion.h2 variants={itemVariants} className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">Check your email</motion.h2>
 //             <motion.p variants={itemVariants} className="text-gray-400 pt-2">We've sent a 6-digit code to <br/><strong className="text-white">{registrationEmail}</strong></motion.p>
-            
+
 //             <AnimatePresence>
 //                 {otpError && <motion.div className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5" variants={errorVariants} initial="initial" animate="animate" exit="exit"><div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0"><FiX className="text-red-500 size-6" /></div><div><p className="text-white">{otpError}</p></div></motion.div>}
 //                 {generalError && <motion.div className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5" variants={errorVariants} initial="initial" animate="animate" exit="exit"><div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0"><FiX className="text-red-500 size-6" /></div><div><p className="text-white">{generalError}</p></div></motion.div>}
@@ -4667,7 +4663,7 @@
 //                     <label htmlFor="otp" className="sr-only">OTP</label>
 //                     <input type="text" id="otp" placeholder="Enter 6-digit code" maxLength={6} value={otp} onChange={(e) => {setOtp(e.target.value.replace(/[^0-9]/g, '')); if(otpError) setOtpError("")}} disabled={isSubmitting || !!successMessage} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear text-center tracking-[0.5em] text-2xl font-semibold ${otpError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
 //                 </motion.div>
-                
+
 //                 <motion.div variants={itemVariants} className="pt-2">
 //                     <button type="submit" disabled={isSubmitting || !!successMessage} className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center ${isSubmitting || !!successMessage ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}>{isSubmitting ? "Verifying..." : "Verify Account"}</button>
 //                 </motion.div>
@@ -4710,18 +4706,718 @@
 //     );
 // }
 
+// "use client";
+// import { useState, useEffect, FormEvent, useRef, useCallback } from "react";
+// import authService from "../../services/auth";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { IoMdCloseCircle } from "react-icons/io";
+// import { FiX, FiMail, FiCheckCircle } from "react-icons/fi";
+// import { motion, AnimatePresence } from "framer-motion";
+// import apiConfig from "../../config/apiConfig";
+// import { LuEye, LuEyeOff } from "react-icons/lu";
+
+// const pageContainerVariants = {
+//   hidden: { opacity: 0 },
+//   visible: {
+//     opacity: 1,
+//     transition: {
+//       staggerChildren: 0.1,
+//       delayChildren: 0.2,
+//     },
+//   },
+//   exit: {
+//     opacity: 0,
+//     transition: { duration: 0.2 },
+//   },
+// };
+
+// const itemVariants = {
+//   hidden: { y: 20, opacity: 0 },
+//   visible: {
+//     y: 0,
+//     opacity: 1,
+//     transition: {
+//       duration: 0.4,
+//       ease: "easeOut",
+//     },
+//   },
+//   exit: {
+//     y: -10,
+//     opacity: 0,
+//     transition: {
+//       duration: 0.2,
+//       ease: "easeIn",
+//     },
+//   },
+// };
+
+// const errorVariants = {
+//   initial: { opacity: 0, y: 10 },
+//   animate: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
+//   exit: { opacity: 0, y: 10 },
+// };
+
+// export default function RegisterPage() {
+//   const [step, setStep] = useState<"register" | "verify">("register");
+//   const [registrationEmail, setRegistrationEmail] = useState("");
+
+//   // Form fields
+//   const [fullName, setFullName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [confirmPassword, setConfirmPassword] = useState("");
+//   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+
+//   // UI State
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [resendCooldown, setResendCooldown] = useState(0);
+
+//   // Messages and Errors
+//   const [fullNameError, setFullNameError] = useState("");
+//   const [emailError, setEmailError] = useState("");
+//   const [passwordError, setPasswordError] = useState("");
+//   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+//   const [otpError, setOtpError] = useState("");
+//   const [generalError, setGeneralError] = useState("");
+//   const [successMessage, setSuccessMessage] = useState("");
+
+//   const router = useRouter();
+//   const searchParams = useSearchParams();
+//   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+//   useEffect(() => {
+//     const emailParam = searchParams.get("email");
+//     const verifyParam = searchParams.get("verify");
+//     if (emailParam && verifyParam === "true") {
+//       setRegistrationEmail(emailParam);
+//       setStep("verify");
+//       setResendCooldown(60);
+//       router.replace("/auth/register", { scroll: false }); // Clean URL
+//     }
+//   }, [searchParams, router]);
+
+//   useEffect(() => {
+//     let timer: NodeJS.Timeout;
+//     if (resendCooldown > 0) {
+//       timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+//     }
+//     return () => clearTimeout(timer);
+//   }, [resendCooldown]);
+
+//   const clearErrors = () => {
+//     setFullNameError("");
+//     setEmailError("");
+//     setPasswordError("");
+//     setConfirmPasswordError("");
+//     setOtpError("");
+//     setGeneralError("");
+//   };
+
+//   const handleRegisterSubmit = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     clearErrors();
+//     let isValid = true;
+//     if (!fullName.trim()) {
+//       setFullNameError("Full Name is required");
+//       isValid = false;
+//     }
+//     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//       setEmailError("A valid email is required");
+//       isValid = false;
+//     }
+//     if (!password) {
+//       setPasswordError("Password is required");
+//       isValid = false;
+//     } else if (password.length < 8) {
+//       setPasswordError("Password must be at least 8 characters");
+//       isValid = false;
+//     }
+//     if (password !== confirmPassword) {
+//       setConfirmPasswordError("Passwords do not match");
+//       isValid = false;
+//     }
+//     if (!isValid) return;
+
+//     setIsSubmitting(true);
+//     try {
+//       await authService.register({ fullName, email, password });
+//       setRegistrationEmail(email);
+//       setStep("verify");
+//       setResendCooldown(60);
+//     } catch (err: any) {
+//       setGeneralError(err.message || "Registration failed. Please try again.");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleVerifySubmit = useCallback(
+//     async (e?: FormEvent<HTMLFormElement>) => {
+//       e?.preventDefault();
+//       if (isSubmitting || !!successMessage) return;
+
+//       clearErrors();
+//       const otpString = otp.join("");
+//       if (!otpString || otpString.length !== 6) {
+//         setOtpError("Please enter a valid 6-digit OTP.");
+//         return;
+//       }
+
+//       setIsSubmitting(true);
+//       try {
+//         const response = await authService.verifyOtp({
+//           email: registrationEmail,
+//           otp: otpString,
+//         });
+//         setSuccessMessage(response.message || "Verification successful!");
+//         setTimeout(() => {
+//           router.push("/auth/login?registerSuccess=true");
+//         }, 2000);
+//       } catch (err: any) {
+//         setOtpError(
+//           err.message ||
+//             "Verification failed. Please check the code and try again."
+//         );
+//         setOtp(new Array(6).fill("")); // Reset OTP on error
+//         otpInputsRef.current[0]?.focus(); // Focus first input for re-entry
+//       } finally {
+//         setIsSubmitting(false);
+//       }
+//     },
+//     [isSubmitting, successMessage, otp, registrationEmail, router]
+//   );
+
+//   // Auto-submits when OTP is complete
+//   useEffect(() => {
+//     const otpString = otp.join("");
+//     if (otpString.length === 6 && !isSubmitting && !successMessage) {
+//       const timer = setTimeout(() => handleVerifySubmit(), 100);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [otp, isSubmitting, successMessage, handleVerifySubmit]);
+
+//   const handleResendOtp = async () => {
+//     if (resendCooldown > 0 || isSubmitting) return;
+//     clearErrors();
+//     setSuccessMessage("");
+//     setIsSubmitting(true);
+//     try {
+//       await authService.resendOtp({ email: registrationEmail });
+//       setSuccessMessage("A new OTP has been sent.");
+//       setResendCooldown(60);
+//       setOtp(new Array(6).fill("")); // Clear old OTP
+//       setTimeout(() => setSuccessMessage(""), 3000);
+//     } catch (err: any) {
+//       setGeneralError(
+//         err.message || "Failed to resend OTP. Please try again later."
+//       );
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const handleGoogleRegister = () => {
+//     window.location.href = `${apiConfig.baseUrl}/auth/google`;
+//   };
+
+//   const handleOtpChange = (
+//     e: React.ChangeEvent<HTMLInputElement>,
+//     index: number
+//   ) => {
+//     const value = e.target.value.replace(/[^0-9]/g, "");
+//     if (value.length > 1) return;
+
+//     const newOtp = [...otp];
+//     newOtp[index] = value;
+//     setOtp(newOtp);
+
+//     if (value && index < 5) {
+//       otpInputsRef.current[index + 1]?.focus();
+//     }
+//   };
+
+//   const handleOtpKeyDown = (
+//     e: React.KeyboardEvent<HTMLInputElement>,
+//     index: number
+//   ) => {
+//     if (e.key === "Backspace" && !otp[index] && index > 0) {
+//       e.preventDefault();
+//       otpInputsRef.current[index - 1]?.focus();
+//     }
+//   };
+
+//   const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+//     e.preventDefault();
+//     const pastedData = e.clipboardData
+//       .getData("text")
+//       .trim()
+//       .replace(/[^0-9]/g, "");
+//     if (pastedData.length === 6) {
+//       setOtp(pastedData.split(""));
+//       otpInputsRef.current[5]?.focus();
+//     }
+//   };
+
+//   const renderRegisterStep = () => (
+//     <motion.div
+//       className="w-full max-w-sm md:max-w-md"
+//       key="register-step"
+//       variants={pageContainerVariants}
+//       initial="hidden"
+//       animate="visible"
+//       exit="exit"
+//     >
+//       <motion.div
+//         className="space-y-1 mb-6 lg:text-left text-center"
+//         variants={itemVariants}
+//       >
+//         <h2 className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">
+//           Create Account.
+//         </h2>
+//         <p className="text-gray-400">
+//           Already have an account?{" "}
+//           <Link
+//             href="/auth/login"
+//             className="text-primary hover:text-primaryhover font-medium underline underline-offset-2 transition-all duration-75 ease-linear"
+//           >
+//             Log in
+//           </Link>
+//         </p>
+//       </motion.div>
+
+//       <AnimatePresence>
+//         {generalError && (
+//           <motion.div
+//             className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 mb-5"
+//             variants={errorVariants}
+//             initial="initial"
+//             animate="animate"
+//             exit="exit"
+//           >
+//             <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+//               <FiX className="text-red-500 size-6" />
+//             </div>
+//             <div>
+//               <p className="text-white">{generalError}</p>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       <form className="space-y-4" onSubmit={handleRegisterSubmit} noValidate>
+//         <motion.div variants={itemVariants}>
+//           <button
+//             type="button"
+//             onClick={handleGoogleRegister}
+//             disabled={isSubmitting}
+//             className="flex hover:bg-primarybox transition-all duration-75 ease-linear border justify-center rounded-lg h-14 text-white w-full cursor-pointer font-medium gap-2.5 items-center px-4 py-3"
+//           >
+//             <Image
+//               src="/assets/icon/google.svg"
+//               width={25}
+//               height={24}
+//               alt="Google"
+//             />
+//             Sign up with Google
+//           </button>
+//         </motion.div>
+//         <motion.div variants={itemVariants} className="flex items-center py-2">
+//           <hr className="flex-grow border-t border-gray-600" />
+//           <span className="px-3 text-white">Or</span>
+//           <hr className="flex-grow border-t border-gray-600" />
+//         </motion.div>
+
+//         <motion.div variants={itemVariants}>
+//           <label htmlFor="fullName" className="text-white inline-block mb-1.5">
+//             Full Name <span className="text-red-500">*</span>
+//           </label>
+//           <input
+//             type="text"
+//             id="fullName"
+//             value={fullName}
+//             onChange={(e) => {
+//               setFullName(e.target.value);
+//               if (fullNameError) setFullNameError("");
+//             }}
+//             className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${
+//               fullNameError
+//                 ? "border-red-600 ring-1 ring-red-600"
+//                 : "border-primarybox"
+//             }`}
+//           />
+//           {fullNameError && (
+//             <p className="flex text-red-500 text-sm items-center mt-1">
+//               <IoMdCloseCircle className="size-3.5 mr-1" />
+//               {fullNameError}
+//             </p>
+//           )}
+//         </motion.div>
+
+//         <motion.div variants={itemVariants}>
+//           <label htmlFor="email" className="text-white inline-block mb-1.5">
+//             Your email address <span className="text-red-500">*</span>
+//           </label>
+//           <input
+//             type="email"
+//             id="email"
+//             value={email}
+//             onChange={(e) => {
+//               setEmail(e.target.value);
+//               if (emailError) setEmailError("");
+//             }}
+//             className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${
+//               emailError
+//                 ? "border-red-600 ring-1 ring-red-600"
+//                 : "border-primarybox"
+//             }`}
+//           />
+//           {emailError && (
+//             <p className="flex text-red-500 text-sm items-center mt-1">
+//               <IoMdCloseCircle className="size-3.5 mr-1" />
+//               {emailError}
+//             </p>
+//           )}
+//         </motion.div>
+
+//         <motion.div variants={itemVariants}>
+//           <label htmlFor="password" className="text-white inline-block mb-1.5">
+//             Password <span className="text-red-500">*</span>
+//           </label>
+//           <div className="relative">
+//             <input
+//               type={showPassword ? "text" : "password"}
+//               id="password"
+//               value={password}
+//               onChange={(e) => {
+//                 setPassword(e.target.value);
+//                 if (passwordError) setPasswordError("");
+//               }}
+//               className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all ease-linear duration-75 pr-10 ${
+//                 passwordError
+//                   ? "border-red-600 ring-1 ring-red-600"
+//                   : "border-primarybox"
+//               }`}
+//             />
+//             <button
+//               type="button"
+//               onClick={() => setShowPassword(!showPassword)}
+//               className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none"
+//             >
+//               {showPassword ? <LuEye size={18} /> : <LuEyeOff size={18} />}
+//             </button>
+//           </div>
+//           {passwordError && (
+//             <p className="flex text-red-500 text-sm items-center mt-1">
+//               <IoMdCloseCircle className="size-3.5 mr-1" />
+//               {passwordError}
+//             </p>
+//           )}
+//         </motion.div>
+
+//         <motion.div variants={itemVariants}>
+//           <label
+//             htmlFor="confirmPassword"
+//             className="text-white inline-block mb-1.5"
+//           >
+//             Confirm Password <span className="text-red-500">*</span>
+//           </label>
+//           <div className="relative">
+//             <input
+//               type={showConfirmPassword ? "text" : "password"}
+//               id="confirmPassword"
+//               value={confirmPassword}
+//               onChange={(e) => {
+//                 setConfirmPassword(e.target.value);
+//                 if (confirmPasswordError) setConfirmPasswordError("");
+//               }}
+//               className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear pr-10 ${
+//                 confirmPasswordError
+//                   ? "border-red-600 ring-1 ring-red-600"
+//                   : "border-primarybox"
+//               }`}
+//             />
+//             <button
+//               type="button"
+//               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+//               className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none"
+//             >
+//               {showConfirmPassword ? (
+//                 <LuEye size={18} />
+//               ) : (
+//                 <LuEyeOff size={18} />
+//               )}
+//             </button>
+//           </div>
+//           {confirmPasswordError && (
+//             <p className="flex text-red-500 text-sm items-center mt-1">
+//               <IoMdCloseCircle className="size-3.5 mr-1" />
+//               {confirmPasswordError}
+//             </p>
+//           )}
+//         </motion.div>
+
+//         <motion.div variants={itemVariants} className="pt-2">
+//           <button
+//             type="submit"
+//             disabled={isSubmitting}
+//             className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`}
+//           >
+//             {isSubmitting ? "Creating Account..." : "Create Account"}
+//           </button>
+//         </motion.div>
+//       </form>
+//     </motion.div>
+//   );
+
+//   const renderVerifyStep = () => (
+//     <motion.div
+//       className="w-full max-w-sm md:max-w-md text-center"
+//       key="verify-step"
+//       variants={pageContainerVariants}
+//       initial="hidden"
+//       animate="visible"
+//       exit="exit"
+//     >
+//       <motion.div variants={itemVariants} className="flex justify-center mb-4">
+//         <div className="bg-primary/10 p-3 rounded-full">
+//           <FiMail className="text-primary size-8" />
+//         </div>
+//       </motion.div>
+//       <motion.h2
+//         variants={itemVariants}
+//         className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold capitalize"
+//       >
+//         Check your email
+//       </motion.h2>
+//       <motion.p variants={itemVariants} className="text-gray-400 pt-2">
+//         We've sent a 6-digit code to <br />
+//         <strong className="text-white">{registrationEmail}</strong>
+//       </motion.p>
+
+//       <AnimatePresence>
+//         {otpError && (
+//           <motion.div
+//             className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5"
+//             variants={errorVariants}
+//             initial="initial"
+//             animate="animate"
+//             exit="exit"
+//           >
+//             <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+//               <FiX className="text-red-500 size-6" />
+//             </div>
+//             <div>
+//               <p className="text-white">{otpError}</p>
+//             </div>
+//           </motion.div>
+//         )}
+//         {generalError && (
+//           <motion.div
+//             className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5"
+//             variants={errorVariants}
+//             initial="initial"
+//             animate="animate"
+//             exit="exit"
+//           >
+//             <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+//               <FiX className="text-red-500 size-6" />
+//             </div>
+//             <div>
+//               <p className="text-white">{generalError}</p>
+//             </div>
+//           </motion.div>
+//         )}
+//         {successMessage && (
+//           <motion.div
+//             className="bg-primary-foreground p-4 rounded-xl flex items-center gap-3 my-5"
+//             variants={errorVariants}
+//             initial="initial"
+//             animate="animate"
+//             exit="exit"
+//           >
+//             <div className="flex bg-green-600/20 justify-center rounded-full items-center size-10 shrink-0">
+//               <FiCheckCircle className="text-green-500 size-5" />
+//             </div>
+//             <div>
+//               <p className="text-white">{successMessage}</p>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       <form className="space-y-6 mt-8" onSubmit={handleVerifySubmit} noValidate>
+//         <motion.div variants={itemVariants}>
+//           <label htmlFor="otp-0" className="sr-only">
+//             OTP Code
+//           </label>
+//           <div
+//             className="flex justify-center gap-2 sm:gap-3"
+//             onPaste={handleOtpPaste}
+//           >
+//             {otp.map((digit, index) => (
+//               <input
+//                 key={index}
+//                 id={`otp-${index}`}
+//                 ref={(el) => {
+//                   otpInputsRef.current[index] = el;
+//                 }}
+//                 type="text"
+//                 inputMode="numeric"
+//                 autoComplete="one-time-code"
+//                 maxLength={1}
+//                 value={digit}
+//                 onChange={(e) => handleOtpChange(e, index)}
+//                 onKeyDown={(e) => handleOtpKeyDown(e, index)}
+//                 disabled={isSubmitting || !!successMessage}
+//                 className={`block bg-primarybox border text-white placeholder-gray-400 size-12 sm:size-14 w-full rounded-lg focus:outline-none transition-all duration-150 ease-linear text-center text-2xl font-semibold ${
+//                   otpError
+//                     ? "border-red-600 ring-1 ring-red-600"
+//                     : "border-primarybox focus:ring-2 focus:ring-primary"
+//                 }`}
+//               />
+//             ))}
+//           </div>
+//         </motion.div>
+
+//         <motion.div variants={itemVariants}>
+//           <button
+//             type="submit"
+//             disabled={
+//               isSubmitting || !!successMessage || otp.join("").length !== 6
+//             }
+//             className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`}
+//           >
+//             {isSubmitting ? "Verifying..." : "Verify Account"}
+//           </button>
+//         </motion.div>
+//       </form>
+
+//       <motion.div variants={itemVariants} className="mt-6 text-gray-400">
+//         Didn't receive the email?{" "}
+//         <button
+//           onClick={handleResendOtp}
+//           disabled={resendCooldown > 0 || isSubmitting}
+//           className="font-medium text-primary hover:text-primaryhover underline disabled:text-gray-500 disabled:no-underline disabled:cursor-not-allowed"
+//         >
+//           {resendCooldown > 0
+//             ? `Resend in ${resendCooldown}s`
+//             : "Click to resend"}
+//         </button>
+//       </motion.div>
+//       <motion.div variants={itemVariants} className="mt-4">
+//         <button
+//           onClick={() => setStep("register")}
+//           className="text-gray-400 hover:text-white text-sm"
+//         >
+//           ← Back to registration
+//         </button>
+//       </motion.div>
+//     </motion.div>
+//   );
+
+//   return (
+//     <div className="flex flex-col lg:flex-row min-h-screen lg:p-3">
+//       <div className="hidden lg:flex lg:w-[55%] xl:w-[60%] bg-[url(/assets/images/leftPartImage.png)] bg-cover bg-no-repeat bg-center p-10 xl:p-16 rounded-3xl flex-col justify-between relative">
+//         <div className="absolute top-16 xl:left-16 ">
+//           <Link href={"/"}>
+//             <Image
+//               src="/assets/images/main_logo.svg"
+//               width={200}
+//               height={90}
+//               alt="Remityn Logo"
+//             />
+//           </Link>
+//         </div>
+//         <div className="flex-grow flex flex-col justify-end items-start text-white pt-20">
+//           <motion.h1
+//             className="text-4xl xl:text-5xl font-bold mb-4"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 0.2 }}
+//           >
+//             Create Your
+//             <br />
+//             Account
+//           </motion.h1>
+//           <motion.p
+//             className="text-base xl:text-lg text-gray-200 mb-10 xl:mb-12 leading-relaxed"
+//             initial={{ opacity: 0, y: 20 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ duration: 0.5, delay: 0.4 }}
+//           >
+//             Follow these simple steps to
+//             <br />
+//             get started with Remityn.
+//           </motion.p>
+//           <div className="flex xl:flex-row flex-col gap-4 w-full">
+//             {[
+//               { num: 1, title: "Sign up your account", active: true },
+//               { num: 2, title: "Sign in your account" },
+//               { num: 3, title: "Set up your KYC" },
+//             ].map((s) => (
+//               <motion.div
+//                 key={s.num}
+//                 className={`flex flex-col justify-between xl:w-50 xl:h-50 w-full h-26 p-3.5 xl:p-4 rounded-xl transition-all duration-300 ${
+//                   s.active ? "bg-white shadow-lg" : "bg-white/12"
+//                 }`}
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ duration: 0.5 }}
+//               >
+//                 <div
+//                   className={`flex items-center justify-center size-7 xl:size-10 rounded-full mr-3 xl:mr-4 shrink-0 ${
+//                     s.active
+//                       ? "bg-background text-white"
+//                       : "bg-white/12 text-white"
+//                   } font-semibold text-lg`}
+//                 >
+//                   {s.num}
+//                 </div>
+//                 <span
+//                   className={`text-lg ${
+//                     s.active ? "font-medium text-mainheading" : "text-gray-200"
+//                   }`}
+//                 >
+//                   {s.title}
+//                 </span>
+//               </motion.div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//       <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 overflow-y-auto">
+//         <div className="lg:hidden mb-10 self-center">
+//           <Link href={"/"}>
+//             <Image
+//               src="/assets/images/mobile-logo.svg"
+//               width={150}
+//               height={100}
+//               alt="Remityn Logo"
+//             />
+//           </Link>
+//         </div>
+//         <AnimatePresence mode="wait">
+//           {step === "register" ? renderRegisterStep() : renderVerifyStep()}
+//         </AnimatePresence>
+//       </div>
+//     </div>
+//   );
+// }
 
 "use client";
-
 import { useState, useEffect, FormEvent, useRef, useCallback } from "react";
-import authService from "../../services/auth";
+import authService from "../../services/auth"; // Assuming this path is correct
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { IoMdCloseCircle } from "react-icons/io";
 import { FiX, FiMail, FiCheckCircle } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import apiConfig from "../../config/apiConfig";
+import apiConfig from "../../config/apiConfig"; // Assuming this path is correct
 import { LuEye, LuEyeOff } from "react-icons/lu";
 
 const pageContainerVariants = {
@@ -4766,305 +5462,720 @@ const errorVariants = {
 };
 
 export default function RegisterPage() {
-    const [step, setStep] = useState<"register" | "verify">("register");
-    const [registrationEmail, setRegistrationEmail] = useState("");
+  const [step, setStep] = useState<"register" | "verify">("register");
+  const [registrationEmail, setRegistrationEmail] = useState("");
 
-    // Form fields
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
+  // Form fields
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
 
-    // UI State
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [resendCooldown, setResendCooldown] = useState(0);
+  // UI State
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
-    // Messages and Errors
-    const [fullNameError, setFullNameError] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const [confirmPasswordError, setConfirmPasswordError] = useState("");
-    const [otpError, setOtpError] = useState("");
-    const [generalError, setGeneralError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
+  // Messages and Errors
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [generalError, setGeneralError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
-    useEffect(() => {
-        const emailParam = searchParams.get('email');
-        const verifyParam = searchParams.get('verify');
-        if (emailParam && verifyParam === 'true') {
-            setRegistrationEmail(emailParam);
-            setStep('verify');
-            setResendCooldown(60);
-            router.replace('/auth/register', { scroll: false }); // Clean URL
+  useEffect(() => {
+    const emailParam = searchParams.get("email");
+    const verifyParam = searchParams.get("verify");
+    if (emailParam && verifyParam === "true") {
+      setRegistrationEmail(emailParam);
+      setStep("verify");
+      setResendCooldown(60);
+      router.replace("/auth/register", { scroll: false }); // Clean URL
+    }
+  }, [searchParams, router]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
+  const clearErrors = () => {
+    setFullNameError("");
+    setEmailError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+    setOtpError("");
+    setGeneralError("");
+  };
+
+  const handleRegisterSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    clearErrors();
+    let isValid = true;
+    if (!fullName.trim()) {
+      setFullNameError("Full Name is required");
+      isValid = false;
+    }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("A valid email is required");
+      isValid = false;
+    }
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      isValid = false;
+    }
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      isValid = false;
+    }
+    if (!isValid) return;
+
+    setIsSubmitting(true);
+    try {
+      await authService.register({ fullName, email, password });
+      setRegistrationEmail(email);
+      setStep("verify");
+      setResendCooldown(60);
+    } catch (err: any) {
+      setGeneralError(err.message || "Registration failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifySubmit = useCallback(
+    async (e?: FormEvent<HTMLFormElement>) => {
+      e?.preventDefault();
+      if (isSubmitting || !!successMessage) return;
+
+      clearErrors(); // This will clear otpError before validation
+      const otpString = otp.join("");
+      if (!otpString || otpString.length !== 6) {
+        setOtpError("Please enter a valid 6-digit OTP.");
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const response = await authService.verifyOtp({
+          email: registrationEmail,
+          otp: otpString,
+        });
+        setSuccessMessage(response.message || "Verification successful!");
+        setTimeout(() => {
+          router.push("/auth/login?registerSuccess=true");
+        }, 2000);
+      } catch (err: any) {
+        setOtpError(
+          err.message ||
+            "Verification failed. Please check the code and try again."
+        );
+        setOtp(new Array(6).fill("")); // Reset OTP on error
+        otpInputsRef.current[0]?.focus(); // Focus first input for re-entry
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [isSubmitting, successMessage, otp, registrationEmail, router]
+  );
+
+  // Auto-submits when OTP is complete
+  useEffect(() => {
+    const otpString = otp.join("");
+    if (
+      otpString.length === 6 &&
+      !isSubmitting &&
+      !successMessage &&
+      !otpError
+    ) {
+      // Added !otpError
+      const timer = setTimeout(() => handleVerifySubmit(), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [otp, isSubmitting, successMessage, otpError, handleVerifySubmit]);
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0 || isSubmitting) return;
+    clearErrors();
+    setSuccessMessage("");
+    setIsSubmitting(true);
+    try {
+      await authService.resendOtp({ email: registrationEmail });
+      setSuccessMessage("A new OTP has been sent.");
+      setResendCooldown(60);
+      setOtp(new Array(6).fill("")); // Clear old OTP
+      otpInputsRef.current[0]?.focus(); // Focus first input
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      setGeneralError(
+        err.message || "Failed to resend OTP. Please try again later."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleRegister = () => {
+    window.location.href = `${apiConfig.baseUrl}/auth/google`;
+  };
+
+  const handleOtpChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    // ---- MODIFICATION START ----
+    // If there's an OTP error, clear it as the user starts typing.
+    if (otpError) {
+      setOtpError("");
+    }
+    // ---- MODIFICATION END ----
+
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length > 1) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      otpInputsRef.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      e.preventDefault();
+      otpInputsRef.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData
+      .getData("text")
+      .trim()
+      .replace(/[^0-9]/g, "");
+    if (pastedData.length === 6) {
+      // ---- MODIFICATION START ----
+      if (otpError) {
+        setOtpError("");
+      }
+      // ---- MODIFICATION END ----
+      setOtp(pastedData.split(""));
+      otpInputsRef.current[5]?.focus();
+    }
+    // If you want to handle pasting into individual focused inputs:
+    // This part assumes paste event is on individual inputs, not the container
+    // If onPaste is on the container, the logic for distributing chars is more complex
+    else if (pastedData.length > 0 && e.target instanceof HTMLInputElement) {
+      const targetInput = e.target as HTMLInputElement;
+      const inputId = targetInput.id; // e.g., "otp-0"
+      const DOMElementsIndex = parseInt(inputId.split("-")[1]);
+
+      if (!isNaN(DOMElementsIndex)) {
+        if (otpError) {
+          setOtpError("");
         }
-    }, [searchParams, router]);
-    
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (resendCooldown > 0) {
-            timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
-        }
-        return () => clearTimeout(timer);
-    }, [resendCooldown]);
-
-    const clearErrors = () => {
-        setFullNameError(""); setEmailError(""); setPasswordError("");
-        setConfirmPasswordError(""); setOtpError(""); setGeneralError("");
-    };
-
-    const handleRegisterSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        clearErrors();
-        let isValid = true;
-        if (!fullName.trim()) { setFullNameError("Full Name is required"); isValid = false; }
-        if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEmailError("A valid email is required"); isValid = false; }
-        if (!password) { setPasswordError("Password is required"); isValid = false; }
-        else if (password.length < 8) { setPasswordError("Password must be at least 8 characters"); isValid = false; }
-        if (password !== confirmPassword) { setConfirmPasswordError("Passwords do not match"); isValid = false; }
-        if (!isValid) return;
-
-        setIsSubmitting(true);
-        try {
-            await authService.register({ fullName, email, password });
-            setRegistrationEmail(email);
-            setStep("verify");
-            setResendCooldown(60);
-        } catch (err: any) {
-            setGeneralError(err.message || "Registration failed. Please try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleVerifySubmit = useCallback(async (e?: FormEvent<HTMLFormElement>) => {
-        e?.preventDefault();
-        if (isSubmitting || !!successMessage) return;
-
-        clearErrors();
-        const otpString = otp.join('');
-        if (!otpString || otpString.length !== 6) { 
-            setOtpError("Please enter a valid 6-digit OTP."); 
-            return; 
-        }
-
-        setIsSubmitting(true);
-        try {
-            const response = await authService.verifyOtp({ email: registrationEmail, otp: otpString });
-            setSuccessMessage(response.message || "Verification successful!");
-            setTimeout(() => {
-                router.push("/auth/login?registerSuccess=true");
-            }, 2000);
-        } catch (err: any) {
-            setOtpError(err.message || "Verification failed. Please check the code and try again.");
-            setOtp(new Array(6).fill("")); // Reset OTP on error
-            otpInputsRef.current[0]?.focus(); // Focus first input for re-entry
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [isSubmitting, successMessage, otp, registrationEmail, router]);
-
-    // Auto-submits when OTP is complete
-    useEffect(() => {
-        const otpString = otp.join('');
-        if (otpString.length === 6 && !isSubmitting && !successMessage) {
-            const timer = setTimeout(() => handleVerifySubmit(), 100);
-            return () => clearTimeout(timer);
-        }
-    }, [otp, isSubmitting, successMessage, handleVerifySubmit]);
-
-    const handleResendOtp = async () => {
-        if (resendCooldown > 0 || isSubmitting) return;
-        clearErrors();
-        setSuccessMessage("");
-        setIsSubmitting(true);
-        try {
-            await authService.resendOtp({ email: registrationEmail });
-            setSuccessMessage("A new OTP has been sent.");
-            setResendCooldown(60);
-            setOtp(new Array(6).fill("")); // Clear old OTP
-            setTimeout(() => setSuccessMessage(""), 3000);
-        } catch (err: any) {
-            setGeneralError(err.message || "Failed to resend OTP. Please try again later.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    
-    const handleGoogleRegister = () => {
-        window.location.href = `${apiConfig.baseUrl}/auth/google`;
-    };
-
-    const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        if (value.length > 1) return;
-
         const newOtp = [...otp];
-        newOtp[index] = value;
+        let currentPastedIndex = 0;
+        for (
+          let i = DOMElementsIndex;
+          i < 6 && currentPastedIndex < pastedData.length;
+          i++
+        ) {
+          newOtp[i] = pastedData[currentPastedIndex++];
+        }
         setOtp(newOtp);
 
-        if (value && index < 5) {
-            otpInputsRef.current[index + 1]?.focus();
+        const focusIndex = Math.min(
+          5,
+          DOMElementsIndex + currentPastedIndex - 1
+        );
+        if (otpInputsRef.current[focusIndex]) {
+          otpInputsRef.current[focusIndex]?.focus();
+        } else if (DOMElementsIndex + currentPastedIndex <= 5) {
+          otpInputsRef.current[DOMElementsIndex + currentPastedIndex]?.focus();
+        } else {
+          otpInputsRef.current[5]?.focus();
         }
-    };
+      }
+    }
+  };
 
-    const handleOtpKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-        if (e.key === 'Backspace' && !otp[index] && index > 0) {
-            e.preventDefault();
-            otpInputsRef.current[index - 1]?.focus();
-        }
-    };
+  const renderRegisterStep = () => (
+    <motion.div
+      className="w-full max-w-sm md:max-w-md"
+      key="register-step"
+      variants={pageContainerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
+      <motion.div
+        className="space-y-1 mb-6 lg:text-left text-center"
+        variants={itemVariants}
+      >
+        <h2 className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">
+          Create Account.
+        </h2>
+        <p className="text-gray-400">
+          Already have an account?{" "}
+          <Link
+            href="/auth/login"
+            className="text-primary hover:text-primaryhover font-medium underline underline-offset-2 transition-all duration-75 ease-linear"
+          >
+            Log in
+          </Link>
+        </p>
+      </motion.div>
 
-    const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const pastedData = e.clipboardData.getData('text').trim().replace(/[^0-9]/g, '');
-        if (pastedData.length === 6) {
-            setOtp(pastedData.split(''));
-            otpInputsRef.current[5]?.focus();
-        }
-    };
-
-    const renderRegisterStep = () => (
-        <motion.div className="w-full max-w-sm md:max-w-md" key="register-step" variants={pageContainerVariants} initial="hidden" animate="visible" exit="exit">
-             <motion.div className="space-y-1 mb-6 lg:text-left text-center" variants={itemVariants}>
-                <h2 className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">Create Account.</h2>
-                <p className="text-gray-400">Already have an account? <Link href="/auth/login" className="text-primary hover:text-primaryhover font-medium underline underline-offset-2 transition-all duration-75 ease-linear">Log in</Link></p>
-            </motion.div>
-            
-            <AnimatePresence>
-                {generalError && (
-                    <motion.div className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 mb-5" variants={errorVariants} initial="initial" animate="animate" exit="exit">
-                        <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0"><FiX className="text-red-500 size-6" /></div>
-                        <div><p className="text-white">{generalError}</p></div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            
-            <form className="space-y-4" onSubmit={handleRegisterSubmit} noValidate>
-                <motion.div variants={itemVariants}>
-                    <button type="button" onClick={handleGoogleRegister} disabled={isSubmitting} className="flex hover:bg-primarybox transition-all duration-75 ease-linear border justify-center rounded-lg h-14 text-white w-full cursor-pointer font-medium gap-2.5 items-center px-4 py-3"><Image src="/assets/icon/google.svg" width={25} height={24} alt="Google" />Sign up with Google</button>
-                </motion.div>
-                <motion.div variants={itemVariants} className="flex items-center py-2"><hr className="flex-grow border-t border-gray-600"/><span className="px-3 text-white">Or</span><hr className="flex-grow border-t border-gray-600"/></motion.div>
-
-                <motion.div variants={itemVariants}>
-                    <label htmlFor="fullName" className="text-white inline-block mb-1.5">Full Name <span className="text-red-500">*</span></label>
-                    <input type="text" id="fullName" value={fullName} onChange={e => {setFullName(e.target.value); if(fullNameError) setFullNameError("")}} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${fullNameError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
-                    {fullNameError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{fullNameError}</p>}
-                </motion.div>
-                
-                <motion.div variants={itemVariants}>
-                    <label htmlFor="email" className="text-white inline-block mb-1.5">Your email address <span className="text-red-500">*</span></label>
-                    <input type="email" id="email" value={email} onChange={e => {setEmail(e.target.value); if(emailError) setEmailError("")}} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${emailError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
-                    {emailError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{emailError}</p>}
-                </motion.div>
-                
-                <motion.div variants={itemVariants}>
-                    <label htmlFor="password" className="text-white inline-block mb-1.5">Password <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                        <input type={showPassword ? "text" : "password"} id="password" value={password} onChange={e => {setPassword(e.target.value); if(passwordError) setPasswordError("")}} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all ease-linear duration-75 pr-10 ${passwordError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none">{showPassword ? <LuEye size={18} /> : <LuEyeOff size={18} />}</button>
-                    </div>
-                    {passwordError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{passwordError}</p>}
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                    <label htmlFor="confirmPassword" className="text-white inline-block mb-1.5">Confirm Password <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                        <input type={showConfirmPassword ? "text" : "password"} id="confirmPassword" value={confirmPassword} onChange={e => {setConfirmPassword(e.target.value); if(confirmPasswordError) setConfirmPasswordError("")}} className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear pr-10 ${confirmPasswordError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`} />
-                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none">{showConfirmPassword ? <LuEye size={18} /> : <LuEyeOff size={18} />}</button>
-                    </div>
-                    {confirmPasswordError && <p className="flex text-red-500 text-sm items-center mt-1"><IoMdCloseCircle className="size-3.5 mr-1" />{confirmPasswordError}</p>}
-                </motion.div>
-                
-                <motion.div variants={itemVariants} className="pt-2">
-                    <button type="submit" disabled={isSubmitting} className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`}>{isSubmitting ? "Creating Account..." : "Create Account"}</button>
-                </motion.div>
-            </form>
-        </motion.div>
-    );
-
-    const renderVerifyStep = () => (
-        <motion.div className="w-full max-w-sm md:max-w-md text-center" key="verify-step" variants={pageContainerVariants} initial="hidden" animate="visible" exit="exit">
-            <motion.div variants={itemVariants} className="flex justify-center mb-4"><div className="bg-primary/10 p-3 rounded-full"><FiMail className="text-primary size-8"/></div></motion.div>
-            <motion.h2 variants={itemVariants} className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold">Check your email</motion.h2>
-            <motion.p variants={itemVariants} className="text-gray-400 pt-2">We've sent a 6-digit code to <br/><strong className="text-white">{registrationEmail}</strong></motion.p>
-            
-            <AnimatePresence>
-                {otpError && <motion.div className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5" variants={errorVariants} initial="initial" animate="animate" exit="exit"><div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0"><FiX className="text-red-500 size-6" /></div><div><p className="text-white">{otpError}</p></div></motion.div>}
-                {generalError && <motion.div className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5" variants={errorVariants} initial="initial" animate="animate" exit="exit"><div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0"><FiX className="text-red-500 size-6" /></div><div><p className="text-white">{generalError}</p></div></motion.div>}
-                {successMessage && <motion.div className="bg-primary-foreground p-4 rounded-xl flex items-center gap-3 my-5" variants={errorVariants} initial="initial" animate="animate" exit="exit"><div className="flex bg-green-600/20 justify-center rounded-full items-center size-10 shrink-0"><FiCheckCircle className="text-green-500 size-5" /></div><div><p className="text-white">{successMessage}</p></div></motion.div>}
-            </AnimatePresence>
-
-            <form className="space-y-6 mt-8" onSubmit={handleVerifySubmit} noValidate>
-                <motion.div variants={itemVariants}>
-                    <label htmlFor="otp-0" className="sr-only">OTP Code</label>
-                    <div className="flex justify-center gap-2 sm:gap-3" onPaste={handleOtpPaste}>
-                        {otp.map((digit, index) => (
-                            <input
-                                key={index}
-                                id={`otp-${index}`}
-                                ref={el => { otpInputsRef.current[index] = el; }}
-                                type="text"
-                                inputMode="numeric"
-                                autoComplete="one-time-code"
-                                maxLength={1}
-                                value={digit}
-                                onChange={e => handleOtpChange(e, index)}
-                                onKeyDown={e => handleOtpKeyDown(e, index)}
-                                disabled={isSubmitting || !!successMessage}
-                                className={`block bg-primarybox border text-white placeholder-gray-400 size-12 sm:size-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear text-center text-2xl font-semibold focus:ring-2 focus:ring-primary ${otpError ? "border-red-600 ring-1 ring-red-600" : "border-primarybox"}`}
-                            />
-                        ))}
-                    </div>
-                     {otpError && <p className="flex text-red-500 text-sm items-center mt-2 justify-center"><IoMdCloseCircle className="size-3.5 mr-1" />{otpError}</p>}
-                </motion.div>
-                
-                <motion.div variants={itemVariants}>
-                    <button type="submit" disabled={isSubmitting || !!successMessage || otp.join('').length !== 6} className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`}>
-                        {isSubmitting ? "Verifying..." : "Verify Account"}
-                    </button>
-                </motion.div>
-            </form>
-
-            <motion.div variants={itemVariants} className="mt-6 text-gray-400">
-                Didn't receive the email?{" "}
-                <button onClick={handleResendOtp} disabled={resendCooldown > 0 || isSubmitting} className="font-medium text-primary hover:text-primaryhover underline disabled:text-gray-500 disabled:no-underline disabled:cursor-not-allowed">{resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Click to resend"}</button>
-            </motion.div>
-            <motion.div variants={itemVariants} className="mt-4">
-                <button onClick={() => setStep('register')} className="text-gray-400 hover:text-white text-sm">← Back to registration</button>
-            </motion.div>
-        </motion.div>
-    );
-
-    return (
-        <div className="flex flex-col lg:flex-row min-h-screen lg:p-3">
-             <div className="hidden lg:flex lg:w-[55%] xl:w-[60%] bg-[url(/assets/images/leftPartImage.png)] bg-cover bg-no-repeat bg-center p-10 xl:p-16 rounded-3xl flex-col justify-between relative">
-                <div className="absolute top-16 xl:left-16 "><Link href={"/"}><Image src="/assets/images/main_logo.svg" width={200} height={90} alt="Remityn Logo"/></Link></div>
-                <div className="flex-grow flex flex-col justify-end items-start text-white pt-20">
-                    <motion.h1 className="text-4xl xl:text-5xl font-bold mb-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>Create Your<br/>Account</motion.h1>
-                    <motion.p className="text-base xl:text-lg text-gray-200 mb-10 xl:mb-12 leading-relaxed" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>Follow these simple steps to<br/>get started with Remityn.</motion.p>
-                    <div className="flex xl:flex-row flex-col gap-4 w-full">
-                        {[{ num: 1, title: "Sign up your account", active: true }, { num: 2, title: "Sign in your account" }, { num: 3, title: "Set up your KYC" }].map((s) => (
-                            <motion.div key={s.num} className={`flex flex-col justify-between xl:w-50 xl:h-50 w-full h-26 p-3.5 xl:p-4 rounded-xl transition-all duration-300 ${s.active ? "bg-white shadow-lg" : "bg-white/12"}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                                <div className={`flex items-center justify-center size-7 xl:size-10 rounded-full mr-3 xl:mr-4 shrink-0 ${s.active ? "bg-background text-white" : "bg-white/12 text-white"} font-semibold text-lg`}>{s.num}</div>
-                                <span className={`text-lg ${s.active ? "font-medium text-mainheading" : "text-gray-200"}`}>{s.title}</span>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
+      <AnimatePresence>
+        {generalError && (
+          <motion.div
+            className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 mb-5"
+            variants={errorVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+              <FiX className="text-red-500 size-6" />
             </div>
-            <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 overflow-y-auto">
-                 <div className="lg:hidden mb-10 self-center"><Link href={"/"}><Image src="/assets/images/mobile-logo.svg" width={150} height={100} alt="Remityn Logo"/></Link></div>
-                <AnimatePresence mode="wait">
-                    {step === "register" ? renderRegisterStep() : renderVerifyStep()}
-                </AnimatePresence>
+            <div>
+              <p className="text-white">{generalError}</p>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <form className="space-y-4" onSubmit={handleRegisterSubmit} noValidate>
+        <motion.div variants={itemVariants}>
+          <button
+            type="button"
+            onClick={handleGoogleRegister}
+            disabled={isSubmitting}
+            className="flex hover:bg-primarybox transition-all duration-75 ease-linear border justify-center rounded-lg h-14 text-white w-full cursor-pointer font-medium gap-2.5 items-center px-4 py-3"
+          >
+            <Image
+              src="/assets/icon/google.svg"
+              width={25}
+              height={24}
+              alt="Google"
+            />
+            Sign up with Google
+          </button>
+        </motion.div>
+        <motion.div variants={itemVariants} className="flex items-center py-2">
+          <hr className="flex-grow border-t border-gray-600" />
+          <span className="px-3 text-white">Or</span>
+          <hr className="flex-grow border-t border-gray-600" />
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <label htmlFor="fullName" className="text-white inline-block mb-1.5">
+            Full Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="fullName"
+            value={fullName}
+            onChange={(e) => {
+              setFullName(e.target.value);
+              if (fullNameError) setFullNameError("");
+            }}
+            className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${
+              fullNameError
+                ? "border-red-600 ring-1 ring-red-600"
+                : "border-primarybox"
+            }`}
+          />
+          {fullNameError && (
+            <p className="flex text-red-500 text-sm items-center mt-1">
+              <IoMdCloseCircle className="size-3.5 mr-1" />
+              {fullNameError}
+            </p>
+          )}
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <label htmlFor="email" className="text-white inline-block mb-1.5">
+            Your email address <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError("");
+            }}
+            className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear ${
+              emailError
+                ? "border-red-600 ring-1 ring-red-600"
+                : "border-primarybox"
+            }`}
+          />
+          {emailError && (
+            <p className="flex text-red-500 text-sm items-center mt-1">
+              <IoMdCloseCircle className="size-3.5 mr-1" />
+              {emailError}
+            </p>
+          )}
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <label htmlFor="password" className="text-white inline-block mb-1.5">
+            Password <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (passwordError) setPasswordError("");
+              }}
+              className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all ease-linear duration-75 pr-10 ${
+                passwordError
+                  ? "border-red-600 ring-1 ring-red-600"
+                  : "border-primarybox"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none"
+            >
+              {showPassword ? <LuEye size={18} /> : <LuEyeOff size={18} />}
+            </button>
+          </div>
+          {passwordError && (
+            <p className="flex text-red-500 text-sm items-center mt-1">
+              <IoMdCloseCircle className="size-3.5 mr-1" />
+              {passwordError}
+            </p>
+          )}
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <label
+            htmlFor="confirmPassword"
+            className="text-white inline-block mb-1.5"
+          >
+            Confirm Password <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                if (confirmPasswordError) setConfirmPasswordError("");
+              }}
+              className={`block px-4 py-3 bg-primarybox border text-white placeholder-gray-400 h-14 w-full rounded-lg focus:outline-none transition-all duration-75 ease-linear pr-10 ${
+                confirmPasswordError
+                  ? "border-red-600 ring-1 ring-red-600"
+                  : "border-primarybox"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-gray-300 focus:outline-none"
+            >
+              {showConfirmPassword ? (
+                <LuEye size={18} />
+              ) : (
+                <LuEyeOff size={18} />
+              )}
+            </button>
+          </div>
+          {confirmPasswordError && (
+            <p className="flex text-red-500 text-sm items-center mt-1">
+              <IoMdCloseCircle className="size-3.5 mr-1" />
+              {confirmPasswordError}
+            </p>
+          )}
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="pt-2">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`}
+          >
+            {isSubmitting ? "Creating Account..." : "Create Account"}
+          </button>
+        </motion.div>
+      </form>
+    </motion.div>
+  );
+
+  const renderVerifyStep = () => (
+    <motion.div
+      className="w-full max-w-sm md:max-w-md text-center"
+      key="verify-step"
+      variants={pageContainerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
+      <motion.div variants={itemVariants} className="flex justify-center mb-4">
+        <div className="bg-primary/10 p-3.5 rounded-full">
+          <FiMail className="text-primary size-8" />
         </div>
-    );
+      </motion.div>
+      <motion.h2
+        variants={itemVariants}
+        className="text-3xl lg:text-4xl text-mainheadingWhite font-semibold capitalize"
+      >
+        Check Your Email
+      </motion.h2>
+      <motion.p variants={itemVariants} className="text-gray-400 pt-2">
+        We've sent a 6-digit code to <br />
+        <strong className="text-white">{registrationEmail}</strong>
+      </motion.p>
+
+      <AnimatePresence>
+        {otpError && (
+          <motion.div
+            className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5"
+            variants={errorVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+              <FiX className="text-red-500 size-6" />
+            </div>
+            <div>
+              {/* Ensure text aligns well based on your design, text-left might be good for longer messages */}
+              <p className="text-white">{otpError}</p>
+            </div>
+          </motion.div>
+        )}
+        {generalError && (
+          <motion.div
+            className="bg-primary-foreground rounded-xl p-4 flex items-center gap-3 my-5"
+            variants={errorVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <div className="flex bg-red-600/20 justify-center rounded-full items-center size-10 shrink-0">
+              <FiX className="text-red-500 size-6" />
+            </div>
+            <div>
+              <p className="text-white">{generalError}</p>
+            </div>
+          </motion.div>
+        )}
+        {successMessage && (
+          <motion.div
+            className="bg-primary-foreground p-4 rounded-xl flex items-center gap-3 my-5"
+            variants={errorVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <div className="flex bg-green-600/20 justify-center rounded-full items-center size-10 shrink-0">
+              <FiCheckCircle className="text-green-500 size-5" />
+            </div>
+            <div>
+              <p className="text-white">{successMessage}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <form className="space-y-6 mt-8" onSubmit={handleVerifySubmit} noValidate>
+        <motion.div variants={itemVariants}>
+          <label htmlFor="otp-0" className="sr-only">
+            OTP Code
+          </label>
+          {/*
+            NOTE: The onPaste handler is on the div.
+            If you want paste to work when a specific input is focused and distribute characters,
+            you'd move onPaste to each input and adjust handleOtpPaste accordingly.
+            The current handleOtpPaste is designed for pasting a full 6-digit code into the container.
+            I've added a more robust paste handling in handleOtpPaste to work if onPaste is moved to individual inputs.
+            For now, keeping your original structure:
+          */}
+          <div
+            className="flex justify-center gap-2 sm:gap-3"
+            // onPaste={handleOtpPaste} // Kept your original setup, onPaste on the div
+            // If you want per-input paste, remove from div and add to each input
+          >
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                id={`otp-${index}`}
+                ref={(el) => {
+                  otpInputsRef.current[index] = el;
+                }}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleOtpChange(e, index)}
+                onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                onPaste={handleOtpPaste} // Added onPaste to individual inputs for better experience
+                disabled={isSubmitting || !!successMessage}
+                className={`block bg-primarybox border text-white placeholder-gray-400 size-12 sm:size-14 w-full rounded-lg focus:outline-none transition-all duration-150 ease-linear text-center text-2xl font-semibold ${
+                  otpError // This className logic correctly applies error styling
+                    ? "border-red-600 ring-1 ring-red-600"
+                    : "border-primarybox focus:ring-2 focus:ring-primary"
+                }`}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <button
+            type="submit"
+            disabled={
+              isSubmitting || !!successMessage || otp.join("").length !== 6
+            }
+            className={`bg-primary hover:bg-primaryhover w-full text-mainheading font-semibold py-3 px-8 h-14 rounded-lg transition-all duration-75 ease-linear flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed`}
+          >
+            {isSubmitting ? "Verifying..." : "Verify Account"}
+          </button>
+        </motion.div>
+      </form>
+
+      <motion.div variants={itemVariants} className="mt-6 text-gray-400">
+        Didn't receive the email?{" "}
+        <button
+          onClick={handleResendOtp}
+          disabled={resendCooldown > 0 || isSubmitting}
+          className="font-medium text-primary hover:text-primaryhover cursor-pointer underline disabled:text-gray-500 disabled:no-underline disabled:cursor-not-allowed"
+        >
+          {resendCooldown > 0
+            ? `Resend in ${resendCooldown}s`
+            : "Click to resend"}
+        </button>
+      </motion.div>
+      <motion.div variants={itemVariants} className="mt-4">
+        <button
+          onClick={() => {
+            clearErrors(); // Clear errors when going back
+            setOtp(new Array(6).fill("")); // Reset OTP fields
+            setStep("register");
+          }}
+          className="text-subheadingWhite hover:text-white transition-all ease-linear duration-150 text-sm cursor-pointer"
+        >
+          ← Back to Registration
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+
+  return (
+    <div className="flex flex-col lg:flex-row min-h-screen lg:p-3">
+      <div className="hidden lg:flex lg:w-[55%] xl:w-[60%] bg-[url(/assets/images/leftPartImage.png)] bg-cover bg-no-repeat bg-center p-10 xl:p-16 rounded-3xl flex-col justify-between relative">
+        <div className="absolute top-16 xl:left-16 ">
+          <Link href={"/"}>
+            <Image
+              src="/assets/images/main_logo.svg"
+              width={200}
+              height={90}
+              alt="Remityn Logo"
+            />
+          </Link>
+        </div>
+        <div className="flex-grow flex flex-col justify-end items-start text-white pt-20">
+          <motion.h1
+            className="text-4xl xl:text-5xl font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Create Your
+            <br />
+            Account
+          </motion.h1>
+          <motion.p
+            className="text-base xl:text-lg text-gray-200 mb-10 xl:mb-12 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            Follow these simple steps to
+            <br />
+            get started with Remityn.
+          </motion.p>
+          <div className="flex xl:flex-row flex-col gap-4 w-full">
+            {[
+              { num: 1, title: "Sign up your account", active: true },
+              { num: 2, title: "Sign in your account" },
+              { num: 3, title: "Set up your KYC" },
+            ].map((s) => (
+              <motion.div
+                key={s.num}
+                className={`flex flex-col justify-between xl:w-50 xl:h-50 w-full h-26 p-3.5 xl:p-4 rounded-xl transition-all duration-300 ${
+                  s.active ? "bg-white shadow-lg" : "bg-white/12"
+                }`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }} // Original transition
+              >
+                <div // Original structure for step items
+                  className={`flex items-center justify-center size-7 xl:size-10 rounded-full mr-3 xl:mr-4 shrink-0 ${
+                    s.active
+                      ? "bg-background text-white"
+                      : "bg-white/12 text-white"
+                  } font-semibold text-lg`}
+                >
+                  {s.num}
+                </div>
+                <span
+                  className={`text-lg ${
+                    s.active ? "font-medium text-mainheading" : "text-gray-200"
+                  }`}
+                >
+                  {s.title}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 overflow-y-auto">
+        <div className="lg:hidden mb-10 self-center">
+          <Link href={"/"}>
+            <Image
+              src="/assets/images/mobile-logo.svg"
+              width={150}
+              height={100}
+              alt="Remityn Logo"
+            />
+          </Link>
+        </div>
+        <AnimatePresence mode="wait">
+          {step === "register" ? renderRegisterStep() : renderVerifyStep()}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
 }

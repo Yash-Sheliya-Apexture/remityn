@@ -1551,13 +1551,13 @@
 //         {/* Info for Passport */}
 //         {kycData.idType === "passport" && (
 //           <Alert className="mt-4 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
-            
+
 //             <CheckCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
 //             <AlertTitle className="text-blue-800 dark:text-blue-200 font-semibold">
 //               Passport Upload
 //             </AlertTitle>
 //             <AlertDescription className="text-blue-700 dark:text-blue-300">
-              
+
 //               Only the main photo page is required.
 //             </AlertDescription>
 //           </Alert>
@@ -1591,21 +1591,14 @@
 //   );
 // }
 
-
-
-
-
-
 // frontend/src/app/kyc/upload/page.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation"; // Keep if needed elsewhere, not used directly here
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // --- UI Components ---
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -1626,6 +1619,7 @@ import {
   Image as ImageIcon,
   File as FileIcon,
 } from "lucide-react";
+
 
 // --- App Specific Imports ---
 import { useKyc, formStepOrder } from "../../contexts/KycContext";
@@ -1776,15 +1770,15 @@ const FileInput: React.FC<FileInputProps> = ({
             type="button"
             onClick={handleRemoveFile}
             className={cn(
-              "inline-flex items-center gap-1 justify-center text-red-500",
-              "bg-red-700/20 hover:bg-red-500/20",
-              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-2 px-4 rounded-full text-sm font-medium transition-all duration-75 ease-linear", // Adjusted padding/size
+              "inline-flex items-center gap-2 justify-center text-red-500",
+              "bg-red-700/50",
+              "ml-0 mt-2 sm:mt-0 sm:ml-2 py-2 px-4 rounded-full text-sm font-medium transition-all duration-150 ease-linear", // Adjusted padding/size
               disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             )}
             disabled={disabled}
             aria-label={`Remove ${label}`}
           >
-            <FileX className="h-4 w-4" /> Remove
+            <FileX className="size-4" /> Remove
           </button>
         </div>
       ) : (
@@ -1794,9 +1788,7 @@ const FileInput: React.FC<FileInputProps> = ({
             htmlFor={id}
             className={cn(
               "flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-lg transition-colors cursor-pointer",
-              disabled
-                ? "opacity-50 cursor-not-allowed bg-muted/50"
-                : "",
+              disabled ? "opacity-50 cursor-not-allowed bg-muted/50" : "",
               error
                 ? "bg-red-600/25 hover:bg-red-800/30 border-red-500 hover:border-red-500/90"
                 : "bg-primarybox hover:bg-primaryboxhover border-primary hover:border-primaryhover"
@@ -1806,18 +1798,14 @@ const FileInput: React.FC<FileInputProps> = ({
               <UploadCloud
                 className={cn(
                   "w-6 h-6 mb-3",
-                  error
-                    ? "text-red-400"
-                    : "text-white/90"
+                  error ? "text-red-400" : "text-white/90"
                 )}
                 aria-hidden="true"
               />
               <p
                 className={cn(
                   "mb-1 text-sm",
-                  error
-                    ? "text-red-500"
-                    : "text-mainheadingWhite"
+                  error ? "text-red-500" : "text-mainheadingWhite"
                 )}
               >
                 <span className="font-semibold">Click to upload</span> or drag &
@@ -1826,9 +1814,7 @@ const FileInput: React.FC<FileInputProps> = ({
               <p
                 className={cn(
                   "text-xs",
-                  error
-                    ? "text-red-400"
-                    : "text-subheadingWhite"
+                  error ? "text-red-400" : "text-subheadingWhite"
                 )}
               >
                 {ACCEPTED_FILE_TYPES_STRING} (MAX. {maxSizeMB}MB)
@@ -1847,12 +1833,13 @@ const FileInput: React.FC<FileInputProps> = ({
         </div>
       )}
       {/* Error Message Area */}
-      {error && !file && ( // Only show error if there's an error *and* no file is currently selected
-        <p className="text-sm text-red-500 flex items-center gap-1 pt-1">
-          <AlertTriangle className="h-5 w-5 flex-shrink-0" />
-          {error}
-        </p>
-      )}
+      {error &&
+        !file && ( // Only show error if there's an error *and* no file is currently selected
+          <p className="text-sm text-red-500 flex items-center gap-1 pt-1">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0" />
+            {error}
+          </p>
+        )}
     </div>
   );
 };
@@ -1942,7 +1929,9 @@ export default function KycUploadPage() {
       if (!fileState.idFrontFile) missing.push(`Front of ${idTypeDisplayName}`);
       if (isBackRequired && !fileState.idBackFile)
         missing.push(`Back of ${idTypeDisplayName}`);
-      setFormError(`Please upload required document(s): ${missing.join(", ")}.`);
+      setFormError(
+        `Please upload required document(s): ${missing.join(", ")}.`
+      );
       return;
     }
     setIsProcessing(true); // Set processing state
@@ -1953,11 +1942,13 @@ export default function KycUploadPage() {
   }, [isFormValid, nextStep, fileState, isBackRequired, kycData.idType]); // Added idType dependency for idTypeDisplayName
 
   // Display name for the selected ID type
-  const idTypeDisplayName = useMemo(() =>
-    kycData.idType === "passport"
-      ? "Passport"
-      : "Resident Permit / National ID"
-  , [kycData.idType]);
+  const idTypeDisplayName = useMemo(
+    () =>
+      kycData.idType === "passport"
+        ? "Passport"
+        : "Resident Permit / National ID",
+    [kycData.idType]
+  );
 
   // --- Render Logic ---
   if (isPageLoading || (kycLoadingStatus && !isPageLoading)) {
@@ -1967,7 +1958,7 @@ export default function KycUploadPage() {
       </div>
     );
   }
-  
+
   if (
     !["not_started", "rejected", "skipped", "loading"].includes(
       backendStatus as string
@@ -1996,6 +1987,7 @@ export default function KycUploadPage() {
           <span className="text-red-600">*</span> are required.
         </CardDescription>
       </CardHeader>
+
       <CardContent className="space-y-6">
         {" "}
         {/* Increased spacing */}
@@ -2014,7 +2006,6 @@ export default function KycUploadPage() {
             </div>
           </Alert>
         )}
-
         {/* Front ID Upload */}
         <FileInput
           id="idFrontFile"
@@ -2025,7 +2016,6 @@ export default function KycUploadPage() {
           disabled={isProcessing}
         />
         {/* Back ID Upload (Conditional) */}
-
         {isBackRequired && (
           <FileInput
             id="idBackFile"
@@ -2036,7 +2026,6 @@ export default function KycUploadPage() {
             disabled={isProcessing}
           />
         )}
-        
         {/* Info for Passport */}
         {kycData.idType === "passport" && (
           <Alert className="bg-blue-900/25 border-blue-500 rounded-lg p-4 gap-3">
@@ -2055,6 +2044,8 @@ export default function KycUploadPage() {
             </div>
           </Alert>
         )}
+        
+
         {/* Navigation Buttons */}
         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-8 gap-4">
           {" "}
@@ -2065,7 +2056,7 @@ export default function KycUploadPage() {
             onClick={prevStep}
             disabled={isProcessing} // Disable back button while processing next step
           >
-            <ArrowLeft className="mr-2 size-4.5" /> Back
+            <ArrowLeft className="mr-2 size-5" /> Back
           </button>
           <button
             type="button"
@@ -2077,6 +2068,7 @@ export default function KycUploadPage() {
             <ArrowRight className="ml-2 size-5" aria-hidden="true" />{" "}
           </button>
         </div>
+        
       </CardContent>
     </Card>
   );

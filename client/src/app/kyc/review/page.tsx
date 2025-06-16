@@ -1139,6 +1139,8 @@
 //   );
 // }
 
+
+
 // frontend/src/app/kyc/review/page.tsx
 "use client";
 
@@ -1155,7 +1157,6 @@ import type {
 import type { KycSubmissionPayload } from "@/app/services/kyc";
 
 // --- UI Components ---
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -1206,7 +1207,7 @@ interface DetailItemProps {
   isMissing?: boolean;
   className?: string;
 }
-const   DetailItem: React.FC<DetailItemProps> = ({
+const DetailItem: React.FC<DetailItemProps> = ({
   label,
   value,
   icon: Icon,
@@ -1237,12 +1238,7 @@ const   DetailItem: React.FC<DetailItemProps> = ({
         <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
           {Icon && (
             <Icon
-              className={cn(
-                "size-5",
-                isEmptyOrMissing
-                  ? "text-white/50"
-                  : ""
-              )}
+              className={cn("size-5", isEmptyOrMissing ? "text-white/50" : "")}
             />
           )}
         </div>
@@ -1348,10 +1344,7 @@ const FileDisplay: React.FC<{ file: File | null }> = ({ file }) => {
         )}
       </div>
       <div className="flex-grow overflow-hidden">
-        <span
-          className="font-medium truncate block"
-          title={file.name}
-        >
+        <span className="font-medium truncate block" title={file.name}>
           {file.name}
         </span>
         <span className="text-xs whitespace-nowrap block">
@@ -1482,6 +1475,7 @@ export default function KycReviewPage() {
       </div>
     );
   }
+
   // Waiting for Redirect
   if (
     !["not_started", "rejected", "skipped", "loading"].includes(
@@ -1535,6 +1529,7 @@ export default function KycReviewPage() {
             </div>
           </Alert>
         )}
+
         {/* Show missing fields warning only if no other error is present */}
         {missingFields.length > 0 && !displayError && (
           <Alert className="bg-yellow-900/25 border-yellow-500 rounded-lg p-4 gap-3 mb-6">
@@ -1699,7 +1694,6 @@ export default function KycReviewPage() {
           </AccordionItem>
         </Accordion>
 
-
         {/* Navigation / Submission Buttons */}
         <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
           <button
@@ -1715,13 +1709,13 @@ export default function KycReviewPage() {
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting || missingFields.length > 0}
-            className=" inline-flex items-center justify-center bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
+            className=" inline-flex items-center justify-center gap-2 bg-primary text-neutral-900 hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none"
           >
             {isSubmitting ? (
               // ----- Loading State -----
               <>
                 <svg
-                  className="h-5 w-5 text-neutral-900 animate-spin mr-2"
+                  className="size-5 text-mainheading animate-spin"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"

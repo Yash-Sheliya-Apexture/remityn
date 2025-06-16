@@ -2938,7 +2938,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../../contexts/AuthContext"; // Adjust path if needed
 import apiConfig from "../../../config/apiConfig"; // Adjust path if needed
@@ -3256,7 +3256,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
           : searchQuery &&
             !isFetching &&
             !(error && currencies.length === 0) && (
-              <p className=" lg:py-10 py-5 rounded-lg bg-primarybox capitalize text-white/90 text-center">
+              <p className="lg:py-10 py-5 rounded-lg bg-primarybox sm:text-lg text-base capitalize text-white/90 flex justify-center items-center text-center min-h-[150px]">
                 No results found for "{searchQuery}".
               </p>
             )}

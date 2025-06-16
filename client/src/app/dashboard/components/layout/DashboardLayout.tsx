@@ -454,6 +454,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {title}
           </h1>
 
+
+          
+
           {/* Step Indicator */}
           {showSteps && (
             // Added overflow-x-auto to allow horizontal scrolling if steps don't fit

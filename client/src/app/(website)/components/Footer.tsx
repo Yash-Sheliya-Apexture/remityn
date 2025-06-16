@@ -2197,15 +2197,12 @@
 
 // export default Footer;
 
-
 // app/components/Footer.tsx
 "use client";
 import Link from "next/link";
 import { IconType } from "react-icons";
 import { MdEmail } from "react-icons/md";
-import { FaTwitter } from "react-icons/fa";
 import Image from "next/image";
-import { FaFacebook, FaLinkedin } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "../../contexts/WebsiteAppContext"; // Adjust path if needed
 
@@ -2221,11 +2218,6 @@ interface ContactInfoItem {
   ariaLabel?: string;
 }
 
-interface SocialLinkItem {
-  icon: IconType;
-  href: string;
-  label: string; // for aria-label
-}
 
 const navLinks: NavLinkItem[] = [
   { href: "/", label: "Home" },
@@ -2240,18 +2232,8 @@ const contactInfo: ContactInfoItem[] = [
   {
     icon: MdEmail,
     text: "help.remityn@gmail.com", // Assuming this is a placeholder, update if needed
-    href: "mailto:https://www.remityn.com/",
+    href: "mailto:help.remityn@gmail.com",
     ariaLabel: "Email us at hello@skillbirdge.com",
-  },
-];
-
-const socialLinks: SocialLinkItem[] = [
-  { icon: FaFacebook, href: "https://www.facebook.com/", label: "Facebook" },
-  { icon: FaTwitter, href: "https://x.com/home", label: "Twitter" },
-  {
-    icon: FaLinkedin,
-    href: "https://www.linkedin.com/company/apextureprivatelimited/posts/?feedView=all", // Assuming this is a placeholder, update if needed
-    label: "LinkedIn",
   },
 ];
 
@@ -2360,7 +2342,7 @@ const Footer: React.FC = () => {
                     item.href &&
                     (item.href.startsWith("mailto:") ||
                       item.href.startsWith("tel:"))
-                      ? "_blank"
+                      ? "_self"
                       : undefined
                   }
                   rel={
@@ -2370,11 +2352,11 @@ const Footer: React.FC = () => {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className={`flex items-center ${
+                  className={`flex items-center gap-2 ${
                     item.href ? "hover:text-[#A5CC3D]" : "cursor-default"
-                  } transition-colors duration-200 group`}
+                  } transition-all duration-150 ease-linear group`}
                 >
-                  <item.icon className="sm:size-6 size-5 text-primary mr-1.5 transition-colors duration-200 shrink-0" />{" "}
+                  <item.icon className="sm:size-6 size-5 text-primary transition-all duration-150 shrink-0" />{" "}
                   {/* Added shrink-0 */}
                   <span className="text-subheadingWhite max-w-48 sm:max-w-full">
                     {item.text}

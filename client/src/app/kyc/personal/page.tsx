@@ -4828,10 +4828,11 @@ import {
   Calendar as CalendarIcon,
   Loader2,
   User,
-  Phone,
   AlertTriangle,
   ArrowRight,
   ArrowLeft,
+  Save,
+  SkipForward,
 } from "lucide-react";
 
 // --- App Specific Imports ---
@@ -5135,7 +5136,7 @@ export default function KycPersonalPage() {
   if (isPageLoading || (!kycInitialized && authLoading) || kycLoadingStatus) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="size-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -5181,7 +5182,6 @@ export default function KycPersonalPage() {
   }
 
   return (
-
     <Card className="w-full lg:max-w-2xl max-w-full shadow-none border animate-fadeIn sm:p-8 p-4 bg-transparent">
       <CardHeader className="border-b pb-6 mb-6 space-y-2">
         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-normal flex items-start gap-2 text-mainheadingWhite">
@@ -5191,14 +5191,14 @@ export default function KycPersonalPage() {
         </CardTitle>
         <CardDescription className="text-subheadingWhite">
           Enter your legal name, date of birth, and mobile number. Fields marked
-          with <span className="text-red-500">*</span> are required.
+          with <span className="text-red-600">*</span> are required.
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         {formActionError && (
           <Alert className="bg-red-900/25 border-red-500 rounded-lg p-4 gap-3 mb-6">
-            <div className="flex-shrink-0 sm:size-12 size-10  rounded-full flex items-center justify-center bg-red-600/20">
+            <div className="flex-shrink-0 sm:size-12 size-10 rounded-full flex items-center justify-center bg-red-600/20">
               <AlertTriangle className="text-red-500 size-5 sm:size-6 flex-shrink-0" />
             </div>
             <div>
@@ -5224,7 +5224,11 @@ export default function KycPersonalPage() {
                       Legal First Name <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="e.g., Jane" {...field} />
+                      <Input
+                        className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
+                        placeholder="e.g., Jane"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -5240,7 +5244,11 @@ export default function KycPersonalPage() {
                       Legal Last Name <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0" placeholder="e.g., Doe" {...field} />
+                      <Input
+                        className="block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
+                        placeholder="e.g., Doe"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -5278,11 +5286,11 @@ export default function KycPersonalPage() {
                         )}
                         type="button" // Ensure it's not a submit button
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                        <CalendarIcon className="mr-2 h-4 w-4 shrink-0 text-primary" />
                         {field.value && isDateValid(field.value) ? (
                           format(field.value, "PPP")
                         ) : (
-                          <span>Pick a date</span>
+                          <span>Pick a Date</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -5401,7 +5409,7 @@ export default function KycPersonalPage() {
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
                           </Button>
                         </PopoverTrigger>
-                        
+
                         <PopoverContent
                           align="start"
                           className="sm:w-[450px] max-h-[--radix-popover-content-available-height] p-0"
@@ -5436,11 +5444,14 @@ export default function KycPersonalPage() {
                               return isInLabel || isInCode ? 1 : 0;
                             }}
                           >
-                            <CommandInput className="placeholder:text-white/90 h-12 text-white/90" placeholder="Search country or code..." />
+                            <CommandInput
+                              className="placeholder:text-white/90 h-12 text-white/90"
+                              placeholder="Search country or code..."
+                            />
 
                             <CommandList>
                               <CommandEmpty>No country found.</CommandEmpty>
-                              
+
                               <CommandGroup className="max-h-[250px] overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-lightborder sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
                                 {countryCodeOptions.map((option) => (
                                   <CommandItem
@@ -5501,15 +5512,15 @@ export default function KycPersonalPage() {
               </FormDescription>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between items-center pt-6 border-t mt-6 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center pt-7 border-t mt-6 gap-3">
               <button
                 type="button"
-                className="inline-flex items-center justify-center text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center gap-2 text-primary bg-primarybox hover:bg-secondarybox font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-150 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={prevStep}
                 disabled={isSubmittingForm || isSkipping}
                 aria-label="Go back to previous step"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                <ArrowLeft className="size-5 text-primary" /> Back
               </button>
 
               {(backendStatus === "not_started" ||
@@ -5519,26 +5530,90 @@ export default function KycPersonalPage() {
                   type="button"
                   onClick={handleSkip}
                   disabled={isSubmittingForm || isSkipping}
-                  className="bg-secondarybox hover:bg-secondaryboxhover text-primary px-6 py-3 h-12.5 w-full rounded-full transition-all duration-75 ease-linear focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-primarybox hover:bg-secondarybox flex items-center justify-center gap-2 font-medium text-primary px-6 py-3 h-12.5 w-full rounded-full transition-all duration-150 ease-linear focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Skip KYC process for now"
                 >
                   {isSkipping ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
+                    <svg
+                      className="h-5 w-5 text-primary animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 4.93L7.76 7.76"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 16.24L19.07 19.07"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M4.93 19.07L7.76 16.24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16.24 7.76L19.07 4.93"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <SkipForward size={20} />
+                  )}
                   Skip for Now
                 </button>
               )}
 
               <button
                 type="submit"
-                className="inline-flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center gap-2 bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-150 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={
                   isSubmittingForm || isSkipping || !form.formState.isValid
                 }
                 aria-label="Continue to next step"
               >
                 <span>Continue</span>
-                <ArrowRight className="ml-2 size-5" aria-hidden="true" />
+                <ArrowRight className="size-5 text-mainheading" />
               </button>
             </div>
           </form>
