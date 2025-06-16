@@ -7428,7 +7428,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import apiConfig from "../../config/apiConfig";
 import Image from "next/image";
-import { Loader2, Info, Edit, Trash2, Save } from "lucide-react";
+import { Loader2  , Info, Edit, Trash2, Save } from "lucide-react";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel, MdCurrencyRupee } from "react-icons/md";
 import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
@@ -7476,6 +7476,7 @@ interface ApiErrorResponse {
   message: string;
 }
 
+
 // Renders the skeleton for only the currency card grid
 const LoadingSkeleton = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -7509,6 +7510,7 @@ const LoadingSkeleton = () => (
     ))}
   </div>
 );
+
 
 const AdminCurrenciesPage: React.FC = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);

@@ -77,38 +77,44 @@
 
 // frontend/src/app/kyc/components/KycHeader.tsx
 // (No changes needed)
+
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { HelpCircle } from "lucide-react"; // Import an icon
 
 const KycHeader: React.FC = () => {
-    return (
-        <header className="sticky top-0 z-40 w-full border-b bg-background">
-            <div className="container mx-auto sm:h-20 h-16 flex items-center justify-between px-4">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80" aria-label="Go to homepage">
-                    <Image
-                        src="/assets/images/main_logo.svg" // Ensure this path is correct
-                        alt="Logo"
-                        width={150}
-                        height={30}
-                        className="h-auto"
-                        priority // Prioritize logo loading
-                    />
-                </Link>
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-background">
+      <div className="container mx-auto sm:h-20 h-16 flex items-center justify-between px-4">
+        {/* Logo */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          aria-label="Go to homepage"
+        >
+          <Image
+            src="/assets/images/main_logo.svg" // Ensure this path is correct
+            alt="Logo"
+            width={150}
+            height={30}
+            className="h-auto"
+            priority // Prioritize logo loading
+          />
+        </Link>
 
-                {/* Optional: Help Link */}
-                <Link
-                    href="/help#kyc" // Link to specific help section if available
-                    className="flex items-center gap-1.5 text-sm font-medium text-mainheadingWhite hover:text-primary transition-colors"
-                >
-                    <HelpCircle className="h-4 w-4" />
-                    Need Help?
-                </Link>
-            </div>
-        </header>
-    );
+        {/* Optional: Help Link */}
+        <Link
+          href="/faqs" // Link to specific help section if available
+          className="flex items-center gap-1.5 text-sm font-medium text-mainheadingWhite hover:text-primary transition-all duration-150 ease-linear"
+        >
+          <HelpCircle className="size-4" />
+          Need Help?
+        </Link>
+      </div>
+    </header>
+  );
 };
 
 export default KycHeader;

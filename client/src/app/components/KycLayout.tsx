@@ -176,6 +176,7 @@
 // export default KycLayoutComponent;
 
 
+
 // frontend/src/app/kyc/components/KycLayout.tsx
 "use client";
 
