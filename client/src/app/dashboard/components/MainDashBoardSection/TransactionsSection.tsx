@@ -1969,7 +1969,7 @@ const TransactionsSection: React.FC = () => {
           <div className="flex items-center justify-center cursor-pointer text-primary hover:text-neutral-900 bg-primarybox hover:bg-primaryhover px-4 py-1.5 rounded-full transition-all duration-75 ease-linear">
             <Link
               href="/dashboard/transactions"
-              className=" text-xs font-semibold text-nowrap"
+              className=" text-xs font-medium text-nowrap"
             >
               See all
             </Link>
@@ -1981,7 +1981,7 @@ const TransactionsSection: React.FC = () => {
           {/* Loading Skeletons */}
           {loading && (
             <div className="space-y-2">
-              {Array(3) // Show 3 skeleton loaders
+              {Array(4) // Show 4 skeleton loaders
                 .fill(0)
                 .map((_, index) => (
                   <div key={index} className="block p-2 sm:p-4 rounded-2xl">
@@ -2008,12 +2008,12 @@ const TransactionsSection: React.FC = () => {
           {/* No Transactions Message */}
           {!loading && !error && latestTransactions.length === 0 && (
             <>
-              <div className="flex flex-col items-center justify-center gap-4 py-10">
-                <div className="size-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                  <MdOutlineAccessTime className="text-mainheading size-6" />
+              <div className="flex items-center gap-3 py-10">
+                <div className="size-12 bg-primarybox rounded-full flex items-center justify-center flex-shrink-0">
+                  <MdOutlineAccessTime className="text-primary size-6" />
                 </div>
 
-                <p className="text-center text-subheadingWhite capitalize">
+                <p className="text-center sm:text-base text-subheadingWhite capitalize">
                   No recent transactions found Here.
                 </p>
               </div>

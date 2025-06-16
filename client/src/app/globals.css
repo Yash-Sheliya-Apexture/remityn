@@ -21,7 +21,7 @@ body {
 
   /* Background Color */
   --color-background: #22282a;
-  --color-primary: #66e8fa;
+  --color-primary: #  ;
   --color-primaryhover: #9cf0fc;
   /* aacho */
   --color-primarybox: #394247;
@@ -170,11 +170,11 @@ html {
 
   --chart-2: 188, 84%, 58%;
   /* AED */
-  
+
   --chart-3: 188, 69%, 65%;
   /* EUR */
 
-  --chart-4:  188, 61%, 70%;
+  --chart-4: 188, 61%, 70%;
   /* USD */
 
   --chart-5: 188, 50%, 80%;
@@ -544,6 +544,7 @@ input:-webkit-autofill:active {
     from {
       transform: translateX(0%);
     }
+
     to {
       transform: translateX(-100%);
     }
@@ -553,6 +554,7 @@ input:-webkit-autofill:active {
     from {
       transform: translateX(-100%);
     }
+
     to {
       transform: translateX(0%);
     }
@@ -561,7 +563,7 @@ input:-webkit-autofill:active {
   .animate-marquee-left {
     animation: marquee-left 40s linear infinite;
   }
-  
+
   .animate-marquee-right {
     animation: marquee-right 40s linear infinite;
   }

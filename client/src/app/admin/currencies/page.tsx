@@ -6626,6 +6626,799 @@
 
 // export default AdminCurrenciesPage;
 
+// // frontend/src/app/admin/currencies/page.tsx
+// "use client";
+// import React, { useState, useEffect, useMemo, useCallback } from "react";
+// import { useAuth } from "../../contexts/AuthContext";
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+// import apiConfig from "../../config/apiConfig";
+// import Image from "next/image";
+// import { Loader2, Info, Edit, Trash2, Save } from "lucide-react";
+// import { FiSearch } from "react-icons/fi";
+// import { MdCancel, MdCurrencyRupee } from "react-icons/md";
+// import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
+
+// // --- Import Custom Toast and react-toastify components ---
+// import {
+//   ToastContainer,
+//   toast as reactToastifyToast, // Alias to avoid conflict
+//   Slide,
+//   ToastContainerProps,
+//   TypeOptions,
+//   ToastOptions, // Make sure ToastOptions is imported
+// } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css"; // Import base react-toastify styles
+// // **IMPORTANT**: Adjust this path if your CustomToast component is elsewhere
+// import CustomToast, { CustomToastProps } from "../../components/CustomToast";
+// // Example: if CustomToast.tsx is in frontend/src/app/components/CustomToast.tsx
+// // import CustomToast, { CustomToastProps } from "../../components/CustomToast";
+
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { FaCoins } from "react-icons/fa";
+
+// // Import the modal components (ensure paths are correct)
+// import AddCurrencyModal from "../components/AddCurrencyModal";
+// import DeleteCurrencyModal from "../components/DeleteCurrencyModal";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   _id: string;
+//   code: string;
+//   currencyName: string;
+//   flagImage?: string;
+//   rateAdjustmentPercentage?: number;
+// }
+
+// interface NewCurrencyData {
+//   code: string;
+//   currencyName: string;
+//   flagImage: string;
+//   rateAdjustmentPercentage: string;
+// }
+
+// interface ApiErrorResponse {
+//   message: string;
+// }
+
+// const LoadingSkeleton = () => (
+//   <div className="container mx-auto px-4 py-5">
+//     <div className="space-y-6">
+//       <div className="pb-6 mb-6">
+//         <div className="flex gap-3 items-center">
+//           <Skeleton className="size-12 rounded-full mb-3" />
+//           <Skeleton className="h-9 w-3/5 sm:w-1/5 rounded mb-3" />
+//         </div>
+//         <div className="space-y-1.5">
+//           <Skeleton className="h-4 w-full rounded" />
+//           <Skeleton className="h-4 w-full sm:w-1/2 rounded" />
+//           <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
+//           <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
+//           <Skeleton className="h-4 w-40 sm:w-1/2 rounded sm:hidden block" />
+//         </div>
+//       </div>
+
+//       <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+//         <Skeleton className="size-12.5 sm:w-50 rounded-full" />
+//         <Skeleton className="h-12.5 flex-1 sm:flex-none sm:w-70 rounded-full" />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+//         {Array.from({ length: 8 }).map((_, index) => (
+//           <div
+//             key={index}
+//             className="rounded-xl overflow-hidden border flex flex-col"
+//           >
+//             <div className="lg:p-5 p-4 flex-grow">
+//               <div className="flex items-center gap-4 mb-4">
+//                 <Skeleton className="size-14 rounded-full flex-shrink-0" />
+//                 <div className="flex-1 space-y-1.5">
+//                   <Skeleton className="h-7 w-1/3 rounded" />
+//                   <Skeleton className="h-5 w-2/3 rounded" />
+//                 </div>
+//               </div>
+//               <div className="p-3 space-y-2 rounded-lg border">
+//                 <Skeleton className="h-6 w-1/4 rounded mb-1" />
+//                 <Skeleton className="h-7 w-1/2 rounded" />
+//                 <Skeleton className="h-6 w-full rounded mt-1" />
+//               </div>
+//             </div>
+//             <div className="border-t p-4">
+//               <div className="flex w-full gap-2">
+//                 <Skeleton className="h-12.5 flex-1 rounded-full" />
+//                 <Skeleton className="h-12.5 flex-1 rounded-full" />
+//                 <Skeleton className="h-12.5 flex-1 rounded-full" />
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// const AdminCurrenciesPage: React.FC = () => {
+//   const [currencies, setCurrencies] = useState<Currency[]>([]);
+//   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+//   const [newCurrencyData, setNewCurrencyData] = useState<NewCurrencyData>({
+//     code: "",
+//     currencyName: "",
+//     flagImage: "",
+//     rateAdjustmentPercentage: "",
+//   });
+//   const [editingCurrencyId, setEditingCurrencyId] = useState<string | null>(
+//     null
+//   );
+//   const [editingFields, setEditingFields] = useState<{
+//     code: string;
+//     rateAdjustmentPercentage: string;
+//   }>({ code: "", rateAdjustmentPercentage: "" });
+//   const [isLoading, setIsLoading] = useState<boolean>(true);
+//   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+//   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+//     useState<boolean>(false);
+//   const [currencyToDeleteId, setCurrencyToDeleteId] = useState<string | null>(
+//     null
+//   );
+//   const [searchTerm, setSearchTerm] = useState<string>("");
+//   const { token } = useAuth();
+//   const router = useRouter();
+//   const [createFlagImageError, setCreateFlagImageError] =
+//     useState<boolean>(false);
+//   const [isMobile, setIsMobile] = useState(false); // For ToastContainer
+
+//   // --- Mobile Detection Effect (for ToastContainer & Modals) ---
+//   useEffect(() => {
+//     const handleResize = () => setIsMobile(window.innerWidth < 640);
+//     if (typeof window !== "undefined") {
+//       handleResize();
+//       window.addEventListener("resize", handleResize);
+//       return () => window.removeEventListener("resize", handleResize);
+//     }
+//   }, []);
+
+//   // --- Custom Toast Invocation ---
+//   const showToast = useCallback(
+//     (
+//       message: string,
+//       type?: CustomToastProps["type"],
+//       toastSpecificOptions?: Partial<ToastOptions> // This allows passing options like autoClose, onClose
+//     ) => {
+//       const effectiveType = type || "default";
+//       let progressClassName: string;
+//       switch (effectiveType) {
+//         case "success":
+//           progressClassName = "toast-progress-success";
+//           break;
+//         case "error":
+//           progressClassName = "toast-progress-error";
+//           break;
+//         case "info":
+//           progressClassName = "toast-progress-info";
+//           break;
+//         case "warning":
+//           progressClassName = "toast-progress-warning";
+//           break;
+//         default:
+//           progressClassName = "toast-progress-default";
+//           break;
+//       }
+//       // Pass the options to react-toastify
+//       reactToastifyToast(
+//         <CustomToast message={message} type={effectiveType} />,
+//         {
+//           progressClassName,
+//           type: effectiveType as TypeOptions,
+//           icon: false,
+//           ...toastSpecificOptions, // Spread the specific options here
+//         }
+//       );
+//     },
+//     []
+//   );
+
+//   // --- ToastContainer Props and Style ---
+//   const customToastContainerProps: ToastContainerProps = {
+//     position: "top-right",
+//     autoClose: 3000, // Default autoClose for all toasts from this container
+//     hideProgressBar: false,
+//     newestOnTop: true, // Changed to true for typical toast behavior
+//     closeOnClick: false, // Important: To allow onClose callbacks to execute before toast disappears on click
+//     closeButton: false, // CustomToast can handle its own or rely on autoClose/click
+//     rtl: false,
+//     pauseOnFocusLoss: true,
+//     draggable: true,
+//     pauseOnHover: true,
+//     transition: Slide,
+//     toastClassName: () =>
+//       "p-0 shadow-none rounded-md bg-transparent w-full relative mb-3",
+//   };
+
+//   const getToastContainerStyle = (): React.CSSProperties & {
+//     [key: `--${string}`]: string | number;
+//   } => {
+//     const baseStyle = { zIndex: 99999 }; // Ensure toasts are on top
+//     if (isMobile)
+//       return {
+//         ...baseStyle,
+//         top: "1rem",
+//         left: "1rem",
+//         right: "1rem",
+//         width: "auto",
+//       };
+//     return { ...baseStyle, top: "0.75rem", right: "0.75rem", width: "320px" };
+//   };
+
+//   const filteredCurrencies = useMemo(() => {
+//     if (!searchTerm) return currencies;
+//     const lowerSearchTerm = searchTerm.toLowerCase();
+//     return currencies.filter(
+//       (currency) =>
+//         currency.code.toLowerCase().includes(lowerSearchTerm) ||
+//         currency.currencyName.toLowerCase().includes(lowerSearchTerm)
+//     );
+//   }, [currencies, searchTerm]);
+
+//   useEffect(() => {
+//     const originalStyle = window.getComputedStyle(document.body).overflow;
+//     if (isCreateModalOpen || isDeleteConfirmationOpen)
+//       document.body.style.overflow = "hidden";
+//     else document.body.style.overflow = originalStyle;
+//     return () => {
+//       document.body.style.overflow = originalStyle;
+//     };
+//   }, [isCreateModalOpen, isDeleteConfirmationOpen]);
+
+//   const fetchCurrenciesList = useCallback(async () => {
+//     if (!token) {
+//       router.push("/auth/login");
+//       return;
+//     }
+//     setIsLoading(true);
+//     try {
+//       const response = await axios.get<Currency[]>("/admin/currencies", {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setCurrencies(response.data);
+//     } catch (error: unknown) {
+//       console.error("Error fetching currencies:", error);
+//       let errorMsg = "An unexpected error occurred while fetching currencies.";
+//       if (axios.isAxiosError<ApiErrorResponse>(error)) {
+//         if (error.response?.status === 403 || error.response?.status === 401) {
+//           showToast(
+//             "Session expired or unauthorized. Redirecting to login...",
+//             "error",
+//             { onClose: () => router.push("/auth/login") }
+//           );
+//           return;
+//         }
+//         errorMsg = error.response?.data?.message || "Failed to load currencies";
+//       } else if (error instanceof Error) {
+//         errorMsg = error.message;
+//       }
+//       showToast(errorMsg, "error");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   }, [token, router, showToast]);
+
+//   useEffect(() => {
+//     if (token) fetchCurrenciesList();
+//   }, [fetchCurrenciesList, token]);
+
+//   const openCreateModal = () => {
+//     setNewCurrencyData({
+//       code: "",
+//       currencyName: "",
+//       flagImage: "",
+//       rateAdjustmentPercentage: "",
+//     });
+//     setCreateFlagImageError(false);
+//     setIsCreateModalOpen(true);
+//   };
+//   const closeCreateModal = () => {
+//     setIsCreateModalOpen(false);
+//     setCreateFlagImageError(false);
+//   };
+
+//   const handleCreateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setNewCurrencyData((prev) => ({
+//       ...prev,
+//       [name]: name === "code" ? value.toUpperCase() : value,
+//     }));
+//     if (name === "flagImage") setCreateFlagImageError(false);
+//   };
+
+//   const handleCreateCurrency = async () => {
+//     if (!newCurrencyData.code || !newCurrencyData.currencyName) {
+//       showToast("Currency code and name are required.", "error");
+//       return;
+//     }
+//     if (newCurrencyData.code.length !== 3) {
+//       showToast("Currency code must be 3 letters.", "error");
+//       return;
+//     }
+//     if (
+//       newCurrencyData.flagImage &&
+//       !newCurrencyData.flagImage.startsWith("/") &&
+//       !newCurrencyData.flagImage.startsWith("http")
+//     ) {
+//       showToast(
+//         "Flag Image Path must be a relative path starting with '/' or a full URL.",
+//         "error"
+//       );
+//       return;
+//     }
+//     let adjustmentValue: number = 0;
+//     if (newCurrencyData.rateAdjustmentPercentage.trim() !== "") {
+//       adjustmentValue = parseFloat(newCurrencyData.rateAdjustmentPercentage);
+//       if (isNaN(adjustmentValue)) {
+//         showToast(
+//           "Rate Adjustment must be a valid number (e.g., 0.5 or -0.1).",
+//           "error"
+//         );
+//         return;
+//       }
+//     }
+//     setIsSubmitting(true);
+//     try {
+//       const payload = {
+//         ...newCurrencyData,
+//         flagImage: newCurrencyData.flagImage.trim() || null,
+//         rateAdjustmentPercentage: adjustmentValue,
+//       };
+//       await axios.post("/admin/currencies", payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       closeCreateModal();
+//       await fetchCurrenciesList(); // Refetch after successful creation
+//       showToast("Currency added successfully!", "success");
+//     } catch (error: unknown) {
+//       let errorMsg =
+//         "An unexpected error occurred while creating the currency.";
+//       if (axios.isAxiosError<ApiErrorResponse>(error))
+//         errorMsg = error.response?.data?.message || "Failed to create currency";
+//       else if (error instanceof Error) errorMsg = error.message;
+//       showToast(errorMsg, "error");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const startEditing = (currency: Currency) => {
+//     setEditingCurrencyId(currency._id);
+//     setEditingFields({
+//       code: currency.code,
+//       rateAdjustmentPercentage:
+//         currency.rateAdjustmentPercentage?.toString() ?? "0",
+//     });
+//   };
+//   const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setEditingFields((prev) => ({
+//       ...prev,
+//       [name]: name === "code" ? value.toUpperCase() : value,
+//     }));
+//   };
+
+//   const handleUpdateCurrency = async () => {
+//     if (!editingCurrencyId) return;
+//     if (!editingFields.code || editingFields.code.length !== 3) {
+//       showToast("Currency code must be 3 letters.", "error");
+//       return;
+//     }
+//     let adjustmentValue: number = 0;
+//     if (editingFields.rateAdjustmentPercentage.trim() !== "") {
+//       adjustmentValue = parseFloat(editingFields.rateAdjustmentPercentage);
+//       if (isNaN(adjustmentValue)) {
+//         showToast("Rate Adjustment must be a valid number.", "error");
+//         return;
+//       }
+//     }
+//     setIsSubmitting(true);
+//     try {
+//       const payload = {
+//         code: editingFields.code,
+//         rateAdjustmentPercentage: adjustmentValue,
+//       };
+//       await axios.put(`/admin/currencies/${editingCurrencyId}`, payload, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setEditingCurrencyId(null);
+//       setEditingFields({ code: "", rateAdjustmentPercentage: "" });
+//       await fetchCurrenciesList(); // Refetch after successful update
+//       showToast("Currency updated successfully!", "success");
+//     } catch (error: unknown) {
+//       let errorMsg =
+//         "An unexpected error occurred while updating the currency.";
+//       if (axios.isAxiosError<ApiErrorResponse>(error))
+//         errorMsg = error.response?.data?.message || "Failed to update currency";
+//       else if (error instanceof Error) errorMsg = error.message;
+//       showToast(errorMsg, "error");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const cancelEditing = () => {
+//     setEditingCurrencyId(null);
+//     setEditingFields({ code: "", rateAdjustmentPercentage: "" });
+//   };
+
+//   const handleDeleteCurrency = async () => {
+//     if (!currencyToDeleteId) return;
+//     setIsSubmitting(true);
+//     try {
+//       await axios.delete(`/admin/currencies/${currencyToDeleteId}`, {
+//         headers: { Authorization: `Bearer ${token}` },
+//       });
+//       setIsDeleteConfirmationOpen(false);
+//       setCurrencyToDeleteId(null);
+//       await fetchCurrenciesList(); // Refetch after successful deletion
+//       showToast("Currency deleted successfully!", "success");
+//     } catch (error: unknown) {
+//       let errorMsg =
+//         "An unexpected error occurred while deleting the currency.";
+//       if (axios.isAxiosError<ApiErrorResponse>(error))
+//         errorMsg = error.response?.data?.message || "Failed to delete currency";
+//       else if (error instanceof Error) errorMsg = error.message;
+//       showToast(errorMsg, "error");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   const clearSearchTerm = () => setSearchTerm("");
+
+//   // Conditional rendering for loading state
+//   if (isLoading && currencies.length === 0) {
+//     // Show skeleton only on initial load
+//     return (
+//       <div className="relative">
+//         <ToastContainer
+//           {...customToastContainerProps}
+//           style={getToastContainerStyle()}
+//         />
+//         <LoadingSkeleton />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="container mx-auto px-4 py-5 relative">
+//       <ToastContainer
+//         {...customToastContainerProps}
+//         style={getToastContainerStyle()}
+//       />
+
+//       <div className="space-y-6">
+//         <div className="Activity pb-6 mb-6 border-b">
+//           <div className="flex items-center gap-3">
+//             <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
+//               <FaCoins className="text-mainheading" size={26} />
+//             </div>
+
+//             <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
+//               Currency Management
+//             </h1>
+//           </div>
+
+//           <p className="mt-2 text-subheadingWhite text-base lg:text-lg">
+//             Take full control of your currency exchange operations with our
+//             intuitive Currency Management system. Effortlessly handle all
+//             supported currencies, update and customize exchange rates to suit
+//             your business needs, and ensure accuracy with real-time rate
+//             adjustments.
+//           </p>
+//         </div>
+
+//         <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
+//           <div>
+//             <button
+//               onClick={openCreateModal}
+//               className="bg-primary text-mainheading  flex items-center justify-center gap-1 hover:bg-primaryhover text-nowrap font-medium rounded-full text-center sm:px-8 sm:py-3 h-12.5 sm:w-auto w-12.5 cursor-pointer transition-all duration-75 ease-linear"
+//             >
+//               <IoMdAdd
+//                 size={28}
+//                 title={isMobile ? "Add Currency" : undefined}
+//               />
+//               {!isMobile && <span>Add Currency</span>}
+//             </button>
+//           </div>
+
+//           <div className="relative sm:w-auto w-full">
+//             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+//               <FiSearch
+//                 className="size-5  text-mainheadingWhite"
+//                 aria-hidden="true"
+//               />
+//             </div>
+
+//             <input
+//               type="text"
+//               placeholder="Search currencies..."
+//               className="w-full sm:w-80 rounded-full h-12.5 py-3 pl-12 pr-3  focus:outline-0 transition-all duration-75 ease-in-out placeholder:text-gray-400 border border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white bg-primarybox/50"
+//               value={searchTerm}
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//             />
+//             {searchTerm && (
+//               <button
+//                 type="button"
+//                 onClick={clearSearchTerm}
+//                 className="absolute inset-y-0 right-3 flex items-center text-primary dark:text-primary focus:outline-none cursor-pointer"
+//                 aria-label="Clear search"
+//               >
+//                 <MdCancel size={24} aria-hidden="true" />
+//               </button>
+//             )}
+//           </div>
+//         </div>
+
+//         {/* loding chalu karavanu che */}
+//         {isLoading &&
+//           currencies.length > 0 && ( // Show loader overlay if loading but already have some data
+//             <div className="fixed gap-2 inset-0 bg-black/60 capitalize h-screen flex items-center justify-center z-50">
+//               {/* <Loader2  className="text-primary lg:size-12 size-8 animate-spin" />
+//               <p className="text-mainheadingWhite font-medium">
+//                 Loading currency data...
+//               </p> */}
+//               <div className="loader">
+//                 <div className="justify-content-center jimu-primary-loading"></div>
+//               </div>
+//             </div>
+//           )}
+
+//         {!isLoading && filteredCurrencies.length === 0 ? (
+//           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
+//             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
+//               <MdCurrencyRupee className="lg:size-8 size-6 mx-auto text-mainheading" />
+//             </div>
+
+//             <h2 className="lg:text-3xl text-2xl font-medium text-mainheadingWhite mt-1">
+//               No currencies found
+//             </h2>
+
+//             <p className="text-subheadingWhite max-w-lg mx-auto">
+//               Currently, there are no currencies available that match your
+//               search or filter criteria.
+//             </p>
+//           </div>
+//         ) : (
+//           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+//             {filteredCurrencies.map((currency) => (
+//               <div
+//                 key={currency._id}
+//                 className="rounded-xl overflow-hidden transition-all duration-300 flex flex-col border"
+//               >
+//                 <div className="lg:p-5 p-4 flex-grow">
+//                   <div className="flex items-center gap-4 mb-4">
+//                     {currency.flagImage ? (
+//                       <Image
+//                         src={currency.flagImage}
+//                         alt={`${currency.currencyName} Flag`}
+//                         width={56}
+//                         height={56}
+//                         className="object-contain rounded-full"
+//                         unoptimized={currency.flagImage.startsWith("http")}
+//                       />
+//                     ) : (
+//                       <div className="size-14 bg-secondarybox rounded-full flex items-center justify-center text-xs text-mainheadingWhite">
+//                         No flag
+//                       </div>
+//                     )}
+
+//                     <div className="flex-1">
+//                       {editingCurrencyId === currency._id ? (
+//                         <input
+//                           type="text"
+//                           name="code"
+//                           value={editingFields.code}
+//                           onChange={handleEditingInputChange}
+//                           className="text-lg font-bold text-mainheadingWhite border-b border-primary focus:outline-none bg-primary/8 dark:bg-transparent px-1 py-0.5 w-20"
+//                           autoFocus
+//                           maxLength={3}
+//                         />
+//                       ) : (
+//                         <h3 className="text-lg font-bold text-mainheadingWhite">
+//                           {currency.code}
+//                         </h3>
+//                       )}
+//                       <p className="text-sm text-subheadingWhite mt-0.5">
+//                         {currency.currencyName}
+//                       </p>
+//                     </div>
+//                   </div>
+
+//                   <div className="p-3 space-y-2 rounded-lg border">
+//                     <label className="font-medium text-subheadingWhite mb-1 flex items-center gap-1">
+//                       Our Rates
+//                     </label>
+
+//                     {editingCurrencyId === currency._id ? (
+//                       <input
+//                         type="number"
+//                         name="rateAdjustmentPercentage"
+//                         value={editingFields.rateAdjustmentPercentage}
+//                         onChange={handleEditingInputChange}
+//                         placeholder="e.g., 0.5 or +0.1"
+//                         step="any"
+//                         className="text-base font-semibold text-mainheadingWhite border-b border-primary focus:outline-none bg-transparent w-full py-0.5 no-spinner"
+//                       />
+//                     ) : (
+//                       <p
+//                         className={`text-lg font-bold ${
+//                           currency.rateAdjustmentPercentage != null
+//                             ? "text-mainheadingWhite"
+//                             : "italic text-mainheadingWhite"
+//                         }`}
+//                       >
+//                         {currency.rateAdjustmentPercentage != null
+//                           ? `${currency.rateAdjustmentPercentage.toLocaleString(
+//                               undefined,
+//                               {
+//                                 minimumFractionDigits: 0,
+//                                 maximumFractionDigits: 2,
+//                               }
+//                             )}%`
+//                           : "Not Set"}
+//                       </p>
+//                     )}
+//                     <p className="text-subheadingWhite mt-1">
+//                       Our Rates vs market rate.
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 <div className="border-t p-4">
+//                   {editingCurrencyId === currency._id ? (
+//                     <div className="flex gap-2">
+//                       <button
+//                         onClick={handleUpdateCurrency}
+//                         disabled={isSubmitting}
+//                         className="flex-1 flex cursor-pointer justify-center gap-1.5 items-center border  text-mainheadingWhite font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear focus:outline-none"
+//                       >
+//                         {isSubmitting ? (
+//                           <svg
+//                             className="h-5 w-5 text-white animate-spin"
+//                             viewBox="0 0 24 24"
+//                             fill="none"
+//                             xmlns="http://www.w3.org/2000/svg"
+//                           >
+//                             <path
+//                               d="M12 2V6"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M12 18V22"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M4.93 4.93L7.76 7.76"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M16.24 16.24L19.07 19.07"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M2 12H6"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M18 12H22"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M4.93 19.07L7.76 16.24"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                             <path
+//                               d="M16.24 7.76L19.07 4.93"
+//                               stroke="currentColor"
+//                               strokeWidth="2"
+//                               strokeLinecap="round"
+//                               strokeLinejoin="round"
+//                             />
+//                           </svg>
+//                         ) : (
+//                           <Save size={20} />
+//                         )}{" "}
+//                         Save
+//                       </button>
+
+//                       <button
+//                         onClick={cancelEditing}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear focus:outline-none"
+//                       >
+//                         <IoMdCloseCircle size={20} />
+//                         <span>Cancel</span>
+//                       </button>
+//                     </div>
+//                   ) : (
+//                     <div className="flex flex-wrap flex-row gap-3">
+//                       <Link
+//                         href={`/admin/currencies/${currency._id}`}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-mainheadingWhite font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear focus:outline-none"
+//                       >
+//                         <Info size={20} /> Details
+//                       </Link>
+
+//                       <button
+//                         onClick={() => startEditing(currency)}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-mainheadingWhite font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear focus:outline-none"
+//                       >
+//                         <Edit size={20} /> Edit
+//                       </button>
+
+//                       <button
+//                         onClick={() => {
+//                           setCurrencyToDeleteId(currency._id);
+//                           setIsDeleteConfirmationOpen(true);
+//                         }}
+//                         className="flex-1 flex cursor-pointer justify-center items-center gap-1.5 border text-red-600 font-medium lg:px-6 px-4 py-3 h-12.5 rounded-full transition-all duration-75 ease-linear focus:outline-none"
+//                       >
+//                         <Trash2 size={20} /> Delete
+//                       </button>
+//                     </div>
+//                   )}
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         <AddCurrencyModal
+//           isOpen={isCreateModalOpen}
+//           onClose={closeCreateModal}
+//           onSubmit={handleCreateCurrency}
+//           isSubmitting={isSubmitting}
+//           newCurrencyData={newCurrencyData}
+//           onInputChange={handleCreateInputChange}
+//           createFlagImageError={createFlagImageError}
+//           setCreateFlagImageError={setCreateFlagImageError}
+//           isMobile={isMobile}
+//         />
+
+//         <DeleteCurrencyModal
+//           isOpen={isDeleteConfirmationOpen}
+//           onClose={() => setIsDeleteConfirmationOpen(false)}
+//           onConfirm={handleDeleteCurrency}
+//           isSubmitting={isSubmitting}
+//           isMobile={isMobile}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminCurrenciesPage;
+
+
+
 // frontend/src/app/admin/currencies/page.tsx
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -6635,7 +7428,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import apiConfig from "../../config/apiConfig";
 import Image from "next/image";
-import { Loader2, Info, Edit, Trash2, Save } from "lucide-react";
+import { Loader2  , Info, Edit, Trash2, Save } from "lucide-react";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel, MdCurrencyRupee } from "react-icons/md";
 import { IoMdAdd, IoMdCloseCircle } from "react-icons/io";
@@ -6683,61 +7476,41 @@ interface ApiErrorResponse {
   message: string;
 }
 
+
+// Renders the skeleton for only the currency card grid
 const LoadingSkeleton = () => (
-  <div className="container mx-auto px-4 py-5">
-    <div className="space-y-6">
-      <div className="pb-6 mb-6">
-        <div className="flex gap-3 items-center">
-          <Skeleton className="size-12 rounded-full mb-3" />
-          <Skeleton className="h-9 w-3/5 sm:w-1/5 rounded mb-3" />
-        </div>
-        <div className="space-y-1.5">
-          <Skeleton className="h-4 w-full rounded" />
-          <Skeleton className="h-4 w-full sm:w-1/2 rounded" />
-          <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
-          <Skeleton className="h-4 w-full sm:w-1/2 rounded sm:hidden block" />
-          <Skeleton className="h-4 w-40 sm:w-1/2 rounded sm:hidden block" />
-        </div>
-      </div>
-
-      <div className="flex sm:justify-between flex-row w-full items-center mb-6 gap-4">
-        <Skeleton className="size-12.5 sm:w-50 rounded-full" />
-        <Skeleton className="h-12.5 flex-1 sm:flex-none sm:w-70 rounded-full" />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div
-            key={index}
-            className="rounded-xl overflow-hidden border flex flex-col"
-          >
-            <div className="lg:p-5 p-4 flex-grow">
-              <div className="flex items-center gap-4 mb-4">
-                <Skeleton className="size-14 rounded-full flex-shrink-0" />
-                <div className="flex-1 space-y-1.5">
-                  <Skeleton className="h-7 w-1/3 rounded" />
-                  <Skeleton className="h-5 w-2/3 rounded" />
-                </div>
-              </div>
-              <div className="p-3 space-y-2 rounded-lg border">
-                <Skeleton className="h-6 w-1/4 rounded mb-1" />
-                <Skeleton className="h-7 w-1/2 rounded" />
-                <Skeleton className="h-6 w-full rounded mt-1" />
-              </div>
-            </div>
-            <div className="border-t p-4">
-              <div className="flex w-full gap-2">
-                <Skeleton className="h-12.5 flex-1 rounded-full" />
-                <Skeleton className="h-12.5 flex-1 rounded-full" />
-                <Skeleton className="h-12.5 flex-1 rounded-full" />
-              </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    {Array.from({ length: 8 }).map((_, index) => (
+      <div
+        key={index}
+        className="rounded-xl overflow-hidden border flex flex-col"
+      >
+        <div className="lg:p-5 p-4 flex-grow">
+          <div className="flex items-center gap-4 mb-4">
+            <Skeleton className="size-14 rounded-full flex-shrink-0" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-7 w-1/3 rounded" />
+              <Skeleton className="h-5 w-2/3 rounded" />
             </div>
           </div>
-        ))}
+          <div className="p-3 space-y-2 rounded-lg border">
+            <Skeleton className="h-6 w-1/4 rounded mb-1" />
+            <Skeleton className="h-7 w-1/2 rounded" />
+            <Skeleton className="h-6 w-full rounded mt-1" />
+          </div>
+        </div>
+        <div className="border-t p-4">
+          <div className="flex w-full gap-2">
+            <Skeleton className="h-12.5 flex-1 rounded-full" />
+            <Skeleton className="h-12.5 flex-1 rounded-full" />
+            <Skeleton className="h-12.5 flex-1 rounded-full" />
+          </div>
+        </div>
       </div>
-    </div>
+    ))}
   </div>
 );
+
 
 const AdminCurrenciesPage: React.FC = () => {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
@@ -7073,20 +7846,6 @@ const AdminCurrenciesPage: React.FC = () => {
 
   const clearSearchTerm = () => setSearchTerm("");
 
-  // Conditional rendering for loading state
-  if (isLoading && currencies.length === 0) {
-    // Show skeleton only on initial load
-    return (
-      <div className="relative">
-        <ToastContainer
-          {...customToastContainerProps}
-          style={getToastContainerStyle()}
-        />
-        <LoadingSkeleton />
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-4 py-5 relative">
       <ToastContainer
@@ -7157,21 +7916,20 @@ const AdminCurrenciesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* loding chalu karavanu che */}
+        {/* Refresh Loader */}
         {isLoading &&
           currencies.length > 0 && ( // Show loader overlay if loading but already have some data
             <div className="fixed gap-2 inset-0 bg-black/60 capitalize h-screen flex items-center justify-center z-50">
-              {/* <Loader2  className="text-primary lg:size-12 size-8 animate-spin" />
-              <p className="text-mainheadingWhite font-medium">
-                Loading currency data...
-              </p> */}
               <div className="loader">
                 <div className="justify-content-center jimu-primary-loading"></div>
               </div>
             </div>
           )}
 
-        {!isLoading && filteredCurrencies.length === 0 ? (
+        {/* Conditional Content: Initial Load Skeleton, No Results, or Currency Grid */}
+        {isLoading && currencies.length === 0 ? (
+          <LoadingSkeleton />
+        ) : !isLoading && filteredCurrencies.length === 0 ? (
           <div className="bg-primarybox rounded-2xl sm:p-6 p-4 text-center space-y-4 min-h-[300px] flex flex-col justify-center items-center">
             <div className="lg:size-16 size-14 flex items-center justify-center bg-primary rounded-full mb-2">
               <MdCurrencyRupee className="lg:size-8 size-6 mx-auto text-mainheading" />

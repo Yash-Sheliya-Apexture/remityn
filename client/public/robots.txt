@@ -1,4 +1,4 @@
-# robots.txt for Remityn Clone
+# robots.txt for Remityn
 
 User-agent: *
 Disallow: /api/          # Disallow crawling of API routes
