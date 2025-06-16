@@ -26592,8 +26592,8 @@ const calculateRates = (
   const adjustment = currency.rateAdjustmentPercentage ?? 0;
   const ourRate = marketRate * (1 + adjustment / 100);
   return {
-    market: parseFloat(marketRate.toFixed(4)),
-    our: parseFloat(ourRate.toFixed(4)),
+    market: parseFloat(marketRate.toFixed(2)),
+    our: parseFloat(ourRate.toFixed(2)),
     adjustment,
   };
 };
