@@ -66,14 +66,14 @@ const CallToActionSection = dynamic(() => import("./components/home/CallToAction
 
 export const metadata: Metadata = {
   title: 'Fast & Secure International Money Transfers',
-  description: 'Join Remityn Clone for the best rates on international money transfers. Send money to family and friends worldwide with ease.',
+  description: 'Join Remityn for the best rates on international money transfers. Send money to family and friends worldwide with ease.',
   openGraph: {
-    title: 'Fast & Secure International Money Transfers by Remityn Clone',
-    description: 'Join Remityn Clone for the best rates on international money transfers.',
+    title: 'Fast & Secure International Money Transfers by Remityn',
+    description: 'Join Remityn for the best rates on international money transfers.',
   },
   twitter: {
-    title: 'Fast & Secure International Money Transfers by Remityn Clone',
-    description: 'Join Remityn Clone for the best rates on international money transfers.',
+    title: 'Fast & Secure International Money Transfers by Remityn',
+    description: 'Join Remityn for the best rates on international money transfers.',
   },
   alternates: {
     canonical: '/',
