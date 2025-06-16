@@ -2389,7 +2389,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
     <>
       <div className="py-5">
         <div className="flex items-start sm:items-center justify-between mb-6 gap-4">
-          <div className="Broadcast-History">
+          <div className="Broadcast-History w-full">
             <div className="flex justify-between items-center gap-3">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
@@ -2403,7 +2403,7 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
                 type="button"
                 onClick={onRefresh}
                 disabled={isLoading}
-                className="flex items-center justify-center cursor-pointer gap-2 text-primary bg-primarybox hover:bg-secondarybox font-medium sm:px-8 sm:py-3 aspect-square sm:aspect-auto size-11 sm:w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed lg:hidden flex-shrink-0"
+                className="flex items-center justify-center cursor-pointer gap-2 text-primary bg-primarybox hover:bg-secondarybox font-medium sm:px-8 sm:py-3 aspect-square sm:aspect-auto size-12.5 sm:w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed"
                 title="Refresh history"
               >
                 <RefreshCw className={cn("size-5", isLoading && "animate-spin")} />
@@ -2411,23 +2411,12 @@ const BroadcastHistoryTable: React.FC<BroadcastHistoryTableProps> = ({
               </button>
 
             </div>
-            <p className="mt-2 text-subheadingWhite text-base lg:text-lg max-w-5xl">
+            <p className="mt-2 text-subheadingWhite text-base">
               track of all your past communications with the Broadcast History
               feature. Easily review previously sent broadcast messages,
               including their content, delivery time, and recipient reach
             </p>
           </div>
-
-          <button
-            type="button"
-            onClick={onRefresh}
-            disabled={isLoading}
-            className="lg:flex items-center justify-center cursor-pointer gap-2 text-primary bg-primarybox hover:bg-secondarybox font-medium sm:px-8 sm:py-3 aspect-square sm:aspect-auto size-11 sm:w-auto rounded-full transition-all duration-75 ease-linear disabled:opacity-60 disabled:cursor-not-allowed hidden"
-            title="Refresh history"
-          >
-            <RefreshCw className={cn("size-5", isLoading && "animate-spin")} />
-            {!isMobile && <span>Refresh</span>}
-          </button>
         </div>
 
         {isLoading ? (
