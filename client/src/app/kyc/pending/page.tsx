@@ -839,7 +839,6 @@ import React, { useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 // --- UI Components ---
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -848,12 +847,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
-  Clock,
   LayoutDashboard,
   MailCheck, // Changed from Mail for slightly different semantic meaning
   Info,
@@ -910,14 +908,17 @@ export default function KycPendingPage() {
       </div>
     );
   }
+
   // Context Status Loading
-  if (kycLoadingStatus && !user) { // Show loading only if also fetching status for the first time maybe?
+  if (kycLoadingStatus && !user) {
+    // Show loading only if also fetching status for the first time maybe?
     return (
-        <div className="flex justify-center items-center min-h-[400px]">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
+
   // Waiting for Redirect (if status not 'pending' or not logged in after initial check)
   if (user && backendStatus !== "pending") {
     // Context should redirect, show spinner while waiting
@@ -927,15 +928,15 @@ export default function KycPendingPage() {
       </div>
     );
   }
-  if (!user) {
-      // If definitely not logged in after checks
-      return (
-          <div className="flex justify-center items-center min-h-[400px]">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-      );
-  }
 
+  if (!user) {
+    // If definitely not logged in after checks
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   // --- Main Pending Content ---
   return (
@@ -951,6 +952,7 @@ export default function KycPendingPage() {
           <CardTitle className="text-2xl font-semibold tracking-tight text-mainheadingWhite">
             Verification Pending
           </CardTitle>
+
           <CardDescription className="text-base text-subheadingWhite mt-1">
             Your submitted information is currently under review.
           </CardDescription>
@@ -977,21 +979,20 @@ export default function KycPendingPage() {
           <Separator className="my-6" />
 
           <div className="p-4 border flex gap-4 rounded-lg">
-            <MailCheck className="h-5 w-5 flex-shrink-0 mt-1 text-white/90" />
+            <MailCheck className="h-5 w-5 flex-shrink-0 mt-1 text-primary" />
             <div>
-
-            <AlertTitle className="font-medium text-mainheadingWhite tracking-normal text-base mb-1">
-              Email Notification
-            </AlertTitle>
-            <AlertDescription className="text-subheadingWhite">
-              We will notify you via email as soon as the review process is
-              complete.
-            </AlertDescription>
+              <AlertTitle className="font-medium text-mainheadingWhite tracking-normal text-base mb-1">
+                Email Notification
+              </AlertTitle>
+              <AlertDescription className="text-subheadingWhite">
+                We will notify you via email as soon as the review process is
+                complete.
+              </AlertDescription>
             </div>
           </div>
 
           <div className="p-4 border flex gap-4 rounded-lg">
-            <Info className="h-5 w-5 flex-shrink-0 mt-1 text-white/90" />
+            <Info className="h-5 w-5 flex-shrink-0 mt-1 text-primary" />
             <div>
               <AlertTitle className="font-medium text-mainheadingWhite tracking-normal text-base mb-1">
                 Account Access

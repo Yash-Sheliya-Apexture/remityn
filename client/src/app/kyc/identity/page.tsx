@@ -77,7 +77,6 @@
 //         });
 //     }, [goToStep, kycData, form.reset]);
 
-
 //     // *** CORRECTED onSubmit ***
 //     const onSubmit = (data: IdentityFormData) => {
 //         try {
@@ -179,7 +178,6 @@
 //         </Card>
 //     );
 // }
-
 
 // // frontend/src/app/kyc/identity/page.tsx
 // 'use client';
@@ -515,7 +513,6 @@
 //     );
 // }
 
-
 // // frontend/src/app/kyc/identity/page.tsx
 // 'use client';
 
@@ -716,7 +713,6 @@
 //     );
 // }
 
-
 // // frontend/src/app/kyc/identity/page.tsx
 // 'use client';
 
@@ -906,10 +902,6 @@
 //         </Card>
 //     );
 // }
-
-
-
-
 
 // // frontend/src/app/kyc/identity/page.tsx
 // "use client";
@@ -1195,7 +1187,7 @@
 //   return (
 //     <Card className="w-full max-w-2xl mx-auto shadow-xl border animate-fadeIn sm:p-8 p-4">
 //       <CardHeader className="border-b pb-6 mb-6 space-y-2">
-//           <CardTitle className="text-2xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">  
+//           <CardTitle className="text-2xl font-semibold tracking-tight flex items-start gap-2 text-mainheading dark:text-white">
 //             <Fingerprint className="h-6 w-6 text-primary mt-1" />
 //             Identity Document&nbsp;(Step {formStepOrder.indexOf("identity") + 1} of {formStepOrder.length})
 //           </CardTitle>
@@ -1538,10 +1530,6 @@
 //   );
 // }
 
-
-
-
-
 // // frontend/src/app/kyc/identity/page.tsx
 // "use client";
 
@@ -1729,7 +1717,6 @@
 //     }
 //   });
 
-
 // type IdentityFormData = z.infer<typeof identitySchema>;
 
 // // --- Helper Arrays for Date Picker Dropdowns ---
@@ -1831,7 +1818,6 @@
 
 //     setIsPageLoading(false);
 //   }, [kycInitialized, backendStatus, kycData, form.reset, form.trigger]);
-
 
 //   const onSubmit = useCallback(
 //     (data: IdentityFormData) => {
@@ -2370,8 +2356,6 @@
 //   );
 // }
 
-
-
 // frontend/src/app/kyc/identity/page.tsx
 "use client";
 
@@ -2472,7 +2456,7 @@ const identitySchema = z
           path: ["idNumber"],
         });
       } else if (data.idNumber.length > idNumberMaxLength) {
-         ctx.addIssue({
+        ctx.addIssue({
           code: z.ZodIssueCode.too_big,
           maximum: idNumberMaxLength,
           type: "string",
@@ -2490,31 +2474,31 @@ const identitySchema = z
           path: ["idIssueDate"],
         });
       } else {
-         if (!isDateValid(data.idIssueDate)) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.invalid_date,
-                message: "Please enter a valid issue date.",
-                path: ["idIssueDate"],
-            });
-         } else if (data.idIssueDate > todayStart) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.too_big,
-                type: "date",
-                maximum: todayStart.getTime(),
-                inclusive: true,
-                message: "Issue date cannot be in the future.",
-                path: ["idIssueDate"],
-            });
-         } else if (data.idIssueDate < minIssueDate) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.too_small,
-                type: "date",
-                minimum: minIssueDate.getTime(),
-                inclusive: true,
-                message: "Issue date seems incorrect (before 1950).",
-                path: ["idIssueDate"],
-            });
-         }
+        if (!isDateValid(data.idIssueDate)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.invalid_date,
+            message: "Please enter a valid issue date.",
+            path: ["idIssueDate"],
+          });
+        } else if (data.idIssueDate > todayStart) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: "date",
+            maximum: todayStart.getTime(),
+            inclusive: true,
+            message: "Issue date cannot be in the future.",
+            path: ["idIssueDate"],
+          });
+        } else if (data.idIssueDate < minIssueDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: "date",
+            minimum: minIssueDate.getTime(),
+            inclusive: true,
+            message: "Issue date seems incorrect (before 1950).",
+            path: ["idIssueDate"],
+          });
+        }
       }
 
       // --- ID Expiry Date Validation ---
@@ -2524,45 +2508,58 @@ const identitySchema = z
           message: "Expiry date is required.",
           path: ["idExpiryDate"],
         });
-       } else {
-         if (!isDateValid(data.idExpiryDate)) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.invalid_date,
-                message: "Please enter a valid expiry date.",
-                path: ["idExpiryDate"],
-            });
-         } else if (data.idExpiryDate < minExpiryDate) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.too_small,
-                type: "date",
-                minimum: minExpiryDate.getTime(),
-                inclusive: true,
-                message: "This ID appears to be expired or expires today.",
-                path: ["idExpiryDate"],
-            });
-         }
-       }
+      } else {
+        if (!isDateValid(data.idExpiryDate)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.invalid_date,
+            message: "Please enter a valid expiry date.",
+            path: ["idExpiryDate"],
+          });
+        } else if (data.idExpiryDate < minExpiryDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: "date",
+            minimum: minExpiryDate.getTime(),
+            inclusive: true,
+            message: "This ID appears to be expired or expires today.",
+            path: ["idExpiryDate"],
+          });
+        }
+      }
 
       // --- Cross-Field Date Validation (Expiry vs Issue) ---
-      if (data.idIssueDate && isDateValid(data.idIssueDate) &&
-          data.idExpiryDate && isDateValid(data.idExpiryDate) &&
-          data.idExpiryDate <= data.idIssueDate) {
-         ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Expiry date must be after the issue date.",
-            path: ["idExpiryDate"],
-         });
+      if (
+        data.idIssueDate &&
+        isDateValid(data.idIssueDate) &&
+        data.idExpiryDate &&
+        isDateValid(data.idExpiryDate) &&
+        data.idExpiryDate <= data.idIssueDate
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Expiry date must be after the issue date.",
+          path: ["idExpiryDate"],
+        });
       }
     }
   });
-
 
 type IdentityFormData = z.infer<typeof identitySchema>;
 
 // --- Helper Arrays for Date Picker Dropdowns ---
 const datePickerMonths = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // --- Component ---
@@ -2595,9 +2592,12 @@ export default function KycIdentityPage() {
   const [expiryDatePickerOpen, setExpiryDatePickerOpen] = useState(false);
 
   // State for temporarily selected date in popover
-  const [tempIssueDate, setTempIssueDate] = useState<Date | undefined>(undefined);
-  const [tempExpiryDate, setTempExpiryDate] = useState<Date | undefined>(undefined);
-
+  const [tempIssueDate, setTempIssueDate] = useState<Date | undefined>(
+    undefined
+  );
+  const [tempExpiryDate, setTempExpiryDate] = useState<Date | undefined>(
+    undefined
+  );
 
   const form = useForm<IdentityFormData>({
     resolver: zodResolver(identitySchema),
@@ -2646,7 +2646,8 @@ export default function KycIdentityPage() {
     const initialIssueDate = parseContextDate(kycData.idIssueDate);
     const initialExpiryDate = parseContextDate(kycData.idExpiryDate);
 
-    const defaultIdType = kycData.idType && idTypeValues.includes(kycData.idType)
+    const defaultIdType =
+      kycData.idType && idTypeValues.includes(kycData.idType)
         ? kycData.idType
         : undefined;
 
@@ -2658,24 +2659,28 @@ export default function KycIdentityPage() {
     });
 
     if (defaultIdType) {
-        setTimeout(() => form.trigger(), 0);
+      setTimeout(() => form.trigger(), 0);
     }
 
     setIssueCalendarDate(initialIssueDate || subYears(new Date(), 5));
     setExpiryCalendarDate(initialExpiryDate || new Date());
-    
+
     setTempIssueDate(initialIssueDate);
     setTempExpiryDate(initialExpiryDate);
 
     setIsPageLoading(false);
   }, [kycInitialized, backendStatus, kycData, form.reset, form.trigger]);
 
-
   const onSubmit = useCallback(
     (data: IdentityFormData) => {
-      if (!data.idType || !data.idNumber || !data.idIssueDate || !data.idExpiryDate) {
-          setFormError("Please fill in all required fields.");
-          return;
+      if (
+        !data.idType ||
+        !data.idNumber ||
+        !data.idIssueDate ||
+        !data.idExpiryDate
+      ) {
+        setFormError("Please fill in all required fields.");
+        return;
       }
 
       setIsSubmitting(true);
@@ -2701,7 +2706,7 @@ export default function KycIdentityPage() {
     const newDate = new Date(issueCalendarDate);
     newDate.setFullYear(Number.parseInt(year));
     if (isDateValid(newDate)) {
-        setIssueCalendarDate(newDate);
+      setIssueCalendarDate(newDate);
     }
   };
 
@@ -2709,7 +2714,7 @@ export default function KycIdentityPage() {
     const newDate = new Date(issueCalendarDate);
     newDate.setMonth(datePickerMonths.indexOf(month));
     if (isDateValid(newDate)) {
-       setIssueCalendarDate(newDate);
+      setIssueCalendarDate(newDate);
     }
   };
 
@@ -2813,7 +2818,12 @@ export default function KycIdentityPage() {
                         </FormControl>
                         <FormLabel
                           htmlFor="passport-radio"
-                          className={cn("flex-col items-center justify-center h-28 rounded-lg bg-primarybox p-4 hover:bg-primaryboxhover cursor-pointer transition-all duration-75 ease-linear border", field.value === "passport" ? "border-primary" : "border-transparent")} 
+                          className={cn(
+                            "flex-col items-center justify-center h-28 rounded-lg bg-primarybox p-4 hover:bg-primaryboxhover cursor-pointer transition-all duration-75 ease-linear border",
+                            field.value === "passport"
+                              ? "border-primary"
+                              : "border-transparent"
+                          )}
                         >
                           <BookUser className="h-6 w-6 text-primary" />
                           <span className="font-semibold text-mainheadingWhite">
@@ -2838,7 +2848,12 @@ export default function KycIdentityPage() {
                         </FormControl>
                         <FormLabel
                           htmlFor="resident_permit-radio"
-                          className={cn("flex-col items-center justify-center h-28 rounded-lg bg-primarybox p-4 hover:bg-primaryboxhover cursor-pointer transition-all duration-75 ease-linear border", field.value === "resident_permit" ? "border-primary" : "border-transparent")} 
+                          className={cn(
+                            "flex-col items-center justify-center h-28 rounded-lg bg-primarybox p-4 hover:bg-primaryboxhover cursor-pointer transition-all duration-75 ease-linear border",
+                            field.value === "resident_permit"
+                              ? "border-primary"
+                              : "border-transparent"
+                          )}
                         >
                           <IdCard className="h-6 w-6 text-primary" />
                           <span className="font-semibold text-mainheadingWhite">
@@ -2883,7 +2898,8 @@ export default function KycIdentityPage() {
                       <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
+                      <Input
+                        className="mt-1 block px-4 py-3 bg-background h-14 w-full border rounded-lg transition-all duration-75 ease-in-out placeholder:text-gray-400 border-gray-600 hover:border-gray-500 focus:border-gray-500 text-white focus:outline-0"
                         placeholder="Enter document number"
                         {...field}
                         disabled={!selectedIdType || isSubmitting}
@@ -3069,10 +3085,9 @@ export default function KycIdentityPage() {
                             ) : (
                               <span>Pick expiry date</span>
                             )}
-
                           </Button>
                         </PopoverTrigger>
-                        
+
                         <PopoverContent
                           align="end"
                           className="sm:w-[450px] max-h-[calc(var(--radix-popover-content-available-height)_-_1rem)] w-auto p-0 overflow-y-auto"
@@ -3123,7 +3138,6 @@ export default function KycIdentityPage() {
                               </SelectContent>
                             </Select>
                           </div>
-                          
 
                           <Calendar
                             mode="single"
@@ -3179,9 +3193,9 @@ export default function KycIdentityPage() {
                 onClick={prevStep}
                 disabled={isSubmitting}
               >
-                <ArrowLeft className="mr-2 size-4.5" /> Back
+                <ArrowLeft className="mr-2 size-5" /> Back
               </button>
-              
+
               <button
                 type="submit"
                 className=" inline-flex items-center justify-center bg-primary text-mainheading hover:bg-primaryhover font-medium rounded-full px-6 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"

@@ -1894,10 +1894,6 @@
 //   );
 // }
 
-
-
-
-
 // frontend/src/app/kyc/details/page.tsx
 "use client";
 
@@ -1927,8 +1923,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Loader2,
   Briefcase,
-  BadgeDollarSign,
-  Globe,
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
@@ -2135,16 +2129,17 @@ export default function KycDetailsPage() {
     <Card className="w-full lg:max-w-2xl max-w-full shadow-none border animate-fadeIn sm:p-8 p-4 bg-transparent">
       <CardHeader className="border-b pb-6 mb-6 space-y-2">
         <CardTitle className="sm:text-2xl text-xl font-semibold tracking-normal flex items-start gap-2 text-mainheadingWhite">
-          <Briefcase className="h-6 w-6 text-primary mt-1 flex-shrink-0" /> Additional
-          Details (Step {formStepOrder.indexOf("details") + 1}
+          <Briefcase className="h-6 w-6 text-primary mt-1 flex-shrink-0" />{" "}
+          Additional Details (Step {formStepOrder.indexOf("details") + 1}
            of {formStepOrder.length})
         </CardTitle>
         <CardDescription className="text-subheadingWhite">
           Please provide your occupation, annual income range and nationality.
-          Fields marked with <span className="text-red-500">*</span> are
+          Fields marked with <span className="text-red-600">*</span> are
           required.
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {formError && (
           <Alert className="bg-red-900/25 border-red-500 rounded-lg p-4 gap-3 mb-6">
@@ -2168,8 +2163,7 @@ export default function KycDetailsPage() {
             {" "}
             {/* Mimics FormItem spacing */}
             <Label className="text-mainheadingWhite block capitalize text-sm lg:text-base">
-             Occupation{" "}
-              <span className="text-red-600">*</span>{" "}
+              Occupation <span className="text-red-600">*</span>{" "}
             </Label>
             <Select
               onValueChange={handleOccupationChange}
@@ -2226,10 +2220,8 @@ export default function KycDetailsPage() {
             {" "}
             {/* Mimics FormItem structure */}
             <Label className="text-mainheadingWhite block capitalize text-sm lg:text-base">
-               Nationality{" "}
-              <span className="text-red-600">*</span>
+              Nationality <span className="text-red-600">*</span>
             </Label>
-
             <Popover
               open={nationalityPopoverOpen}
               onOpenChange={setNationalityPopoverOpen}
@@ -2252,10 +2244,8 @@ export default function KycDetailsPage() {
                     : "Select nationality..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
                 </Button>
-                
               </PopoverTrigger>
-              
-              
+
               <PopoverContent
                 align="start"
                 className="sm:w-[450px] max-h-[--radix-popover-content-available-height] p-0"
@@ -2272,11 +2262,14 @@ export default function KycDetailsPage() {
                       : 0;
                   }}
                 >
-                  <CommandInput className="placeholder:text-white/90 h-12 text-white/90" placeholder="Search nationality..." />
-                  
+                  <CommandInput
+                    className="placeholder:text-white/90 h-12 text-white/90"
+                    placeholder="Search nationality..."
+                  />
+
                   <CommandList>
                     <CommandEmpty>No nationality found.</CommandEmpty>
-                    
+
                     <CommandGroup className="max-h-[250px] overflow-y-auto sm:[&::-webkit-scrollbar]:w-2 sm:[&::-webkit-scrollbar]:h-3 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox">
                       <div className="space-y-1">
                         {countryOptions.map((country) => (
@@ -2316,9 +2309,7 @@ export default function KycDetailsPage() {
             </p>
             {/* Display error manually if needed */}
             {!nationality && formError && (
-              <p className="text-sm font-medium text-red-500">
-                {formError}
-              </p> // Example error display
+              <p className="text-sm font-medium text-red-500">{formError}</p> // Example error display
             )}
           </div>
 

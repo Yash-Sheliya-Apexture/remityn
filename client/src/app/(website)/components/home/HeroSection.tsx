@@ -721,6 +721,7 @@ import UserSuppliedHighlightSVG from "../Hero/UserSuppliedHighlightSVG";
 import { IoTrendingUp } from "react-icons/io5";
 import { useAuth } from "@/app/contexts/AuthContext";
 
+
 const HeroSection: React.FC = () => {
   const [circleSize, setCircleSize] = React.useState(1200);
   const { user, loading: authLoading } = useAuth();

@@ -2605,8 +2605,8 @@ export default function KycStartPage() {
   // 1. Primary Loading (Auth or KycContext not ready)
   if (authLoading || !kycInitialized) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex justify-center gap-2 items-center h-screen">
+        <Loader2 className="size-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -2614,8 +2614,8 @@ export default function KycStartPage() {
   if (!user && backendStatus !== "unauthenticated") {
     // If user is gone but status hasn't updated yet
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary ml-2" />
+      <div className="flex justify-center items-center h-screen gap-2">
+        <Loader2 className="size-8 animate-spin text-primary" />
         <p className="text-mainheadingWhite">Authenticating...</p>
       </div>
     );
@@ -2629,9 +2629,14 @@ export default function KycStartPage() {
       ))
   ) {
     return (
-      <div className="flex justify-center flex-col items-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary ml-2" />
-        <p className="text-mainheadingWhite">Loading KYC status...</p>
+      // <div className="flex justify-center flex-col items-center h-screen">
+      //   <Loader2 className="h-8 w-8 animate-spin text-primary ml-2" />
+      //   <p className="text-mainheadingWhite">Loading KYC status...</p>
+      // </div>
+      <div className="fixed gap-2 inset-0 bg-black/60 capitalize h-screen flex items-center justify-center z-50">
+        <div className="loader">
+          <div className="justify-content-center jimu-primary-loading"></div>
+        </div>
       </div>
     );
   }
@@ -2647,7 +2652,7 @@ export default function KycStartPage() {
     let headerIcon = <UserPlus className="h-8 w-8" />;
     let iconBgColor = "bg-primary/20 text-primary border-primary/30";
     let startButtonText = "Start Verification";
-    let startButtonIcon = <ArrowRight className="ml-2 size-4.5" />;
+    let startButtonIcon = <ArrowRight className="ml-2 size-4" />;
     let primaryButtonClasses =
       "bg-primary text-mainheading hover:bg-primaryhover";
 
@@ -2663,10 +2668,10 @@ export default function KycStartPage() {
       description =
         "Your previous verification attempt requires attention. Please review the feedback and submit again.";
       headerIcon = <AlertTriangle className="h-8 w-8" />;
-      iconBgColor = "bg-red-900/40 text-red-400 border-red-700";
+      iconBgColor = "bg-red-900/40 text-red-400 border-red-500";
       startButtonText = "Retry Verification";
-      startButtonIcon = <RotateCcw className="ml-2 size-4.5" />;
-      primaryButtonClasses = "bg-red-600 hover:bg-red-700 text-white";
+      startButtonIcon = <RotateCcw className="ml-2 size-4" />;
+      primaryButtonClasses = "bg-red-500 hover:bg-red-600 text-white";
     }
 
     return (
@@ -2726,7 +2731,7 @@ export default function KycStartPage() {
             )}
 
             <div className="p-4 border flex gap-4 rounded-lg">
-              <FileText className="h-5 w-5 flex-shrink-0 mt-1 text-white/90" />
+              <FileText className="h-5 w-5 flex-shrink-0 mt-1 text-primary" />
               <div>
                 <AlertTitle className="font-medium text-mainheadingWhite tracking-normal text-base mb-1">
                   What You'll Need
@@ -2740,7 +2745,7 @@ export default function KycStartPage() {
             </div>
 
             <div className="p-4 border flex gap-4 rounded-lg">
-              <ShieldCheck className="h-5 w-5 flex-shrink-0 mt-1 text-green-600 dark:text-green-500" />
+              <ShieldCheck className="size-5 flex-shrink-0 mt-1 text-green-600 dark:text-green-500" />
               <div>
                 <AlertTitle className="font-medium text-mainheadingWhite tracking-normal text-base mb-1">
                   Secure Process
@@ -2784,6 +2789,17 @@ export default function KycStartPage() {
                 </button>
               )}
 
+              <button
+                onClick={handleStartVerification}
+                disabled={isSkipping}
+                className={cn(
+                  "inline-flex items-center justify-center font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-150 ease-linear focus:outline-none",
+                  primaryButtonClasses
+                )}
+              >
+                {startButtonText} {startButtonIcon}
+              </button>
+
               {(backendStatus === "skipped" ||
                 backendStatus === "rejected") && (
                 <button
@@ -2794,17 +2810,6 @@ export default function KycStartPage() {
                   Go to Dashboard
                 </button>
               )}
-
-              <button
-                onClick={handleStartVerification}
-                disabled={isSkipping}
-                className={cn(
-                  "inline-flex items-center justify-center font-medium rounded-full px-8 py-3 h-12.5 text-center w-full cursor-pointer transition-all duration-75 ease-linear focus:outline-none",
-                  primaryButtonClasses
-                )}
-              >
-                {startButtonText} {startButtonIcon}
-              </button>
             </div>
 
             <div className="w-full text-center pt-4 sm:pt-2">
