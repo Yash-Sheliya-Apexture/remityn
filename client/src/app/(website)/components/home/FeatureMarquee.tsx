@@ -147,8 +147,6 @@ const FeatureMarquee = () => {
         <div className="flex flex-col gap-6">
           {/* Row 1: Scrolls Left */}
           <MarqueeRow features={allFeatures} />
-          {/* Row 2: Scrolls Right */}
-          <MarqueeRow features={allFeatures} toRight />
         </div>
 
         {/* Add the gradient overlays */}
