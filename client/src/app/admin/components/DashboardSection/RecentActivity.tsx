@@ -679,7 +679,7 @@ export default function RecentActivity() {
           {!isMobile && (
             <Link
               href="/admin/activity"
-              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-mainheading font-semibold text-base px-8 py-3 h-10 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
+              className="flex items-center justify-center cursor-pointer gap-2 bg-primary text-mainheading font-semibold text-base px-8 py-3 h-11 sm:w-auto w-full rounded-full hover:bg-primaryhover transition-all duration-75 ease-linear"
             >
               <span>All Activity</span>
             </Link>

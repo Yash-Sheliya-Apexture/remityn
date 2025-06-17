@@ -1598,6 +1598,7 @@ export default function BalanceDistributionChart() {
     );
   }
 
+  
   if (chartData.length === 0) {
     return (
     <div className="sm:order-2 order-1">

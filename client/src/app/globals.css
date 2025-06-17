@@ -21,7 +21,7 @@ body {
 
   /* Background Color */
   --color-background: #22282a;
-  --color-primary: #  ;
+  --color-primary: #66e8fa;
   --color-primaryhover: #9cf0fc;
   /* aacho */
   --color-primarybox: #394247;
@@ -115,7 +115,7 @@ html {
 :root {
   /* Background Color Start*/
   --background: oklch(0.2717 0.0093 219.82);
-  --primary: oklch(0.8651 0.1162 207.69);
+  --primary: #66e8fa;
   --primarybox: oklch(0.3728 0.0147 232.08);
   --color-primaryboxhover: oklch(0.3309 0.013 229.33);
 
