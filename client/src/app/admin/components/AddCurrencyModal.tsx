@@ -68,7 +68,7 @@ const AddCurrencyModal: React.FC<AddCurrencyModalProps> = ({
           onClick={onClose} // Close modal when clicking on the backdrop
         >
           <motion.div
-            className="bg-background sm:rounded-3xl rounde  d-none w-full sm:max-w-xl relative flex flex-col overflow-hidden sm:h-auto h-screen"
+            className="bg-background sm:rounded-3xl rounde  d-none w-full sm:max-w-xl relative flex flex-col overflow-hidden lg:h-auto h-screen"
             onClick={(e) => e.stopPropagation()} // Prevent click propagation to backdrop
             variants={modalVariants}
             initial="initial"
@@ -77,6 +77,7 @@ const AddCurrencyModal: React.FC<AddCurrencyModalProps> = ({
           >
             {/* Header */}
             <div className="p-4 sm:p-6 flex items-center justify-between flex-shrink-0 border-b">
+              
               <h2 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
                 Add New Currency
               </h2>
@@ -98,8 +99,8 @@ const AddCurrencyModal: React.FC<AddCurrencyModalProps> = ({
                   <IoClose size={28} />
                 </button>
               </div>
-              
             </div>
+
 
             {/* Scrollable Content Area */}
             <div className="flex-grow overflow-y-auto scrollbar-hide p-4 sm:p-6 space-y-5">
