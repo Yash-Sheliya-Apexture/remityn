@@ -5,7 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '*',
-      disallow: ['/api/','/auth/', '/admin/', '/dashboard/', '/add-money/', '/send-money/', '/transactions/', '/your-account/', '/kyc/', ' /_next/' ],
+      // Corrected: Removed space before /_next/
+      disallow: ['/api/','/auth/', '/admin/', '/dashboard/', '/add-money/', '/send-money/', '/transactions/', '/your-account/', '/kyc/', '/_next/' ],
     },
     sitemap: 'https://www.remityn.com/sitemap.xml',
   }

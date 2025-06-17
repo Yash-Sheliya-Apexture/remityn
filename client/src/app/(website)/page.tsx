@@ -49,12 +49,64 @@
 // }
 
 
+// import { Metadata } from 'next';
+// import dynamic from 'next/dynamic';
+// import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
+// import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
+
+// // Dynamic imports for sections below the fold or less critical for initial interaction
+// const FeatureMarquee = dynamic(() => import("./components/home/FeatureMarquee"));
+// const InternationalTransferSection = dynamic(() => import("./components/home/InternationalTransferSection"));
+// const SecuritySection = dynamic(() => import("./components/home/SecuritySection"));
+// const ClientTestimonialSection = dynamic(() => import("./components/home/ClientTestimonialSection"));
+// const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
+// const StepCardContent = dynamic(() => import("./components/home/StepCard/StepContentCard"));
+// const CallToActionSection = dynamic(() => import("./components/home/CallToActionSection"));
+
+
+// export const metadata: Metadata = {
+//   title: 'Fast & Secure International Money Transfers',
+//   description: 'Join Remityn for the best rates on international money transfers. Send money to family and friends worldwide with ease.',
+//   openGraph: {
+//     title: 'Fast & Secure International Money Transfers by Remityn',
+//     description: 'Join Remityn for the best rates on international money transfers.',
+//   },
+//   twitter: {
+//     title: 'Fast & Secure International Money Transfers by Remityn',
+//     description: 'Join Remityn for the best rates on international money transfers.',
+//   },
+//   alternates: {
+//     canonical: '/',
+//   },
+// };
+
+
+
+// export default function Home() {
+//   return (
+//     <>
+//       <HeroSection />
+//       <CalculetingSection />
+//       <FeatureMarquee/>
+//       <InternationalTransferSection />
+//       <SecuritySection />
+//       <FeaturesList />
+//       <ClientTestimonialSection />
+//       <StepCardContent />
+//       <CallToActionSection />
+//     </>
+//   );
+// }
+
+
+
+// app/(website)/page.tsx
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
-import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
-import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
+import HeroSection from "./components/home/HeroSection";
+import CalculetingSection from "./components/home/CalculetingSection";
 
-// Dynamic imports for sections below the fold or less critical for initial interaction
+// Dynamic imports for sections below the fold
 const FeatureMarquee = dynamic(() => import("./components/home/FeatureMarquee"));
 const InternationalTransferSection = dynamic(() => import("./components/home/InternationalTransferSection"));
 const SecuritySection = dynamic(() => import("./components/home/SecuritySection"));
@@ -65,22 +117,14 @@ const CallToActionSection = dynamic(() => import("./components/home/CallToAction
 
 
 export const metadata: Metadata = {
-  title: 'Fast & Secure International Money Transfers',
-  description: 'Join Remityn for the best rates on international money transfers. Send money to family and friends worldwide with ease.',
-  openGraph: {
-    title: 'Fast & Secure International Money Transfers by Remityn',
-    description: 'Join Remityn for the best rates on international money transfers.',
-  },
-  twitter: {
-    title: 'Fast & Secure International Money Transfers by Remityn',
-    description: 'Join Remityn for the best rates on international money transfers.',
-  },
+  // Title will automatically become "Send Money to India... | Remityn" due to the template
+  title: 'Send Money to India with Zero Fees', 
+  description: 'Trusted by thousands of global Indians for safe, fee-free remittances. Send money now - it\'s free!',
   alternates: {
     canonical: '/',
   },
+  // OpenGraph and Twitter metadata will be inherited from the root layout, but you can override if needed
 };
-
-
 
 export default function Home() {
   return (
@@ -97,5 +141,3 @@ export default function Home() {
     </>
   );
 }
-
-
