@@ -8816,10 +8816,10 @@ const LoadingSkeleton = () => (
     <motion.div className="py-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
-          <Skeleton className="h-4 w-88 mb-3 rounded" />
-          <Skeleton className="h-8 w-50 rounded" />
+          <Skeleton className="h-4 sm:w-72 w-64 mb-3 rounded " />
+          <Skeleton className="h-8 w-48 rounded " />
         </div>
-        <Skeleton className="h-6 w-40 rounded-md" />
+        <Skeleton className="h-4 w-40 rounded-full" />
       </div>
 
       <div className="mx-auto max-w-5xl space-y-8">
@@ -8833,9 +8833,11 @@ const LoadingSkeleton = () => (
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-xl border lg:p-6 p-4">
-              <Skeleton className="h-5 px-4 py-3 sm:w-1/3 w-1/2 rounded mb-4 border-b border-transparent" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-xl border">
+              <div className="px-4 py-3 border-b">
+                <Skeleton className="h-5 sm:w-1/3 w-1/2 rounded" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:p-6 p-4">
                 <div className="space-y-2">
                   <Skeleton className="h-6 w-1/3 rounded" />
                   <Skeleton className="h-14 w-full rounded-md" />
@@ -8852,9 +8854,11 @@ const LoadingSkeleton = () => (
               </div>
             </div>
 
-            <div className="rounded-xl border lg:p-6 p-4">
-              <Skeleton className="h-5 px-4 py-3 sm:w-1/3 w-1/2 rounded mb-4 border-b border-transparent" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-xl border">
+              <div className="px-4 py-3 border-b">
+                <Skeleton className="h-5 px-4 py-3 sm:w-1/3 w-1/2 rounded" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:p-6 p-4">
                 <div className="space-y-2">
                   <Skeleton className="h-6 w-1/3 rounded" />
                   <Skeleton className="h-12 w-full rounded-md" />

@@ -5042,13 +5042,13 @@ const LoadingSkeleton = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-1 space-y-6">
         <div className="bg-primarybox rounded-xl overflow-hidden border">
-          <div className="px-6 py-4">
-            <Skeleton className="h-6 w-3/5 rounded bg-background/50" />
+          <div className="px-6 py-4 bg-secondarybox">
+            <Skeleton className="h-6 w-48 rounded bg-background/50" />
           </div>
           <div className="sm:p-6 p-4 space-y-6">
             <div className="space-y-2">
-              <Skeleton className="h-4 w-1/3 rounded bg-background/50" />
-              <Skeleton className="h-8 w-28 rounded-full bg-background/50" />
+              <Skeleton className="h-4 w-28 rounded bg-background/50" />
+              <Skeleton className="h-8 w-22 rounded-full bg-background/50" />
             </div>
             <div className="space-y-3">
               <Skeleton className="h-4 w-1/4 rounded mb-3" />
@@ -5063,7 +5063,7 @@ const LoadingSkeleton = () => (
         </div>
 
         <div className="bg-primarybox rounded-xl overflow-hidden border">
-          <div className="px-6 py-4">
+          <div className="px-6 py-4 bg-secondarybox">
             <Skeleton className="h-6 w-1/2 rounded bg-background/50" />
           </div>
           <div className="sm:p-6 p-4 space-y-4">
@@ -5076,12 +5076,12 @@ const LoadingSkeleton = () => (
 
       <div className="lg:col-span-2 border rounded-2xl">
         <div className="rounded-xl bg-primarybox overflow-hidden">
-          <div className="px-6 py-4">
+          <div className="px-6 py-4 bg-secondarybox">
             <Skeleton className="h-6 w-48 rounded bg-background/50" />
           </div>
           <div className="sm:p-6 p-4 space-y-8">
             <div>
-              <Skeleton className="h-6 w-40 rounded-full mb-4" />
+              <Skeleton className="h-6 w-40 rounded-full mb-4 bg-background/50" />
               <div className="flex items-start sm:items-center rounded-xl border p-4 flex-col sm:flex-row">
                 <Skeleton className="size-12 sm:size-16 rounded-full flex-shrink-0 mb-3 sm:mb-0 bg-background/50" />
                 <div className="ml-0 sm:ml-4 flex-grow w-full space-y-2">

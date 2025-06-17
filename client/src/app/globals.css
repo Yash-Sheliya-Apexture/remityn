@@ -21,7 +21,11 @@ body {
 
   /* Background Color */
   --color-background: #22282a;
+<<<<<<< HEAD
   --color-primary: #66e8fa;
+=======
+  --color-primary: #66e8fa  ;
+>>>>>>> d7b1c066ffcfe4ee62a5680b7b54fd63df42f564
   --color-primaryhover: #9cf0fc;
   /* aacho */
   --color-primarybox: #394247;

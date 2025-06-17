@@ -826,84 +826,126 @@
 //     );
 // }
 
-"use client";
+// "use client";
+
+// import './globals.css';
+// import { AuthProvider } from './contexts/AuthContext';
+// import { ReactNode, useState, useEffect, useCallback, useRef } from 'react';
+// import { satoshi, montserrat, outfit, inter } from './fonts';
+// import AppPreloader from './components/ui/AppPreloader';
+// import { AnimatePresence } from 'framer-motion';
+// import dynamic from 'next/dynamic'; // Import next/dynamic
+
+// // Dynamically import TawkToManager - only loads on client-side, non-SSR
+// const TawkToManager = dynamic(() => import('./components/TawkToManager'), {
+//     ssr: false,
+// });
+
+// interface RootLayoutProps {
+//   children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     const [showAppPreloader, setShowAppPreloader] = useState(true);
+//     const originalBodyOverflowRef = useRef<string | null>(null);
+
+//   const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+//   const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+//   const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+
+//     useEffect(() => {
+//         if (originalBodyOverflowRef.current === null) {
+//             originalBodyOverflowRef.current = document.body.style.overflow || '';
+//         }
+
+//         if (showAppPreloader) {
+//             document.body.style.overflow = 'hidden';
+//         } else {
+//             if (originalBodyOverflowRef.current !== null) {
+//                 document.body.style.overflow = originalBodyOverflowRef.current;
+//             }
+//         }
+        
+//         const capturedOriginalOverflow = originalBodyOverflowRef.current;
+//         return () => {
+//             // Ensure overflow is restored if component unmounts while preloader was active
+//             if (document.body.style.overflow === 'hidden' && capturedOriginalOverflow !== null) {
+//                  document.body.style.overflow = capturedOriginalOverflow;
+//             }
+//         };
+//     }, [showAppPreloader]);
+
+//     const handlePreloaderComplete = useCallback(() => {
+//         setShowAppPreloader(false);
+//     }, []);
+
+
+//   return (
+//     <html
+//       lang="en"
+//       className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//       suppressHydrationWarning
+//     >
+//       <body
+//         className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//         suppressHydrationWarning={true}
+//       >
+//         <AnimatePresence>
+//                     {showAppPreloader && (
+//                         <AppPreloader onAnimationComplete={handlePreloaderComplete} />
+//                     )}
+//                 </AnimatePresence>
+
+//                 <AuthProvider>
+//                     {!showAppPreloader && children} {/* Render children only after preloader is done if preferred */}
+//                     {/* Or always render children: */}
+//                     {/* {children} */}
+//                 </AuthProvider>
+                
+//                 <div id="portal-root"></div>
+//                 {!showAppPreloader && shouldLoadTawkTo && <TawkToManager />} {/* Load TawkTo after preloader */}
+//             </body>
+//         </html>
+//     );
+// }
+
+
+
+// app/layout.tsx
+
+// REMOVE "use client"; and all hooks (useState, useEffect, etc.)
 
 import './globals.css';
-import { AuthProvider } from './contexts/AuthContext';
-import { ReactNode, useState, useEffect, useCallback, useRef } from 'react';
+import { ReactNode } from 'react';
 import { satoshi, montserrat, outfit, inter } from './fonts';
-import AppPreloader from './components/ui/AppPreloader';
-import { AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic'; // Import next/dynamic
+import AppShell from './components/AppShell'; // Import the new component
+import { Metadata } from 'next';
 
-// Dynamically import TawkToManager - only loads on client-side, non-SSR
-const TawkToManager = dynamic(() => import('./components/TawkToManager'), {
-    ssr: false,
-});
+// The metadata object you added in step 2
+export const metadata: Metadata = {
+    title: {
+        template: '%s | Remityn',
+        default: 'Remityn - Fast & Secure International Money Transfers',
+    },
+    description: 'Trusted by thousands for safe, fee-free remittances. Send money to family and friends worldwide with ease and the best rates.',
+};
 
 interface RootLayoutProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-    const [showAppPreloader, setShowAppPreloader] = useState(true);
-    const originalBodyOverflowRef = useRef<string | null>(null);
-
-  const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-  const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-  const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
-
-    useEffect(() => {
-        if (originalBodyOverflowRef.current === null) {
-            originalBodyOverflowRef.current = document.body.style.overflow || '';
-        }
-
-        if (showAppPreloader) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            if (originalBodyOverflowRef.current !== null) {
-                document.body.style.overflow = originalBodyOverflowRef.current;
-            }
-        }
-        
-        const capturedOriginalOverflow = originalBodyOverflowRef.current;
-        return () => {
-            // Ensure overflow is restored if component unmounts while preloader was active
-            if (document.body.style.overflow === 'hidden' && capturedOriginalOverflow !== null) {
-                 document.body.style.overflow = capturedOriginalOverflow;
-            }
-        };
-    }, [showAppPreloader]);
-
-    const handlePreloaderComplete = useCallback(() => {
-        setShowAppPreloader(false);
-    }, []);
-
-
-  return (
-    <html
-      lang="en"
-      className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
-      suppressHydrationWarning
-    >
-      <body
-        className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
-        suppressHydrationWarning={true}
-      >
-        <AnimatePresence>
-                    {showAppPreloader && (
-                        <AppPreloader onAnimationComplete={handlePreloaderComplete} />
-                    )}
-                </AnimatePresence>
-
-                <AuthProvider>
-                    {!showAppPreloader && children} {/* Render children only after preloader is done if preferred */}
-                    {/* Or always render children: */}
-                    {/* {children} */}
-                </AuthProvider>
-                
-                <div id="portal-root"></div>
-                {!showAppPreloader && shouldLoadTawkTo && <TawkToManager />} {/* Load TawkTo after preloader */}
+    return (
+        <html
+            lang="en"
+            className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+            suppressHydrationWarning
+        >
+            <body
+                className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+                suppressHydrationWarning={true}
+            >
+                <AppShell>{children}</AppShell>
             </body>
         </html>
     );
