@@ -926,13 +926,12 @@ export default function AdminHomePage() {
     <section className="Admin-Dashboard py-5">
       <div className="container mx-auto px-4">
         <div className="overflow-y-auto">
-          
           {/* Admin-Header */}
           <div className="Admin-Header mb-8">
             <div className="flex items-center gap-3">
               <div className="p-2.5 shrink-0 bg-primary rounded-full flex items-center justify-center">
                 <FaChartPie className="text-mainheading" size={26} />
-              </div>  
+              </div>
 
               <h1 className="lg:text-3xl text-2xl font-semibold text-mainheadingWhite">
                 Admin Dashboard Home
@@ -955,8 +954,6 @@ export default function AdminHomePage() {
             <TransfersVolumeChart />
           </div>
 
-          
-
           {/* Recent activity and Balance Distribution side-by-side */}
           <div className="flex xl:flex-row order-1 sm:order-2 flex-col gap-6 mb-8">
             {" "}
@@ -964,14 +961,10 @@ export default function AdminHomePage() {
             <RecentActivity />
             <BalanceDistributionChart /> {/* <-- ADDED THE NEW CHART */}
           </div>
-          
+
           <TransferInsights />
         </div>
       </div>
     </section>
   );
 }
-
-
-
-

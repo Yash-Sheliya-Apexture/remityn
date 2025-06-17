@@ -449,6 +449,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     <div className="bg-background sticky lg:top-28 top-20 z-20 pb-5">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row md:items-center items-start md:justify-between gap-4">
+
           {/* Title */}
           <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold text-mainheadingWhite">
             {title}
@@ -484,6 +485,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     <div className="flex flex-col gap-3 items-center flex-shrink-0  py-2">
                       {/* Container for circle and ping animation. This container is sized. */}
                       <div className="relative sm:size-14 size-10">
+                        
                         {/* Animated ping for the current (active) step */}
                         {isActive && (
                           <div
