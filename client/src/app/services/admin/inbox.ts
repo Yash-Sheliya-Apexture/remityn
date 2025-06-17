@@ -1,4 +1,4 @@
-// // frontend/src/services/admin/inbox.ts
+                // // frontend/src/services/admin/inbox.ts
 // import axios, { AxiosError } from 'axios';
 // import apiConfig from '../../config/apiConfig'; // Adjust path
 
