@@ -49,6 +49,7 @@
 // }
 
 
+
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
@@ -79,7 +80,6 @@ export const metadata: Metadata = {
     canonical: '/',
   },
 };
-
 
 
 export default function Home() {

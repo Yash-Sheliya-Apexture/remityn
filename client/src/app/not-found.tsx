@@ -466,7 +466,7 @@
 // export default Error404Page;
 
 
-// src/components/Error404Page.tsx
+// // src/components/Error404Page.tsx
 "use client"; // <--- THIS LINE IS CORRECTLY AT THE VERY TOP
 
 import Image from "next/image";
@@ -575,6 +575,7 @@ const Error404Page: React.FC = () => {
 };
 
 export default Error404Page;
+
 
 /* New-Design */
 
