@@ -514,6 +514,239 @@
 
 // export default AppPreloader;
 
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import Image from "next/image";
+// import { motion } from "framer-motion";
+
+// interface AppPreloaderProps {
+//   onAnimationComplete: () => void;
+// }
+
+// const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
+//   const [progress, setProgress] = useState(0);
+//   const [isContentVisible, setIsContentVisible] = useState(false);
+//   const [isMounted, setIsMounted] = useState(false); // For hydration fix
+
+//   useEffect(() => {
+//     setIsMounted(true); // Will be true only on client-side after initial render
+//   }, []);
+
+//   useEffect(() => {
+//     if (!isMounted) return; // Animations and content visibility logic only runs on client
+
+//     const timer = setTimeout(() => {
+//       setIsContentVisible(true);
+//     }, 200);
+//     return () => clearTimeout(timer);
+//   }, [isMounted]);
+
+//   useEffect(() => {
+//     if (!isMounted || !isContentVisible) return; // Progress animation only runs on client when content is visible
+
+//     let currentProgress = 0;
+//     const targetProgress = 100;
+//     const animationDuration = 2000; // 2 seconds
+//     const updateInterval = 50; // ms
+
+//     const steps = animationDuration / updateInterval;
+//     const incrementPerStep = targetProgress / steps;
+
+//     const intervalId = setInterval(() => {
+//       currentProgress += incrementPerStep;
+//       if (currentProgress >= targetProgress) {
+//         setProgress(targetProgress);
+//         clearInterval(intervalId);
+//         setTimeout(() => {
+//           onAnimationComplete();
+//         }, 400); // Delay after 100% before calling complete
+//       } else {
+//         setProgress(Math.floor(currentProgress));
+//       }
+//     }, updateInterval);
+
+//     return () => clearInterval(intervalId);
+//   }, [isMounted, isContentVisible, onAnimationComplete]);
+
+//   // Animation Variants
+//   const preloaderVariants = {
+//     initial: { opacity: 0 },
+//     animate: { opacity: 1, transition: { duration: 0.3, ease: "easeInOut" } },
+//     exit: {
+//       opacity: 0,
+//       transition: { duration: 0.5, ease: "easeInOut", delay: 0.2 },
+//     }, // Added exit animation
+//   };
+//   const cardVariants = {
+//     initial: { opacity: 0, scale: 0.95, y: 20 },
+//     animate: {
+//       opacity: 1,
+//       scale: 1,
+//       y: 0,
+//       transition: { duration: 0.5, ease: "easeOut", delay: 0.1 },
+//     },
+//   };
+//   const textItemVariants = {
+//     initial: { opacity: 0, y: 15 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.5, ease: "easeOut" },
+//     },
+//   };
+//   const logoVariants = {
+//     initial: { opacity: 0, scale: 0.8 },
+//     animate: {
+//       opacity: 1,
+//       scale: 1,
+//       transition: { type: "spring", stiffness: 150, damping: 15, delay: 0.3 },
+//     },
+//   };
+//   const footerTextContainerVariants = {
+//     initial: {},
+//     animate: { transition: { staggerChildren: 0.15, delayChildren: 0.5 } },
+//   };
+//   const footerItemVariants = {
+//     initial: { opacity: 0, y: 10 },
+//     animate: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.4, ease: "easeOut" },
+//     },
+//   };
+
+//   // Static placeholder for SSR and initial client render to prevent hydration mismatch
+//   if (!isMounted) {
+//     return (
+//       <div className="fixed inset-0 bg-background p-4 z-[99999]">
+//         <div className="absolute inset-0 bg-[url('/assets/images/dot.svg')] bg-center bg-repeat z-0"></div>
+//         <div className="top-0 left-0 w-full h-full flex flex-col justify-between items-center sm:p-8 p-0 font-satoshi text-mainheadingWhite relative z-4">
+//           {/* Top Section Static */}
+//           <div className="w-full flex justify-between items-start mb-8 sm:mb-12">
+//             <div className="text-xl lg:text-2xl opacity-80 leading-snug text-subheadingWhite">
+//               Loading <br /> your experience...
+//             </div>
+//             <div className="text-5xl sm:text-6xl lg:text-9xl font-medium text-mainheadingWhite opacity-90">
+//               {"0% "}
+//             </div>
+//           </div>
+//           {/* Middle Section Static - Logo Placeholder (optional) */}
+//           <div className="flex justify-center items-center flex-grow my-8 sm:my-12">
+//             {/* Static logo or empty div */}
+//           </div>
+//           {/* Bottom Section Static */}
+//           <div className="w-full mt-8 sm:mt-12">
+//             <div className="w-full h-[6px] sm:h-[8px] bg-secondarybox rounded-full overflow-hidden mb-6">
+//               <div
+//                 className="h-full bg-primary rounded-full"
+//                 style={{ width: "0%" }}
+//               ></div>
+//             </div>
+//             <div className="flex flex-col sm:flex-row justify-between w-full text-xs sm:text-sm text-subheadingWhite/70 gap-2 sm:gap-0 text-center sm:text-left">
+//               <span>Secure Money Transfer</span>
+//               <span>Trusted Worldwide</span>
+//               <span>Fast & Easy</span>
+//             </div>
+//           </div>
+//         </div>
+//         <style jsx global>{`
+//           body:has(div.z-\\[99999\\]) {
+//             overflow: hidden !important;
+//           }
+//         `}</style>
+//       </div>
+//     );
+//   }
+
+//   // Full animated component, rendered only on the client after mount
+//   return (
+//     <motion.div
+//       className="fixed inset-0 bg-background p-4 z-[99999]"
+//       variants={preloaderVariants}
+//       initial="initial"
+//       animate={isContentVisible ? "animate" : "initial"}
+//       exit="exit" // Added exit prop for AnimatePresence
+//     >
+//       <div className="absolute inset-0 bg-[url('/assets/images/dot.svg')] bg-center bg-repeat z-0"></div>
+
+//       <motion.div
+//         className="top-0 left-0 w-full h-full flex flex-col justify-between items-center sm:p-8 p-0 font-satoshi text-mainheadingWhite relative z-4"
+//         variants={cardVariants}
+//         // initial/animate will be inherited from parent's animate state if not explicitly set
+//         // For this component, we let the parent `motion.div` handle initial/animate/exit for the whole preloader
+//         // and this `cardVariants` controls the animation of the card content *within* the preloader.
+//         // To ensure it animates when preloader becomes visible:
+//         initial="initial" // Use cardVariants.initial
+//         animate={isContentVisible ? "animate" : "initial"} // Use cardVariants.animate when content is visible
+//       >
+//         {/* Top Section */}
+//         <motion.div
+//           className="w-full flex justify-between items-start mb-8 sm:mb-12"
+//           variants={textItemVariants}
+//         >
+//           <div className="text-xl lg:text-2xl opacity-80 leading-snug text-subheadingWhite">
+//             Loading <br /> your experience...
+//           </div>
+//           <motion.div
+//             className="text-5xl sm:text-6xl lg:text-9xl text-mainheadingWhite font-medium"
+//             key={progress}
+//             initial={{ opacity: 0.7, scale: 0.9, y: 5 }}
+//             animate={{ opacity: 0.9, scale: 1, y: 0 }}
+//             transition={{ duration: 0.15, ease: "easeOut" }}
+//           >
+//             {progress > 0 ? `${progress}% ` : "0% "}
+//           </motion.div>
+//         </motion.div>
+
+//         {/* Middle Section - Logo */}
+//         <motion.div
+//           className="flex justify-center items-center flex-grow my-8 sm:my-12"
+//           variants={logoVariants}
+//         >
+//           <Image
+//             src="/assets/images/main_logo.svg"
+//             alt="Remityn Logo"
+//             width={280}
+//             height={80}
+//             priority
+//             className="object-contain md:w-80 sm:w-60 w-50"
+//           />
+//         </motion.div>
+
+//         {/* Bottom Section */}
+//         <motion.div className="w-full mt-8 sm:mt-12">
+//           <div className="w-full h-[6px] sm:h-[8px] bg-secondarybox rounded-full overflow-hidden mb-6">
+//             <motion.div
+//               className="h-full bg-primary rounded-full"
+//               initial={{ width: "0%" }}
+//               animate={{ width: `${progress}%` }}
+//               transition={{ duration: 0.1, ease: "linear" }}
+//             />
+//           </div>
+//           <motion.div
+//             className="flex flex-col sm:flex-row justify-between w-full text-xs sm:text-sm text-subheadingWhite/70 gap-2 sm:gap-0 text-center sm:text-left"
+//             variants={footerTextContainerVariants}
+//           >
+//             <motion.span variants={footerItemVariants}>
+//               Secure Money Transfer
+//             </motion.span>
+//             <motion.span variants={footerItemVariants}>
+//               Trusted Worldwide
+//             </motion.span>
+//             <motion.span variants={footerItemVariants}>Fast & Easy</motion.span>
+//           </motion.div>
+//         </motion.div>
+//       </motion.div>
+
+      
+//     </motion.div>
+//   );
+// };
+
+// export default AppPreloader;
+
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -526,24 +759,14 @@ interface AppPreloaderProps {
 
 const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [isContentVisible, setIsContentVisible] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); // For hydration fix
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true); // Will be true only on client-side after initial render
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return; // Animations and content visibility logic only runs on client
-
-    const timer = setTimeout(() => {
-      setIsContentVisible(true);
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [isMounted]);
-
-  useEffect(() => {
-    if (!isMounted || !isContentVisible) return; // Progress animation only runs on client when content is visible
+    if (!isMounted) return;
 
     let currentProgress = 0;
     const targetProgress = 100;
@@ -560,24 +783,29 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
         clearInterval(intervalId);
         setTimeout(() => {
           onAnimationComplete();
-        }, 400); // Delay after 100% before calling complete
+        }, 400); 
       } else {
         setProgress(Math.floor(currentProgress));
       }
     }, updateInterval);
 
     return () => clearInterval(intervalId);
-  }, [isMounted, isContentVisible, onAnimationComplete]);
+  }, [isMounted, onAnimationComplete]);
 
-  // Animation Variants
+  // --- Animation Variants ---
   const preloaderVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.3, ease: "easeInOut" } },
+    // FIX: The container is now visible instantly on the client (`opacity: 1`),
+    // matching the server render and preventing the black "cut" or flicker.
+    initial: { opacity: 1 },
+    animate: { opacity: 1 },
+    // The exit animation correctly fades out the entire component.
     exit: {
       opacity: 0,
       transition: { duration: 0.5, ease: "easeInOut", delay: 0.2 },
-    }, // Added exit animation
+    },
   };
+
+  // These inner animations will still run, creating the desired dynamic loading effect.
   const cardVariants = {
     initial: { opacity: 0, scale: 0.95, y: 20 },
     animate: {
@@ -616,13 +844,12 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
     },
   };
 
-  // Static placeholder for SSR and initial client render to prevent hydration mismatch
+  // This static placeholder for SSR is essential. It's what the user sees first.
   if (!isMounted) {
     return (
       <div className="fixed inset-0 bg-background p-4 z-[99999]">
         <div className="absolute inset-0 bg-[url('/assets/images/dot.svg')] bg-center bg-repeat z-0"></div>
         <div className="top-0 left-0 w-full h-full flex flex-col justify-between items-center sm:p-8 p-0 font-satoshi text-mainheadingWhite relative z-4">
-          {/* Top Section Static */}
           <div className="w-full flex justify-between items-start mb-8 sm:mb-12">
             <div className="text-xl lg:text-2xl opacity-80 leading-snug text-subheadingWhite">
               Loading <br /> your experience...
@@ -631,11 +858,9 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
               {"0% "}
             </div>
           </div>
-          {/* Middle Section Static - Logo Placeholder (optional) */}
           <div className="flex justify-center items-center flex-grow my-8 sm:my-12">
-            {/* Static logo or empty div */}
+            {/* Logo placeholder */}
           </div>
-          {/* Bottom Section Static */}
           <div className="w-full mt-8 sm:mt-12">
             <div className="w-full h-[6px] sm:h-[8px] bg-secondarybox rounded-full overflow-hidden mb-6">
               <div
@@ -659,26 +884,22 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
     );
   }
 
-  // Full animated component, rendered only on the client after mount
+  // This is the full animated component that runs on the client.
   return (
     <motion.div
       className="fixed inset-0 bg-background p-4 z-[99999]"
       variants={preloaderVariants}
       initial="initial"
-      animate={isContentVisible ? "animate" : "initial"}
-      exit="exit" // Added exit prop for AnimatePresence
+      animate="animate"
+      exit="exit"
     >
       <div className="absolute inset-0 bg-[url('/assets/images/dot.svg')] bg-center bg-repeat z-0"></div>
 
       <motion.div
         className="top-0 left-0 w-full h-full flex flex-col justify-between items-center sm:p-8 p-0 font-satoshi text-mainheadingWhite relative z-4"
         variants={cardVariants}
-        // initial/animate will be inherited from parent's animate state if not explicitly set
-        // For this component, we let the parent `motion.div` handle initial/animate/exit for the whole preloader
-        // and this `cardVariants` controls the animation of the card content *within* the preloader.
-        // To ensure it animates when preloader becomes visible:
-        initial="initial" // Use cardVariants.initial
-        animate={isContentVisible ? "animate" : "initial"} // Use cardVariants.animate when content is visible
+        initial="initial"
+        animate="animate"
       >
         {/* Top Section */}
         <motion.div
@@ -695,7 +916,7 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
             animate={{ opacity: 0.9, scale: 1, y: 0 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
           >
-            {progress > 0 ? `${progress}% ` : "0% "}
+            {`${progress}% `}
           </motion.div>
         </motion.div>
 
@@ -738,8 +959,6 @@ const AppPreloader: React.FC<AppPreloaderProps> = ({ onAnimationComplete }) => {
           </motion.div>
         </motion.div>
       </motion.div>
-
-      
     </motion.div>
   );
 };
