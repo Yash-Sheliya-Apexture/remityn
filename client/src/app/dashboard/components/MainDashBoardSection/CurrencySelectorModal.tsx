@@ -3186,6 +3186,7 @@ const CurrencySelectorModal: React.FC<CurrencySelectorModalProps> = ({
         </div>
       );
     }
+    
     if (!isFetching && !error && currencies.length === 0) {
       return (
         <div className="flex-grow flex items-center justify-center text-center py-4 min-h-[100px]">

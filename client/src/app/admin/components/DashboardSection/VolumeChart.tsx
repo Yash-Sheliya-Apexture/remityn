@@ -2240,7 +2240,7 @@
 //             </div>
 //           </>
 //         )}
-        
+
 //         {error && !loading && (
 //           <div className="flex-grow flex flex-col justify-center items-center text-center space-y-3 py-10">
 
@@ -2380,7 +2380,6 @@
 //   );
 // }
 
-
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -2390,7 +2389,6 @@ import {
   CartesianGrid,
   XAxis,
   ResponsiveContainer,
-  Tooltip,
   YAxis,
 } from "recharts";
 import {
@@ -2589,10 +2587,12 @@ export function VolumeChart({
       )}
     >
       <CardHeader className="flex-shrink-0 p-3">
-        <div className="flex flex-wrap lg:flex-row flex-col items-center justify-between w-full gap-3">
+        <div
+          className="flex flex-wrap lg:flex-row flex-col items-start sm:items-center 
+        justify-between w-full gap-3"
+        >
           <div className="flex items-center justify-between gap-3 w-64">
             <div className="flex gap-3">
-              
               <div className="flex justify-center items-center size-12 bg-primary rounded-full flex-shrink-0">
                 {icon}
               </div>
@@ -2613,7 +2613,7 @@ export function VolumeChart({
           <Tabs
             value={timeRange}
             onValueChange={(value) => setTimeRange(value as ChartRange)}
-            className="sm:w-auto w-full flex-row items-center" 
+            className="sm:w-auto w-full flex-row items-center"
           >
             <div className="flex font-medium">
               {showRefreshButton && (
@@ -2634,9 +2634,9 @@ export function VolumeChart({
             <div className="rounded-full overflow-hidden">
               <TabsList
                 className={cn(
-                  "relative flex justify-normal items-center rounded-full p-1.5",
+                  "relative flex justify-normal items-center rounded-full p-1",
                   "bg-secondarybox",
-                  "w-full h-auto whitespace-nowrap z-0 overflow-x-auto"
+                  "w-full h-auto whitespace-nowrap z-0 overflow-x-auto sm:[&::-webkit-scrollbar]:w-2  sm:[&::-webkit-scrollbar]:h-2 sm:[&::-webkit-scrollbar-track]:rounded-full sm:[&::-webkit-scrollbar-thumb]:rounded-full  sm:[&::-webkit-scrollbar-track]:bg-primarybox sm:[&::-webkit-scrollbar-thumb]:bg-secondarybox"
                 )}
               >
                 {timeRangeTabs.map((tab) => (
@@ -2707,10 +2707,9 @@ export function VolumeChart({
             </div>
           </>
         )}
-        
+
         {error && !loading && (
           <div className="flex-grow flex flex-col justify-center items-center text-center space-y-3 py-10">
-
             <h1 className="lg:text-2xl text-xl font-semibold text-mainheadingWhite">
               Error Loading Chart Data
             </h1>
@@ -2726,12 +2725,12 @@ export function VolumeChart({
         )}
 
         {!loading && !error && chartData.length === 0 && (
-           <div className="flex-grow flex justify-center items-center h-full py-33 text-center">
+          <div className="flex-grow flex justify-center items-center h-full py-33 text-center">
             <p className="text-base text-mainheadingWhite">
               No data available for the selected period.
             </p>
           </div>
-        )}  
+        )}
 
         {!loading && !error && chartData.length > 0 && (
           <>
