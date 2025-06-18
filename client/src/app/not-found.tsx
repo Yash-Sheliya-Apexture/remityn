@@ -355,7 +355,118 @@
 
 // export default Error404Page;
 
-// src/components/Error404Page.tsx
+// // src/components/Error404Page.tsx
+// "use client"; // <--- THIS LINE IS CORRECTLY AT THE VERY TOP
+
+// import Image from "next/image";
+// import React from "react";
+// import { FiHelpCircle } from "react-icons/fi";
+// import { MdLockOutline } from "react-icons/md";
+// import { RiShieldCheckLine } from "react-icons/ri";
+// // FaArrowLeft was imported but not used, removed for tidiness. You can add it back if needed.
+// import Link from "next/link";
+// import { usePathname } from "next/navigation"; // Import usePathname
+
+// // Animation variants and motion imports have been removed.
+
+// const Error404Page: React.FC = () => {
+//   const pathname = usePathname();
+
+//   let buttonText = "go to homepage";
+//   let buttonHref = "/";
+
+//   if (pathname) {
+//     if (pathname.startsWith("/admin")) {
+//       buttonText = "go to admin panel";
+//       buttonHref = "/admin"; // URL for admin section
+//     } else if (pathname.startsWith("/dashboard")) {
+//       buttonText = "go to dashboard";
+//       buttonHref = "/dashboard"; // URL for dashboard section
+//     }
+//     // Default is homepage, set initially
+//   }
+
+//   return (
+//     <div className="container mx-auto px-4">
+//       <section className="Error-Page flex items-center justify-center min-h-screen py-10">
+//         <div className="overflow-hidden max-w-6xl w-full flex flex-col md:flex-row md:gap-10 gap-0">
+//           {/* Left Column: Content */}
+//           <div className="w-full md:w-1/2 space-y-4 flex flex-col justify-center">
+//             <h1 className="text-4xl font-SatoshiVariable sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//               Oops!{" "}
+//               <span className="text-primary font-SatoshiVariableItalic">
+//                 Something Went Wrong!
+//               </span>
+//             </h1>
+
+//             <p className="text-base md:text-lg text-subheadingWhite max-w-3xl px-2">
+//               Looks like this page missed the currency route! But don’t worry —
+//               your funds and support are just a click away.
+//             </p>
+
+//             <ul className="space-y-4">
+//               <li className="flex items-center gap-2.5">
+//                 <FiHelpCircle size={20} className="text-primary" />
+//                 <Link
+//                   href="/faqs"
+//                   className="hover:underline text-subheadingWhite"
+//                 >
+//                   Question and answers
+//                 </Link>
+//               </li>
+//               <li className="flex items-center gap-2.5">
+//                 <MdLockOutline size={20} className="text-primary" />
+//                 <Link
+//                   href="/privacy-policy"
+//                   className="hover:underline text-subheadingWhite"
+//                 >
+//                   Privacy & Policy
+//                 </Link>
+//               </li>
+//               <li className="flex items-center gap-2.5">
+//                 <RiShieldCheckLine size={20} className="text-primary" />
+//                 <Link
+//                   href="/terms-and-conditions"
+//                   className="hover:underline text-subheadingWhite"
+//                 >
+//                   Terms-and-conditions
+//                 </Link>
+//               </li>
+//             </ul>
+
+//             {/* Condition Render Button */}
+//             <div className="inline-block group">
+//               <Link
+//                 href={buttonHref} // Use the dynamic href
+//                 className="bg-primary hover:bg-primaryhover gap-2 capitalize text-mainheading w-fit cursor-pointer font-medium text-sm lg:text-base py-3 px-10 h-12.5 rounded-full transition-all duration-75 ease-linear flex items-center justify-center"
+//               >
+//                 {buttonText}{" "}
+//                 {/* Use the dynamic text. 'capitalize' class will style it */}
+//               </Link>
+//             </div>
+//           </div>
+
+//           {/* Right Column: Illustration */}
+//           <div className="w-full md:w-1/2 justify-center flex items-center">
+//             <Image
+//               src="/assets/images/Frame 7.png"
+//               width={600}
+//               height={600}
+//               alt="404 Error Illustration Light"
+//               className="object-contain aspect-square"
+//               priority // Good practice for LCP images
+//             />
+//           </div>
+//         </div>
+//       </section>
+//     </div>
+//   );
+// };
+
+// export default Error404Page;
+
+
+// // src/components/Error404Page.tsx
 "use client"; // <--- THIS LINE IS CORRECTLY AT THE VERY TOP
 
 import Image from "next/image";
@@ -389,7 +500,7 @@ const Error404Page: React.FC = () => {
   return (
     <div className="container mx-auto px-4">
       <section className="Error-Page flex items-center justify-center min-h-screen py-10">
-        <div className="overflow-hidden max-w-6xl w-full flex flex-col md:flex-row md:gap-10 gap-0">
+        <div className="overflow-hidden max-w-7xl w-full flex flex-col md:flex-row md:gap-10 gap-0">
           {/* Left Column: Content */}
           <div className="w-full md:w-1/2 space-y-4 flex flex-col justify-center">
             <h1 className="text-4xl font-SatoshiVariable sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-mainheadingWhite">
@@ -464,3 +575,73 @@ const Error404Page: React.FC = () => {
 };
 
 export default Error404Page;
+
+
+/* New-Design */
+
+// "use client";
+
+// import React from "react";
+// import Link from "next/link";
+// import { usePathname } from "next/navigation"; // Import usePathname
+
+// const Error404Page: React.FC = () => {
+//   const pathname = usePathname();
+
+//   // Dynamic button text and href based on the path, defaults to homepage
+//   let goBackButtonText = "Go Back Home";
+//   let goBackButtonHref = "/";
+
+//   if (pathname) {
+//     if (pathname.startsWith("/admin")) {
+//       goBackButtonText = "Go to Admin Panel";
+//       goBackButtonHref = "/admin"; // URL for admin section
+//     } else if (pathname.startsWith("/dashboard")) {
+//       goBackButtonText = "Go to Dashboard";
+//       goBackButtonHref = "/dashboard"; // URL for dashboard section
+//     }
+//     // If none match, it stays "Go Back Home" to "/"
+//   }
+
+//   return (
+//     <div className="bg-background min-h-screen flex items-center justify-center py-10 relative overflow-hidden">
+//       {" "}
+//       {/* Added relative and overflow-hidden for fixed button */}
+//       {/* Container for centered content */}
+//       <div className="text-white text-center max-w-2xl mx-auto px-4 space-y-5 z-10" >
+//         {/* "Page not found" label */}
+//         {/* <div className="inline-block bg-gray-800 text-white px-4 py-1 rounded-full text-sm mb-6">
+//           Page not found
+//         </div> */}
+
+//         <div className="inline-block rounded-3xl contactbg border px-4 py-1.5">
+//           <span className="text-white text-base">Page not found</span>
+//         </div>
+
+//         {/* Main Heading */}
+//         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
+//           Oops!{" "}
+//           <span className="text-primary font-SatoshiVariableItalic">
+//             Something Went Wrong!
+//           </span>
+//         </h1>
+
+//         {/* Descriptive Text */}
+//         <p className="text-lg text-gray-300">
+//           Looks like this page missed the currency route! But don’t worry — your
+//           funds and support are just a click away.
+//         </p>
+
+//         {/* Go Back Home Button */}
+//         <Link
+//           href={goBackButtonHref}
+//           className="inline-flex items-center bg-primary hover:bg-primaryhover text-mainheading font-medium py-3 h-11.5 px-6 rounded-full transition-all duration-150 ease-linear"
+//         >
+//           {goBackButtonText}
+//           </Link>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Error404Page;

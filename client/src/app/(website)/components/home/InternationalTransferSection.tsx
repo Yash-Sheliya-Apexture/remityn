@@ -229,7 +229,6 @@
 //                      conditionalClasses += " border-b border-b-gray-600/50";
 //                 }
 
-
 //                 // Add right border for items not in the last column on large screens
 //                 if (!isLastItemInRowLg) {
 //                     conditionalClasses += " lg:border-r lg:border-r-gray-600/50 lg:pr-10";
@@ -240,7 +239,6 @@
 //                     conditionalClasses += " lg:border-b-0 lg:pb-0"; // Remove bottom border/padding for LG
 //                 }
 //             }
-
 
 //             // Handle the special col-span for the last item if the total count is odd
 //             // This ensures the last item centers if it's alone on the last row (for sm) or takes full width (for lg if desired)
@@ -257,7 +255,6 @@
 //                     // if (index === individualsProductsData.length - 1) conditionalClasses += " lg:col-span-1"; // this one
 //                  }
 //              }
-
 
 //             return (
 //               <div
@@ -290,122 +287,260 @@
 
 
 
+"use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
+import React from 'react';
+import { MdOutlineHeadsetMic } from "react-icons/md";
+import { CgArrowsExchange } from "react-icons/cg";
+import { IoReceiptOutline } from "react-icons/io5";
+// Define type for Product data
+type Product = {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+};
 
-  "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
+// Icon components for better readability and potential reusability
+const ReceiptIcon = () => <IoReceiptOutline className="w-8 h-8 text-primary" />;
+const ExchangeAltIcon = () => <CgArrowsExchange className="w-10 h-10 text-primary" />;
+const HeadsetIcon = () => <MdOutlineHeadsetMic className="w-8 h-8 text-primary" />;
 
-  import React from 'react';
-  import { MdOutlineHeadsetMic } from "react-icons/md";
-  import { CgArrowsExchange } from "react-icons/cg";
-  import { IoReceiptOutline } from "react-icons/io5";
-  // Define type for Product data
-  type Product = {
-    icon: React.ReactNode;
-    title: string;
-    description: string;
-  };
+// Data for the "individuals" products
+const individualsProductsData: Product[] = [
+  {
+    icon: <ReceiptIcon />,
+    title: 'No Hidden Fees',
+    description: 'Transparent transfers with No hidden Charges.',
+  },
+  {
+    icon: <ExchangeAltIcon />,
+    title: 'Superior Exchange Rates',
+    description: 'Always get the best value, guaranteed.',
+  },
+  {
+    icon: <HeadsetIcon />,
+    title: '24/7 Expert Support',
+    description: 'Help when you need it, not bots.',
+  },
+];
 
-  // Icon components for better readability and potential reusability
-  const ReceiptIcon = () => <IoReceiptOutline className="w-8 h-8 text-primary" />;
-  const ExchangeAltIcon = () => <CgArrowsExchange className="w-10 h-10 text-primary" />;
-  const HeadsetIcon = () => <MdOutlineHeadsetMic className="w-8 h-8 text-primary" />;
+const InternationalTransferSection: React.FC = () => {
+  return (
+    <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
+      <div className="container mx-auto px-4">
+        {/* Header Section */}
+        <div className="text-center lg:text-left">
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-5xl max-w-full">
+            Why Thousands Choose{" "}<span className="text-primary">Remityn</span>
+          </h3>
+          <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+            Experience unmatched convenience, reliability,and security, trusted by businesses and individuals alike.
+          </p>
+        </div>
 
-  // Data for the "individuals" products
-  const individualsProductsData: Product[] = [
-    {
-      icon: <ReceiptIcon />,
-      title: 'No Hidden Fees',
-      description: 'Transparent transfers with No hidden Charges.',
-    },
-    {
-      icon: <ExchangeAltIcon />,
-      title: 'Superior Exchange Rates',
-      description: 'Always get the best value, guaranteed.',
-    },
-    {
-      icon: <HeadsetIcon />,
-      title: '24/7 Expert Support',
-      description: 'Help when you need it, not bots.',
-    },
-  ];
+        {/*
+          Products Grid:
+          - Mobile (default): 1 column
+          - Tablet (md): 2 columns, with the last item spanning both
+          - Desktop (lg): 3 columns
+        */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
+          {individualsProductsData.map((product, index) => {
+            const totalItems = individualsProductsData.length;
 
-  const InternationalTransferSection: React.FC = () => {
-    return (
-      <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
-        <div className="container mx-auto px-4">
-          {/* Header Section */}
-          <div className="text-center lg:text-left">
-            <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-5xl max-w-full">
-              Why Thousands Choose{" "}<span className="text-primary">Remityn</span>
-            </h3>
-            <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-              Experience unmatched convenience, reliability,and security, trusted by businesses and individuals alike.
-            </p>
-          </div>
+            // Specific check for the third item in a list of three to apply the full-width span on tablets.
+            const isThirdItem = totalItems === 3 && index === 2;
 
-          {/* 
-            Products Grid:
-            - Mobile (default): 1 column
-            - Tablet (md): 2 columns, with the last item spanning both
-            - Desktop (lg): 3 columns
-          */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
-            {individualsProductsData.map((product, index) => {
-              const totalItems = individualsProductsData.length;
+            const itemWrapperClasses = `
+              relative
+              ${isThirdItem ? 'md:col-span-2 lg:col-span-1' : ''}
+            `;
 
-              // Specific check for the third item in a list of three to apply the full-width span on tablets.
-              const isThirdItem = totalItems === 3 && index === 2;
-
-              const itemWrapperClasses = `
-                relative 
-                ${isThirdItem ? 'md:col-span-2 lg:col-span-1' : ''}
-              `;
-
-              return (
-                <div
-                  key={product.title + index}
-                  className={itemWrapperClasses}
-                >
-                  {/* Content Area with Padding */}
-                  <div className="px-5 py-8 text-center space-y-4">
-                    <div className="flex justify-center">
-                      <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                        <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
-                          {product.icon}
-                        </div>
+            return (
+              <div
+                key={product.title + index}
+                className={itemWrapperClasses}
+              >
+                {/* Content Area with Padding */}
+                <div className="px-5 py-8 text-center space-y-4">
+                  <div className="flex justify-center">
+                    <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
+                        {product.icon}
                       </div>
                     </div>
-                    <h3 className="text-2xl text-mainheadingWhite font-semibold">
-                      {product.title}
-                    </h3>
-                    <p className="text-subheadingWhite lg:text-lg text-base">
-                      {product.description}
-                    </p>
                   </div>
-
-                  {/* --- SEPARATE BORDER DIVS --- */}
-
-                  {/* Vertical Border: Show ONLY on large screens (lg) between items */}
-                  {/* It will appear after items 1 and 2 in a 3-column layout */}
-                  { (index + 1) % 3 !== 0 && index < totalItems - 1 && (
-                    <div className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block" aria-hidden="true" />
-                  )}
-
-                  {/* Horizontal Border: Show on mobile and tablet, but hide on large screens */}
-                  {/* This applies a bottom border to the first two items, fulfilling the request. */}
-                  { index < 2 && (
-                    <div
-                        className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
-                        aria-hidden="true"
-                    />
-                  )}
+                  <h3 className="text-2xl text-mainheadingWhite font-semibold">
+                    {product.title}
+                  </h3>
+                  <p className="text-subheadingWhite lg:text-lg text-base">
+                    {product.description}
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-    );
-  };
 
-  export default React.memo(InternationalTransferSection);
+                {/* --- SEPARATE BORDER DIVS --- */}
+
+                {/* Vertical Border: Show ONLY on large screens (lg) between items */}
+                {/* It will appear after items 1 and 2 in a 3-column layout */}
+                { (index + 1) % 3 !== 0 && index < totalItems - 1 && (
+                  <div className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block" aria-hidden="true" />
+                )}
+
+                {/* Horizontal Border: Show on mobile and tablet, but hide on large screens */}
+                {/* This applies a bottom border to the first two items, fulfilling the request. */}
+                { index < 2 && (
+                  <div
+                      className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
+                      aria-hidden="true"
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default React.memo(InternationalTransferSection);
+
+
+
+
+
+
+// import React from "react";
+// import { IoReceiptOutline } from "react-icons/io5";
+// import { CgArrowsExchange, CgArrowsExchangeAlt } from "react-icons/cg";
+// import { MdOutlineHeadsetMic } from "react-icons/md";
+
+// // Define type for Product data
+// type Product = {
+//   icon: React.ReactNode;
+//   title: string;
+//   description: string;
+//   highlight?: string;
+// };
+
+// // Data for the products
+// const productsData: Product[] = [
+//   {
+//     icon: <IoReceiptOutline className="size-10" />,
+//     title: "No Hidden Fees",
+//     description: "Transparent transfers with No hidden Charges.",
+//     highlight: "0% Hidden Charges",
+//   },
+//   {
+//     icon: <CgArrowsExchangeAlt className="size-10" />,
+//     title: "Superior Exchange Rates",
+//     description: "Always get the best value, guaranteed.",
+//     highlight: "Best Rates Guaranteed",
+//   },
+//   {
+//     icon: <MdOutlineHeadsetMic className="size-10" />,
+//     title: "24/7 Expert Support",
+//     description: "Help when you need it, not bots.",
+//     highlight: "Human Support Always",
+//   },
+// ];
+
+// const InternationalTransferSection: React.FC = () => {
+//   return (
+//     <section className="relative sm:py-16 py-10 px-4 overflow-hidden bg-background">
+//       {/* Animated Background Elements */}
+//       <div className="absolute inset-0 opacity-10">
+//         <div className="absolute top-20 left-10 w-72 h-72 bg-[#66e8fa] rounded-full blur-3xl animate-pulse"></div>
+//         <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#66e8fa] rounded-full blur-3xl animate-pulse delay-1000"></div>
+//         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#66e8fa] rounded-full blur-3xl animate-pulse delay-500"></div>
+//       </div>
+
+//       {/* Grid Pattern Overlay */}
+//       <div className="absolute inset-0 opacity-5">
+//         <div
+//           className="w-full h-full"
+//           style={{
+//             backgroundImage: `linear-gradient(#66e8fa 1px, transparent 1px), linear-gradient(90deg, #66e8fa 1px, transparent 1px)`,
+//             backgroundSize: "50px 50px",
+//           }}
+//         ></div>
+//       </div>
+
+//       <div className="container mx-auto max-w-7xl relative z-10">
+//         {/* Header Section */}
+//         <div className="text-center mb-16 space-y-5">
+//           <div className="border px-8 py-2.5 contactbg inline-block rounded-3xl">
+//             <span className="text-mainheadingWhite text-lg">
+//               Trusted by 100K+ Users
+//             </span>
+//           </div>
+
+//           <h2 className="text-5xl md:text-6xl xl:text-7xl font-bold leading-tight">
+//             <span className="bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
+//               Why Thousands Choose
+//             </span>
+//             <br />
+//             <span className="bg-gradient-to-r from-[#66e8fa] to-cyan-400 bg-clip-text text-transparent">
+//               Remityn
+//             </span>
+//           </h2>
+
+//           <p className="text-subheadingWhite text-xl md:text-2xl max-w-4xl mx-auto">
+//             Experience unmatched convenience, reliability, and security trusted
+//             by businesses and individuals worldwide.
+//           </p>
+//         </div>
+
+//         {/* Products Grid */}
+
+//         {/* Added md:grid-cols-2 to the grid container */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+//           {productsData.map((product, index) => (
+//             // Added conditional classes for the third item (index 2) at the md breakpoint,
+//             // and reset them at the lg breakpoint.
+//             <div
+//               key={index}
+//               className={`group relative bg-gradient-to-br from-primary/40 to-white/10 border rounded-3xl sm:p-8 p-6 transition-all duration-500
+//                          ${
+//                            index === 2
+//                              ? "md:col-span-2 md:justify-self-center lg:col-span-1 lg:justify-self-auto"
+//                              : ""
+//                          }`}
+//             >
+
+//               {/* Content */}
+//               <div className="relative z-10 text-center">
+//                 {/* Icon Container */}
+//                 <div className="mb-6">
+//                   <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[#66e8fa]/50 to-white/10 rounded-full flex items-center justify-center transition-transform duration-300">
+//                     <div className="text-[#66e8fa] transition-colors duration-300">
+//                       {product.icon}
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Title */}
+//                 <h3 className="text-2xl font-bold text-white/90 mb-4 transition-colors duration-300">
+//                   {product.title}
+//                 </h3>
+
+//                 {/* Description */}
+//                 <p className="text-subheadingWhite text-lg">
+//                   {product.description}
+//                 </p>
+
+//                 {/* Decorative Line */}
+//                 <div className="mt-6 w-20 h-1 bg-gradient-to-r from-[#66e8fa] to-transparent mx-auto rounded-full transition-all duration-300"></div>
+//               </div>
+
+//               {/* Corner Accent */}
+//               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-[#66e8fa]/10 to-transparent rounded-tr-3xl rounded-bl-full opacity-0 transition-opacity duration-500"></div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default React.memo(InternationalTransferSection);

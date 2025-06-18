@@ -479,7 +479,6 @@ import Footer from "./components/Footer"; // Make sure path is correct
 import { WebsiteAppProvider } from "../contexts/WebsiteAppContext"; // Adjust path as needed
 import BackToTopButton from "../../app/dashboard/components/BackToTopButton"; // --- IMPORT THE REUSABLE COMPONENT --- (Adjust path if necessary)
 import "../globals.css"; // Keep global styles
-import FloatingActionButtons from "./components/FloatingActionButtons";
 
 interface LayoutProps {
   children: ReactNode;

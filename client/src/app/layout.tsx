@@ -915,6 +915,7 @@
 
 // REMOVE "use client"; and all hooks (useState, useEffect, etc.)
 
+//app/layout.tsx
 import './globals.css';
 import { ReactNode } from 'react';
 import { satoshi, montserrat, outfit, inter } from './fonts';

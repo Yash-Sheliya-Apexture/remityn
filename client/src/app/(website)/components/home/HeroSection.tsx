@@ -507,7 +507,7 @@
 //         >
 //           Start Your Free Trial
 //         </Link>
-        
+
 //         <p className="mt-8 text-sm sm:text-base text-subheadingWhite flex items-center justify-center">
 //           <Globe size={20} className="mr-1.5 text-primary" />
 //           <span className="opacity-90">use and helping over </span> {" "}
@@ -532,14 +532,13 @@
 
 // export default HeroSection;
 
-
 // // app/(website)/components/Hero/HeroSection.tsx
 // "use client";
 // import React from "react";
 // import Link from "next/link";
 // import { Globe } from "lucide-react";
 // // FiSend is not used in the provided code snippet, removed unless needed elsewhere
-// // import { FiSend } from "react-icons/fi"; 
+// // import { FiSend } from "react-icons/fi";
 // import UserSuppliedHighlightSVG from "../Hero/UserSuppliedHighlightSVG";
 // import { IoTrendingUp } from "react-icons/io5";
 // import { useAuth } from "@/app/contexts/AuthContext"; // Import useAuth
@@ -686,7 +685,7 @@
 //         >
 //           {buttonText}
 //         </Link>
-        
+
 //         <p className="mt-8 text-sm sm:text-base text-subheadingWhite flex items-center justify-center">
 //           <Globe size={20} className="mr-1.5 text-primary" />
 //           <span className="opacity-90">use and helping over </span> {" "}
@@ -720,7 +719,6 @@ import { Globe } from "lucide-react";
 import UserSuppliedHighlightSVG from "../Hero/UserSuppliedHighlightSVG";
 import { IoTrendingUp } from "react-icons/io5";
 import { useAuth } from "@/app/contexts/AuthContext";
-
 
 const HeroSection: React.FC = () => {
   const [circleSize, setCircleSize] = React.useState(1200);
@@ -757,14 +755,37 @@ const HeroSection: React.FC = () => {
   return (
     <section className="relative text-white flex pt-24 pb-20 px-4 overflow-hidden -mt-28">
       <style jsx global>{`
-        @keyframes twinkle { 0%, 100% { opacity: 0.1; transform: scale(0.4); } 50% { opacity: 0.5; transform: scale(0.8); } }
-        @keyframes spin-slow { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        .animate-spin-slow { animation: spin-slow 40s linear infinite; }
+        @keyframes twinkle {
+          0%,
+          100% {
+            opacity: 0.1;
+            transform: scale(0.4);
+          }
+          50% {
+            opacity: 0.5;
+            transform: scale(0.8);
+          }
+        }
+        @keyframes spin-slow {
+          from {
+            transform: rotate(360deg);
+          }
+          to {
+            transform: rotate(0deg);
+          }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 40s linear infinite;
+        }
       `}</style>
 
       <div
         className="absolute left-1/2 transform -translate-x-1/2 pointer-events-none"
-        style={{ top: "3rem", width: `${circleSize}px`, height: `${circleSize}px` }}
+        style={{
+          top: "3rem",
+          width: `${circleSize}px`,
+          height: `${circleSize}px`,
+        }}
       >
         <svg
           width={circleSize}
@@ -791,7 +812,11 @@ const HeroSection: React.FC = () => {
             >
               <div
                 className="absolute left-1/2 top-0"
-                style={{ width: `100%`, height: `100%`, transform: `translateX(-50%)` }}
+                style={{
+                  width: `100%`,
+                  height: `100%`,
+                  transform: `translateX(-50%)`,
+                }}
               >
                 <UserSuppliedHighlightSVG
                   idSuffix={`h${index + 1}`}
@@ -809,7 +834,7 @@ const HeroSection: React.FC = () => {
           Always Better Than Google
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight text-mainheadingWhite">
-          Send Money to India with {" "}
+          Send Money to India with{" "}
           <span className="text-primary"> Remityn at zero fees</span>
         </h1>
         <p className="text-lg md:text-xl text-subheadingWhite mb-10 max-w-3xl px-2">
@@ -825,17 +850,31 @@ const HeroSection: React.FC = () => {
           <Globe size={20} className="mr-1.5 text-primary" />
           <span className="opacity-90">Trusted by over</span>
           <span className="font-bold text-white mx-0.5 px-1">2000+</span>
-          <span className="opacity-90">Indians abroad · Rated 4.9 / 5 on Trustpilot </span>
+          <span className="opacity-90">
+            Indians abroad · Rated 4.9 / 5 on Trustpilot{" "}
+          </span>
         </p>
       </div>
 
       <div className="left-right-lighting -z-1">
         <div className="absolute -left-10 -top-10">
           {/* Assuming these are decorative and paths are correct relative to public */}
-          <Image src="/assets/images/sdfsfd.png" width={600} height={600} alt="" loading="lazy" />
+          <Image
+            src="/assets/images/sdfsfd.png"
+            width={600}
+            height={600}
+            alt=""
+            loading="lazy"
+          />
         </div>
         <div className="absolute -right-10 -top-10">
-          <Image src="/assets/images/sadasdasdasd.png" width={600} height={600} alt="" loading="lazy" />
+          <Image
+            src="/assets/images/sadasdasdasd.png"
+            width={600}
+            height={600}
+            alt=""
+            loading="lazy"
+          />
         </div>
       </div>
     </section>
