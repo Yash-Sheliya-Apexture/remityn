@@ -752,79 +752,79 @@
 //     );
 // }
 
-"use client"; 
+// "use client"; 
 
-import './globals.css';
-import { AuthProvider } from './contexts/AuthContext';
-import { ReactNode, useState, useEffect, useCallback, useRef } from 'react'; // Added useCallback, useRef
-import TawkToManager from './components/TawkToManager';
-import { satoshi, montserrat, outfit, inter } from './fonts';
-import AppPreloader from './components/ui/AppPreloader';
-import { AnimatePresence } from 'framer-motion';
+// import './globals.css';
+// import { AuthProvider } from './contexts/AuthContext';
+// import { ReactNode, useState, useEffect, useCallback, useRef } from 'react'; // Added useCallback, useRef
+// import TawkToManager from './components/TawkToManager';
+// import { satoshi, montserrat, outfit, inter } from './fonts';
+// import AppPreloader from './components/ui/AppPreloader';
+// import { AnimatePresence } from 'framer-motion';
 
-interface RootLayoutProps {
-    children: ReactNode;
-}
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
 
-export default function RootLayout({ children }: RootLayoutProps) {
-    const [showAppPreloader, setShowAppPreloader] = useState(true);
-    const originalBodyOverflowRef = useRef<string | null>(null); // To store original body overflow
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     const [showAppPreloader, setShowAppPreloader] = useState(true);
+//     const originalBodyOverflowRef = useRef<string | null>(null); // To store original body overflow
 
-    const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
-    const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
-    const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
+//     const tawkToPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+//     const tawkToWidgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+//     const shouldLoadTawkTo = tawkToPropertyId && tawkToWidgetId;
 
-    useEffect(() => {
-        // Capture original body overflow only once on mount
-        if (originalBodyOverflowRef.current === null) {
-            originalBodyOverflowRef.current = document.body.style.overflow || '';
-        }
+//     useEffect(() => {
+//         // Capture original body overflow only once on mount
+//         if (originalBodyOverflowRef.current === null) {
+//             originalBodyOverflowRef.current = document.body.style.overflow || '';
+//         }
 
-        if (showAppPreloader) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Restore to the original captured value
-            document.body.style.overflow = originalBodyOverflowRef.current;
-        }
+//         if (showAppPreloader) {
+//             document.body.style.overflow = 'hidden';
+//         } else {
+//             // Restore to the original captured value
+//             document.body.style.overflow = originalBodyOverflowRef.current;
+//         }
 
-        // Cleanup function for unmount, though RootLayout typically doesn't unmount
-        return () => {
-            if (originalBodyOverflowRef.current !== null) {
-                 document.body.style.overflow = originalBodyOverflowRef.current;
-            }
-        };
-    }, [showAppPreloader]);
+//         // Cleanup function for unmount, though RootLayout typically doesn't unmount
+//         return () => {
+//             if (originalBodyOverflowRef.current !== null) {
+//                  document.body.style.overflow = originalBodyOverflowRef.current;
+//             }
+//         };
+//     }, [showAppPreloader]);
 
-    const handlePreloaderComplete = useCallback(() => {
-        setShowAppPreloader(false);
-    }, []); // Empty dependency array as setShowAppPreloader is stable
+//     const handlePreloaderComplete = useCallback(() => {
+//         setShowAppPreloader(false);
+//     }, []); // Empty dependency array as setShowAppPreloader is stable
 
-    return (
-        <html
-            lang="en"
-            className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
-            suppressHydrationWarning
-        >
-            <body
-                className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
-                suppressHydrationWarning={true}
-            >
-                <AnimatePresence>
-                    {showAppPreloader && (
-                        <AppPreloader onAnimationComplete={handlePreloaderComplete} />
-                    )}
-                </AnimatePresence>
+//     return (
+//         <html
+//             lang="en"
+//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//             suppressHydrationWarning
+//         >
+//             <body
+//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//                 suppressHydrationWarning={true}
+//             >
+//                 <AnimatePresence>
+//                     {showAppPreloader && (
+//                         <AppPreloader onAnimationComplete={handlePreloaderComplete} />
+//                     )}
+//                 </AnimatePresence>
 
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
+//                 <AuthProvider>
+//                     {children}
+//                 </AuthProvider>
                 
-                <div id="portal-root"></div>
-                {shouldLoadTawkTo && <TawkToManager />}
-            </body>
-        </html>
-    );
-}
+//                 <div id="portal-root"></div>
+//                 {shouldLoadTawkTo && <TawkToManager />}
+//             </body>
+//         </html>
+//     );
+// }
 
 // "use client";
 
@@ -915,88 +915,39 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
 // REMOVE "use client"; and all hooks (useState, useEffect, etc.)
 
+//app/layout.tsx
+import './globals.css';
+import { ReactNode } from 'react';
+import { satoshi, montserrat, outfit, inter } from './fonts';
+import AppShell from './components/AppShell'; // Import the new component
+import { Metadata } from 'next';
 
-// //app/layout.tsx
-// import './globals.css';
-// import { ReactNode } from 'react';
-// import { satoshi, montserrat, outfit, inter } from './fonts';
-// import AppShell from './components/AppShell'; // Import the new component
-// import { Metadata } from 'next';
+// The metadata object you added in step 2
+export const metadata: Metadata = {
+    title: {
+        template: '%s | Remityn',
+        default: 'Remityn - Fast & Secure International Money Transfers',
+    },
+    description: 'Trusted by thousands for safe, fee-free remittances. Send money to family and friends worldwide with ease and the best rates.',
+};
 
-// // The metadata object you added in step 2
-// export const metadata: Metadata = {
-//     title: {
-//         template: '%s | Remityn',
-//         default: 'Remityn - Fast & Secure International Money Transfers',
-//     },
-//     description: 'Trusted by thousands for safe, fee-free remittances. Send money to family and friends worldwide with ease and the best rates.',
-// };
+interface RootLayoutProps {
+    children: ReactNode;
+}
 
-// interface RootLayoutProps {
-//     children: ReactNode;
-// }
-
-// export default function RootLayout({ children }: RootLayoutProps) {
-//     return (
-//         <html
-//             lang="en"
-//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
-//             suppressHydrationWarning
-//         >
-//             <body
-//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
-//                 suppressHydrationWarning={true}
-//             >
-//                 <AppShell>{children}</AppShell>
-//             </body>
-//         </html>
-//     );
-// }
-
-// //app/layout.tsx
-// import './globals.css';
-// import { ReactNode } from 'react';
-// import { satoshi, montserrat, outfit, inter } from './fonts';
-// import AppShell from './components/AppShell'; // Import the new component
-// import { Metadata } from 'next';
-
-// // The metadata object you added in step 2
-// export const metadata: Metadata = {
-//     title: {
-//         template: '%s | Remityn',
-//         default: 'Remityn - Fast & Secure International Money Transfers',
-//     },
-//     description: 'Trusted by thousands for safe, fee-free remittances. Send money to family and friends worldwide with ease and the best rates.',
-//     // --- ADD THIS ---
-//     // Set a default rule to prevent indexing and link-following on all pages.
-//     // This will be overridden on a per-page basis where needed.
-//     robots: {
-//         index: false,
-//         follow: false,
-//         googleBot: {
-//             index: false,
-//             follow: false,
-//         },
-//     },
-// };
-
-// interface RootLayoutProps {
-//     children: ReactNode;
-// }
-
-// export default function RootLayout({ children }: RootLayoutProps) {
-//     return (
-//         <html
-//             lang="en"
-//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
-//             suppressHydrationWarning
-//         >
-//             <body
-//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
-//                 suppressHydrationWarning={true}
-//             >
-//                 <AppShell>{children}</AppShell>
-//             </body>
-//         </html>
-//     );
-// }
+export default function RootLayout({ children }: RootLayoutProps) {
+    return (
+        <html
+            lang="en"
+            className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+            suppressHydrationWarning
+        >
+            <body
+                className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+                suppressHydrationWarning={true}
+            >
+                <AppShell>{children}</AppShell>
+            </body>
+        </html>
+    );
+}
