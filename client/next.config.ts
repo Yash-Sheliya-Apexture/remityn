@@ -11,9 +11,6 @@ import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  poweredByHeader: false,
-  // Add this to change the build directory path
-  distDir: 'build', 
   // Add any other Next.js configurations here
 };
 
