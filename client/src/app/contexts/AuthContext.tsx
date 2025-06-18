@@ -11040,353 +11040,6 @@
 
 // export type { KycStatus, KycDetails, KycMobile, UserContextState, BackendUser };
 
-// "use client";
-
-// import React, {
-//   createContext,
-//   useState,
-//   useEffect,
-//   useContext,
-//   useCallback,
-//   useRef,
-//   useMemo,
-//   ReactNode,
-// } from "react";
-// import axios, { AxiosError } from "axios";
-// import { useRouter } from "next/navigation";
-// import apiConfig from "../config/apiConfig";
-// import type { KycStatus, KycDetails, KycMobile } from '@/app/services/kyc';
-// import inboxService, { type UnreadCountResponse } from "../services/inbox";
-
-// interface BackendUser {
-//   _id: string;
-//   fullName: string;
-//   email: string;
-//   role: "user" | "admin";
-//   isVerified: boolean; // ADDED
-//   kyc: KycDetails;
-//   createdAt: string;
-//   updatedAt: string;
-//   isGoogleAccount?: boolean;
-// }
-
-// interface UserContextState {
-//   _id: string;
-//   fullName: string;
-//   email: string;
-//   role: "user" | "admin";
-//   isVerified: boolean; // ADDED
-//   kyc: KycDetails;
-//   isGoogleAccount?: boolean;
-// }
-
-// export interface AuthContextType {
-//   user: UserContextState | null;
-//   token: string | null;
-//   loading: boolean;
-//   login: (backendUser: BackendUser, authToken: string) => void;
-//   logout: (reason?: "sessionExpired" | "manual", isBroadcastLogout?: boolean) => void;
-//   isAdmin: boolean;
-//   refetchUser: () => Promise<void>;
-//   updateAuthUserKyc: (updatedKycData: Partial<KycDetails>) => void;
-//   unreadMessageCount: number;
-//   fetchUnreadInboxCount: () => Promise<void>;
-// }
-
-// const AuthContext = createContext<AuthContextType | undefined>(undefined);
-// const BROADCAST_CHANNEL_NAME = "wise-auth-channel";
-// const apiClient = axios.create({ baseURL: apiConfig.baseUrl });
-
-// interface ApiError {
-//   message: string;
-// }
-
-// export const isValidBackendUser = (data: any): data is BackendUser => {
-//   if (!data || typeof data !== 'object') return false;
-//   const kycValid = typeof data.kyc === 'object' && data.kyc !== null &&
-//                    typeof data.kyc.status === 'string' &&
-//                    ['not_started', 'pending', 'verified', 'rejected', 'skipped'].includes(data.kyc.status);
-//   return (
-//     typeof data._id === 'string' && data._id.length > 0 &&
-//     typeof data.fullName === 'string' &&
-//     typeof data.email === 'string' && /\S+@\S+\.\S+/.test(data.email) &&
-//     typeof data.role === 'string' && (data.role === 'user' || data.role === 'admin') &&
-//     typeof data.isVerified === 'boolean' && // ADDED VALIDATION
-//     kycValid &&
-//     typeof data.createdAt === 'string' &&
-//     typeof data.updatedAt === 'string'
-//   );
-// };
-
-// const mapBackendUserToContextState = (backendUser: BackendUser): UserContextState => ({
-//   _id: backendUser._id,
-//   fullName: backendUser.fullName,
-//   email: backendUser.email,
-//   role: backendUser.role,
-//   isVerified: backendUser.isVerified, // Map the new field
-//   kyc: backendUser.kyc,
-//   isGoogleAccount: backendUser.isGoogleAccount,
-// });
-
-// export const AuthProvider = ({ children }: { children: ReactNode }) => {
-//   const [user, setUser] = useState<UserContextState | null>(null);
-//   const [token, setToken] = useState<string | null>(null);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [isMounted, setIsMounted] = useState<boolean>(false);
-//   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
-//   const logoutRef = useRef<AuthContextType["logout"]>(() => {});
-//   const router = useRouter();
-//   const [unreadMessageCount, setUnreadMessageCount] = useState<number>(0);
-
-//   const isAdmin = useMemo(() => user?.role === "admin", [user]);
-
-//   useEffect(() => { setIsMounted(true); }, []);
-
-//   useEffect(() => {
-//     if (typeof window !== "undefined" && !broadcastChannelRef.current) {
-//       try {
-//         broadcastChannelRef.current = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
-//       } catch (error) { console.error("AuthContext: Failed to initialize BroadcastChannel:", error); }
-//     }
-//     return () => {
-//       broadcastChannelRef.current?.close();
-//       broadcastChannelRef.current = null;
-//     };
-//   }, []);
-
-//   const fetchUnreadInboxCount = useCallback(async () => {
-//     const currentToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
-//     if (!currentToken) { setUnreadMessageCount(0); return; }
-//     try {
-//       const data: UnreadCountResponse = await inboxService.getUnreadCount();
-//       setUnreadMessageCount(data.unreadCount);
-//     } catch (error) {
-//       console.error("AuthContext: Failed to fetch unread message count", error);
-//       setUnreadMessageCount(0);
-//     }
-//   }, []);
-
-//   const logout = useCallback((reason: "sessionExpired" | "manual" = "manual", isBroadcastLogout = false) => {
-//     const wasLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem("token");
-//     setUser(null); setToken(null); setUnreadMessageCount(0);
-//     if (typeof window !== 'undefined') { localStorage.removeItem("token"); }
-//     delete apiClient.defaults.headers.common["Authorization"];
-//     if (!isBroadcastLogout && broadcastChannelRef.current) {
-//       try { broadcastChannelRef.current.postMessage("logout"); }
-//       catch (e) { console.error("AuthContext: BroadcastChannel postMessage error:", e); }
-//     }
-//     if (typeof window !== "undefined" && !isBroadcastLogout && wasLoggedIn && !window.location.pathname.startsWith("/auth/login")) {
-//       let redirectUrl = "/auth/login";
-//       if (reason === "sessionExpired") redirectUrl += "?sessionExpired=true";
-//       router.push(redirectUrl);
-//     }
-//   }, [router]);
-
-//   useEffect(() => { logoutRef.current = logout; }, [logout]);
-
-//   const refetchUser = useCallback(async () => {
-//     let currentToken: string | null = null;
-//     if (typeof window !== 'undefined') { currentToken = localStorage.getItem("token"); }
-//     if (!currentToken) {
-//       if (user !== null) setUser(null); if (token !== null) setToken(null);
-//       setUnreadMessageCount(0); delete apiClient.defaults.headers.common["Authorization"];
-//       setLoading(false); return;
-//     }
-//     setLoading(true);
-//     try {
-//       apiClient.defaults.headers.common["Authorization"] = `Bearer ${currentToken}`;
-//       const response = await apiClient.get<BackendUser>("/dashboard/users/me");
-//       if (!isValidBackendUser(response.data)) {
-//         logoutRef.current("sessionExpired", true);
-//         throw new Error("Invalid user data structure received during refetch");
-//       }
-//       const updatedBackendUser: BackendUser = response.data;
-//       setUser(mapBackendUserToContextState(updatedBackendUser));
-//       setToken(currentToken);
-//       await fetchUnreadInboxCount();
-//     } catch (error: any) {
-//       const axiosError = error as AxiosError<ApiError>;
-//       if (axiosError.response?.status === 401 || error.message.includes("Invalid user data")) {
-//         logoutRef.current("sessionExpired");
-//       }
-//     } finally { setLoading(false); }
-//   }, [user, token, fetchUnreadInboxCount]);
-
-//   const login = useCallback(async (backendUser: BackendUser, authToken: string) => {
-//     if (!isValidBackendUser(backendUser)) {
-//       logoutRef.current("manual", true); return;
-//     }
-//     setUser(mapBackendUserToContextState(backendUser));
-//     setToken(authToken);
-//     if (typeof window !== 'undefined') { localStorage.setItem("token", authToken); }
-//     apiClient.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
-//     await fetchUnreadInboxCount();
-//     if (broadcastChannelRef.current) {
-//       try { broadcastChannelRef.current.postMessage("login"); }
-//       catch (e) { console.error("AuthContext: BroadcastChannel postMessage error:", e); }
-//     }
-//     setLoading(false);
-//   }, [fetchUnreadInboxCount]);
-
-//   const updateAuthUserKyc = useCallback((updatedKycData: Partial<KycDetails>) => {
-//     setUser(currentUser => {
-//       if (!currentUser) return null;
-//       const nextKyc: KycDetails = {
-//         ...currentUser.kyc, ...updatedKycData,
-//         ...(updatedKycData.mobile && currentUser.kyc?.mobile && {
-//           mobile: { ...currentUser.kyc.mobile, ...updatedKycData.mobile }
-//         }),
-//       };
-//       if (JSON.stringify(currentUser.kyc) === JSON.stringify(nextKyc)) return currentUser;
-//       return { ...currentUser, kyc: nextKyc };
-//     });
-//   }, []);
-
-//   useEffect(() => {
-//     if (!isMounted || typeof window === 'undefined') return;
-//     let isActive = true;
-//     let storedToken: string | null = localStorage.getItem("token");
-//     const initializeAuth = async () => {
-//       if (storedToken && isActive) {
-//         setToken(storedToken);
-//         apiClient.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
-//         try {
-//           const response = await apiClient.get<BackendUser>("/dashboard/users/me");
-//           if (!isValidBackendUser(response.data)) {
-//             throw new Error("Invalid user data structure received during initialization.");
-//           }
-//           if (isActive) {
-//             const fetchedUser: BackendUser = response.data;
-//             setUser(mapBackendUserToContextState(fetchedUser));
-//             await fetchUnreadInboxCount();
-//           }
-//         } catch (error: any) {
-//             const axiosError = error as AxiosError<ApiError>;
-//             if (isActive) {
-//                 logoutRef.current(axiosError.response?.status === 401 || error.message?.includes("Invalid user data") ? "sessionExpired" : "manual", true);
-//             }
-//         } finally { if (isActive) { setLoading(false); } }
-//       } else {
-//         if (isActive) {
-//           setUser(null); setToken(null); setUnreadMessageCount(0); setLoading(false);
-//         }
-//       }
-//     };
-//     initializeAuth();
-//     return () => { isActive = false; };
-//   }, [isMounted, fetchUnreadInboxCount]);
-
-//   useEffect(() => {
-//     const interceptor = apiClient.interceptors.response.use(
-//       (response) => response,
-//       (error: AxiosError<ApiError>) => {
-//         const currentTokenStore = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
-//         const isAuthError = error.response?.status === 401;
-//         if (isAuthError && currentTokenStore) { logoutRef.current("sessionExpired"); }
-//         return Promise.reject(error);
-//       }
-//     );
-//     return () => { apiClient.interceptors.response.eject(interceptor); };
-//   }, []);
-
-//   useEffect(() => {
-//     const channel = broadcastChannelRef.current;
-//     if (!channel) return;
-//     const handleBroadcast = async (event: MessageEvent) => {
-//       const localUserBefore = user; const localTokenBefore = token;
-//       const storageToken = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
-//       if (event.data === "logout") {
-//         if (localUserBefore !== null || localTokenBefore !== null || storageToken) {
-//           logoutRef.current("manual", true);
-//         }
-//       } else if (event.data === "login") {
-//          if (!storageToken) { logoutRef.current("manual", true); }
-//          else if (!localTokenBefore || localTokenBefore !== storageToken || !localUserBefore) {
-//              await refetchUser();
-//          } else { await fetchUnreadInboxCount(); }
-//       }
-//     };
-//     channel.addEventListener("message", handleBroadcast);
-//     return () => {
-//       if (broadcastChannelRef.current) {
-//         broadcastChannelRef.current.removeEventListener("message", handleBroadcast);
-//       }
-//     };
-//   }, [user, token, refetchUser, fetchUnreadInboxCount]);
-
-//   useEffect(() => {
-//     if (!isMounted || typeof window === 'undefined' || loading) return;
-
-//     const currentPath = window.location.pathname;
-//     const authRelatedRedirectPaths = [
-//         "/auth/login", "/auth/register", "/auth/forgot-password",
-//         "/auth/reset-password", "/auth/google/callback-handler",
-//     ];
-
-//     if (user) {
-//       let targetPath: string;
-//       if (isAdmin) {
-//         targetPath = "/admin";
-//       } else {
-//         switch (user.kyc?.status) {
-//           case "not_started": case "rejected": case "skipped": targetPath = "/kyc/start"; break;
-//           case "pending": targetPath = "/kyc/pending"; break;
-//           case "verified": targetPath = "/dashboard"; break;
-//           default: targetPath = "/dashboard";
-//         }
-//       }
-
-//       if (authRelatedRedirectPaths.some(p => currentPath.startsWith(p))) {
-//         router.push(targetPath); return;
-//       }
-
-//       if (!isAdmin && user.kyc?.status !== 'verified') {
-//           const allowedKycPaths = [
-//             "/kyc/start", "/kyc/pending", "/kyc/rejected", "/kyc/complete", "/kyc/error",
-//             "/kyc/personal", "/kyc/details", "/kyc/identity", "/kyc/upload", "/kyc/review"
-//           ];
-//           if (currentPath !== targetPath && !allowedKycPaths.some(p => currentPath.startsWith(p))) {
-//                router.push(targetPath); return;
-//           }
-//       }
-
-//       if (!isAdmin && user.kyc?.status === 'verified' && currentPath.startsWith('/kyc') && currentPath !== targetPath) {
-//         router.push(targetPath); return;
-//       }
-
-//     } else {
-//       const publicPaths = ["/", ...authRelatedRedirectPaths];
-//       if (!publicPaths.some(p => currentPath.startsWith(p))) {
-//         router.push("/auth/login");
-//       }
-//     }
-//   }, [user, loading, router, isMounted, isAdmin]);
-
-
-//   const contextValue: AuthContextType = useMemo(() => ({
-//     user, token, loading, login, logout: logoutRef.current, isAdmin, refetchUser, updateAuthUserKyc,
-//     unreadMessageCount, fetchUnreadInboxCount,
-//   }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKyc, unreadMessageCount, fetchUnreadInboxCount]);
-
-//   return (
-//     <AuthContext.Provider value={contextValue}>
-//       {(!loading && isMounted) ? children : null}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export const useAuth = (): AuthContextType => {
-//   const context = useContext(AuthContext);
-//   if (context === undefined) {
-//     throw new Error("useAuth must be used within an AuthProvider");
-//   }
-//   return context;
-// };
-
-// export type { KycStatus, KycDetails, KycMobile, UserContextState, BackendUser };
-
-
-
 "use client";
 
 import React, {
@@ -11410,7 +11063,7 @@ interface BackendUser {
   fullName: string;
   email: string;
   role: "user" | "admin";
-  isVerified: boolean;
+  isVerified: boolean; // ADDED
   kyc: KycDetails;
   createdAt: string;
   updatedAt: string;
@@ -11422,7 +11075,7 @@ interface UserContextState {
   fullName: string;
   email: string;
   role: "user" | "admin";
-  isVerified: boolean;
+  isVerified: boolean; // ADDED
   kyc: KycDetails;
   isGoogleAccount?: boolean;
 }
@@ -11458,7 +11111,7 @@ export const isValidBackendUser = (data: any): data is BackendUser => {
     typeof data.fullName === 'string' &&
     typeof data.email === 'string' && /\S+@\S+\.\S+/.test(data.email) &&
     typeof data.role === 'string' && (data.role === 'user' || data.role === 'admin') &&
-    typeof data.isVerified === 'boolean' &&
+    typeof data.isVerified === 'boolean' && // ADDED VALIDATION
     kycValid &&
     typeof data.createdAt === 'string' &&
     typeof data.updatedAt === 'string'
@@ -11470,7 +11123,7 @@ const mapBackendUserToContextState = (backendUser: BackendUser): UserContextStat
   fullName: backendUser.fullName,
   email: backendUser.email,
   role: backendUser.role,
-  isVerified: backendUser.isVerified,
+  isVerified: backendUser.isVerified, // Map the new field
   kyc: backendUser.kyc,
   isGoogleAccount: backendUser.isGoogleAccount,
 });
@@ -11703,14 +11356,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     } else {
       const publicPaths = ["/", ...authRelatedRedirectPaths];
-      // Extend public paths to include other public-facing pages if needed
-      const additionalPublicPaths = ["/about-us", "/faqs", "/features", "/privacy-policy", "/reviews", "/terms-and-conditions"];
-      const allPublicPaths = [...publicPaths, ...additionalPublicPaths];
-      
-      // Allow access to root of public paths and any sub-paths they might have
-      const isPublicPath = allPublicPaths.some(p => currentPath === p || (p !== '/' && currentPath.startsWith(p)));
-
-      if (!isPublicPath) {
+      if (!publicPaths.some(p => currentPath.startsWith(p))) {
         router.push("/auth/login");
       }
     }
@@ -11724,14 +11370,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={contextValue}>
-      {/* 
-        This is the critical change for SSR and proper indexing.
-        By always rendering {children}, the server can generate the full HTML for the page.
-        The original code `(!loading && isMounted) ? children : null` blocked this process.
-        All client-side routing and authentication logic is handled by the useEffect hooks above,
-        which will run after the initial server-rendered page is delivered to the browser.
-      */}
-      {children}
+      {(!loading && isMounted) ? children : null}
     </AuthContext.Provider>
   );
 };
