@@ -412,15 +412,248 @@
 //   );
 // };
 
-// export default React.memo(WhyChooseUs); // Memoize component
+// export default React.memo(WhyChooseUs); // Memoize component.
+
+// "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
+
+// import React from "react"; // Simplified import
+// import { Globe, Handshake, LockKeyhole } from "lucide-react";
+
+// // Define type for FeatureItem data
+// interface FeatureItem {
+//   title: string;
+//   description: string;
+//   icons: React.ReactNode; // Using React.ReactNode for broader compatibility with icon types
+// }
+
+// // Data for the features
+// const featuresData: FeatureItem[] = [
+//   {
+//     title: "Global Transfers, Simplified",
+//     description: "Send and manage money worldwide with ease.",
+//     icons: <Globe className="size-6 lg:size-8 text-primary" />,
+//   },
+//   {
+//     title: "Security That Never Sleeps",
+//     description: "24/7 protection with encryption and 2FA.",
+//     icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
+//   },
+//   {
+//     title: "Beyond Transfers",
+//     description: "Trusted partner in your money journey.",
+//     icons: <Handshake className="size-6 lg:size-8 text-primary" />,
+//   },
+// ];
+
+// const WhyChooseUs: React.FC = () => {
+//   return (
+//     <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden">
+//       <div className="mx-auto container px-4">
+//         {/* Header Section */}
+//         <div className="mx-auto max-w-4xl text-center space-y-4">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             Remityn: Where Your Money {"  "}
+//             <span className="text-primary">Journey Truly Matters</span>
+//           </h3>
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//             Your money isn’t just currency. it represents care, commitment and
+//             connection. Remityn ensures every transfer is secure, fast and
+//             personally supported.
+//           </p>
+//         </div>
+
+//         {/*
+//           Features Grid:
+//           - Mobile (default): 1 column
+//           - Tablet (sm): 2 columns, with the last item spanning both if total is 3 (as per featuresData structure)
+//           - Desktop (lg): 3 columns
+//         */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
+//           {featuresData.map((feature, index) => {
+//             const totalItems = featuresData.length;
+
+//             // Specific check for the third item in a list of three to apply the full-width span on tablets (sm).
+//             // This mirrors the logic from InternationalTransferSection (ITS used 'md', here 'sm' is used for the 2-col breakpoint).
+//             const isThirdItemAndTotalIsThree = totalItems === 3 && index === 2;
+
+//             const itemWrapperClasses = `
+//               relative
+//               ${isThirdItemAndTotalIsThree ? "sm:col-span-2 lg:col-span-1" : ""}
+//             `;
+
+//             return (
+//               <div key={feature.title + index} className={itemWrapperClasses}>
+//                 {/* Content Area with Padding */}
+//                 {/* Using py-8 for vertical padding consistency with ITS, space-y-6 from original WCU */}
+//                 <div className="px-5 py-8 text-center space-y-6">
+//                   <div className="flex justify-center">
+//                     <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
+//                       <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
+//                         {feature.icons}
+//                       </div>
+//                     </div>
+//                   </div>
+//                   <h3 className="text-2xl text-mainheadingWhite font-semibold">
+//                     {feature.title}
+//                   </h3>
+//                   <p className="text-subheadingWhite lg:text-lg text-base">
+//                     {feature.description}
+//                   </p>
+//                 </div>
+
+//                 {/* --- SEPARATE BORDER DIVS (Adapted from InternationalTransferSection) --- */}
+
+//                 {/* Vertical Border: Show ONLY on large screens (lg) between items */}
+//                 {/* For 3 items, it will appear after items 0 and 1 in a 3-column layout. */}
+//                 {(index + 1) % 3 !== 0 && index < totalItems - 1 && (
+//                   <div
+//                     className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block"
+//                     aria-hidden="true"
+//                   />
+//                 )}
+
+//                 {/* Horizontal Border: Show on mobile and tablet (sm), but hide on large screens (lg) */}
+//                 {/* Given featuresData has 3 items (like ITS's example), this applies a bottom border to the first two items (index 0 and 1).
+//                     This ensures correct separation on mobile (1-col) and forms a line under the first row on tablet (sm: 2-col)
+//                     when the third item spans the next row.
+//                     If featuresData length were highly variable, this condition (index < 2) would need generalization.
+//                 */}
+//                 {index < 2 && ( // This condition is specific to featuresData having 3 items.
+//                   <div
+//                     className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
+//                     aria-hidden="true"
+//                   />
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default React.memo(WhyChooseUs);
+
+// "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
+
+// import React from "react";
+// // Import the specific icons that match the image: Target, Users, Lightbulb
+// import {
+//   Target,
+//   Users,
+//   Lightbulb,
+//   Globe,
+//   LockKeyhole,
+//   Handshake,
+// } from "lucide-react";
+
+// // Define type for FeatureItem data
+// interface FeatureItem {
+//   title: string;
+//   description: string;
+//   icons: React.ReactNode; // Using React.ReactNode for broader compatibility with icon types
+// }
+
+// // // Data for the features
+// const featuresData: FeatureItem[] = [
+//   {
+//     title: "Global Transfers, Simplified",
+//     description:
+//       "Send and manage money worldwide with ease. Our platform is built to make international transfers quick, seamless.",
+//     icons: <Globe className="size-8 lg:size-10" />,
+//   },
+//   {
+//     title: "Security That Never Sleeps",
+//     description:
+//       "Our peace of mind is our top priority. With 24/7 protection, bank-grade encryption, and advanced 2FA Security.",
+//     icons: <LockKeyhole className="size-8 lg:size-10" />,
+//   },
+//   {
+//     title: "Beyond Transfers",
+//     description:
+//       "We're more than just a currency exchange we're your trusted partner in every financial move on your career right way.",
+//     icons: <Handshake className="size-8 lg:size-10" />,
+//   },
+// ];
+
+// const WhyChooseUs: React.FC = () => {
+//   return (
+//     // Section with white background (or no background class for default white) and vertical padding
+//     <section className="sm:py-16 py-10 overflow-hidden bg-background">
+//       <div className="mx-auto container px-4">
+//         {/* Header Section - Centered text */}
+//         <div className="mx-auto max-w-4xl text-center space-y-4">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             Remityn: Where Your Money {"  "}
+//             <span className="text-primary">Journey Truly Matters</span>
+//           </h3>
+
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//             Your money isn’t just currency. it represents care, commitment and
+//             connection. Remityn ensures every transfer is secure, fast and
+//             personally supported.
+//           </p>
+//         </div>
+
+//         {/* Features Grid: 1 column on mobile, 3 columns on medium screens and up, with a gap */}
+//         {/* Added md:grid-cols-3 and gap-6 for spacing between cards */}
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+//           {featuresData.map((feature, index) => (
+//             // Individual Card
+//             // Added light grey background, rounded corners, and padding
+//             // Using a potential light grey hex color for bg-[#f3f4f6] or bg-gray-100
+//             <div
+//               key={feature.title + index}
+//               className="bg-primarybox rounded-2xl p-6"
+//             >
+//               {/* Icon Container: Centered, circular, slightly lighter grey background */}
+//               {/* Using a potential very light grey hex color for bg-[#e5e7eb] or bg-gray-200 */}
+//               <div className="flex mb-10">
+//                 {" "}
+//                 <div className="size-16 lg:size-20 rounded-full bg-secondarybox flex items-center justify-center">
+//                   {feature.icons}
+//                 </div>
+//               </div>
+
+//               {/* Title: Dark green, bold */}
+//               {/* Using a potential dark green hex color for text-[#335525] */}
+//               <h3 className="text-xl lg:text-2xl text-white font-semibold mb-4">
+//                 {" "}
+//                 {/* Added bottom margin */}
+//                 {feature.title}
+//               </h3>
+
+//               {/* Description: Dark grey */}
+//               {/* Using a potential dark grey hex color for text-[#555] or text-gray-700 */}
+//               <p className="text-subheadingWhite lg:text-lg text-base leading-normal">
+//                 {feature.description}
+//               </p>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default React.memo(WhyChooseUs);
 
 
 
 
 "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
-import React from "react"; // Simplified import
-import { Globe, Handshake, LockKeyhole } from "lucide-react";
+import React from "react";
+// Import the specific icons that match the image: Target, Users, Lightbulb
+import {
+  Target,
+  Users,
+  Lightbulb,
+  Globe,
+  LockKeyhole,
+  Handshake,
+} from "lucide-react";
 
 // Define type for FeatureItem data
 interface FeatureItem {
@@ -429,35 +662,43 @@ interface FeatureItem {
   icons: React.ReactNode; // Using React.ReactNode for broader compatibility with icon types
 }
 
-// Data for the features
+// Data for the features (Kept identical to your provided WhyChooseUs data)
 const featuresData: FeatureItem[] = [
   {
     title: "Global Transfers, Simplified",
-    description: "Send and manage money worldwide with ease.",
-    icons: <Globe className="size-6 lg:size-8 text-primary" />,
+    description:
+      "Easily send and manage money across the globe. Our platform is designed to make international transfers fast, seamless, and stress-free.",
+    icons: <Globe className="size-8 lg:size-10 text-primary" />,
   },
-  { 
+  {
     title: "Security That Never Sleeps",
-    description: "24/7 protection with encryption and 2FA.",
-    icons: <LockKeyhole className="size-6 lg:size-8 text-primary" />,
+    description:
+      "Your peace of mind is our top priority. Enjoy 24/7 protection, bank-level encryption, and advanced two-factor authentication for every transaction.",
+    icons: <LockKeyhole className="size-8 lg:size-10 text-primary" />,
   },
   {
     title: "Beyond Transfers",
-    description: "Trusted partner in your money journey.",
-    icons: <Handshake className="size-6 lg:size-8 text-primary" />,
+    description:
+      "We're more than just a currency exchange we're your trusted partner in every financial step of your journey, both personal and professional.",
+    icons: <Handshake className="size-8 lg:size-10 text-primary" />,
   },
 ];
 
 const WhyChooseUs: React.FC = () => {
+  // Keep the data structure and count here for clarity, though totalItems is calculated inside the map
+  const totalItems = featuresData.length;
+
   return (
-    <section className="WhyChooseUsSection sm:py-16 py-10 overflow-hidden">
+    // Section with white background (or no background class for default white) and vertical padding
+    <section className="WhyChooseUs sm:py-16 py-10 overflow-hidden bg-background">
       <div className="mx-auto container px-4">
-        {/* Header Section */}
+        {/* Header Section - Centered text (Kept identical) */}
         <div className="mx-auto max-w-4xl text-center space-y-4">
           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
             Remityn: Where Your Money {"  "}
             <span className="text-primary">Journey Truly Matters</span>
           </h3>
+
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
             Your money isn’t just currency. it represents care, commitment and
             connection. Remityn ensures every transfer is secure, fast and
@@ -465,68 +706,60 @@ const WhyChooseUs: React.FC = () => {
           </p>
         </div>
 
-        {/* 
-          Features Grid:
+        {/*
+          Features Grid - Modified to match InternationalTransferSection logic:
           - Mobile (default): 1 column
-          - Tablet (sm): 2 columns, with the last item spanning both if total is 3 (as per featuresData structure)
-          - Desktop (lg): 3 columns
+          - Tablet (md): 2 columns, with the last item spanning both (if total items is 3)
+          - Desktop (lg): 3 columns (if total items is 3, the 3rd item goes back to 1 column)
+
+          Added md:grid-cols-2 lg:grid-cols-3 from the reference.
+          Kept the existing gap-6 and mt-12 classes.
         */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
           {featuresData.map((feature, index) => {
-            const totalItems = featuresData.length;
+            // Calculate totalItems inside map for potential edge cases, though defined above too
+            const currentTotalItems = featuresData.length;
 
-            // Specific check for the third item in a list of three to apply the full-width span on tablets (sm).
-            // This mirrors the logic from InternationalTransferSection (ITS used 'md', here 'sm' is used for the 2-col breakpoint).
-            const isThirdItemAndTotalIsThree = totalItems === 3 && index === 2;
+            // Specific check for the third item (index 2) in a list of exactly three items
+            // This item will span 2 columns on 'md' (tablet)
+            const isThirdItemInThree = currentTotalItems === 3 && index === 2;
 
-            const itemWrapperClasses = `
-              relative 
-              ${isThirdItemAndTotalIsThree ? "sm:col-span-2 lg:col-span-1" : ""}
-            `;
+            // Define the base classes that should always apply to the item wrapper
+            const baseItemClasses = "bg-primarybox rounded-2xl sm:p-6 p-4";
+
+            // Define the conditional classes for column spanning
+            // If it's the 3rd item in 3, apply md:col-span-2 and reset lg:col-span-1
+            const conditionalSpanClasses = isThirdItemInThree
+              ? "md:col-span-2 lg:col-span-1"
+              : "";
+
+            // Combine base classes and conditional classes
+            const itemWrapperClasses = `${baseItemClasses} ${conditionalSpanClasses}`;
 
             return (
-              <div key={feature.title + index} className={itemWrapperClasses}>
-                {/* Content Area with Padding */}
-                {/* Using py-8 for vertical padding consistency with ITS, space-y-6 from original WCU */}
-                <div className="px-5 py-8 text-center space-y-6">
-                  <div className="flex justify-center">
-                    <div className="size-20 rounded-full icon-outer-wrapper flex items-center justify-center">
-                      <div className="size-14 rounded-full icon-inner-background flex items-center justify-center">
-                        {feature.icons}
-                      </div>
-                    </div>
+              // Individual Card - ClassName now uses the calculated variable
+              <div
+                key={feature.title + index}
+                className={itemWrapperClasses.trim()} // Use trim() to clean up potential extra space
+              >
+                {/* Icon Container: (Kept identical) */}
+                <div className="flex mb-12">
+                  {" "}
+                  <div className="size-16 lg:size-20 rounded-full bg-secondarybox flex items-center justify-center">
+                    {feature.icons}
                   </div>
-                  <h3 className="text-2xl text-mainheadingWhite font-semibold">
-                    {feature.title}
-                  </h3>
-                  <p className="text-subheadingWhite lg:text-lg text-base">
-                    {feature.description}
-                  </p>
                 </div>
 
-                {/* --- SEPARATE BORDER DIVS (Adapted from InternationalTransferSection) --- */}
+                {/* Title: (Kept identical) */}
+                <h3 className="text-xl lg:text-2xl text-white font-semibold mb-4">
+                  {" "}
+                  {feature.title}
+                </h3>
 
-                {/* Vertical Border: Show ONLY on large screens (lg) between items */}
-                {/* For 3 items, it will appear after items 0 and 1 in a 3-column layout. */}
-                {(index + 1) % 3 !== 0 && index < totalItems - 1 && (
-                  <div
-                    className="absolute top-0 right-0 h-full w-px bg-gray-600/50 hidden lg:block"
-                    aria-hidden="true"
-                  />
-                )}
-
-                {/* Horizontal Border: Show on mobile and tablet (sm), but hide on large screens (lg) */}
-                {/* Given featuresData has 3 items (like ITS's example), this applies a bottom border to the first two items (index 0 and 1).
-                    This ensures correct separation on mobile (1-col) and forms a line under the first row on tablet (sm: 2-col)
-                    when the third item spans the next row.
-                    If featuresData length were highly variable, this condition (index < 2) would need generalization.
-                */}
-                {index < 2 && ( // This condition is specific to featuresData having 3 items.
-                  <div
-                    className="absolute bottom-0 left-0 w-full h-px bg-gray-600/50 block lg:hidden"
-                    aria-hidden="true"
-                  />
-                )}
+                {/* Description: (Kept identical) */}
+                <p className="text-subheadingWhite lg:text-lg text-base leading-normal">
+                  {feature.description}
+                </p>
               </div>
             );
           })}
@@ -535,8 +768,5 @@ const WhyChooseUs: React.FC = () => {
     </section>
   );
 };
-
-
-
 
 export default React.memo(WhyChooseUs);
