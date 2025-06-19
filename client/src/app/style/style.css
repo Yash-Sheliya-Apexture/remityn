@@ -86,3 +86,8 @@
     height: 40px;
   }
 }
+
+
+.contactbg {
+  background: linear-gradient(129.74deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%) ;
+}
