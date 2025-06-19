@@ -2349,6 +2349,359 @@
 
 
 
+// // No changes needed in this file. It correctly passes props and handles state.
+// "use client";
+// import React, { useRef, useState, useEffect, useCallback } from "react";
+// import Image from "next/image";
+// import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+// import { useAuth } from "../../../contexts/AuthContext"; // Adjust path as needed
+// import axios from "axios";
+// import { useRouter } from "next/navigation";
+// import CurrencySelectorModal from "./CurrencySelectorModal"; // Adjust path as needed
+// import apiConfig from "../../../config/apiConfig"; // Adjust path as needed
+// import Link from "next/link";
+// import { GoPlus } from "react-icons/go";
+// import { Skeleton } from "@/components/ui/skeleton"; // Adjust the path to your Skeleton component
+// import { AnimatePresence, motion } from "framer-motion";
+// import { AlertCircle } from "lucide-react";
+
+// axios.defaults.baseURL = apiConfig.baseUrl;
+
+// interface Currency {
+//   code: string;
+// }
+
+// interface Account {
+//   _id: string;
+//   balance: string;
+//   currency?: Currency | null;
+// }
+
+// const SCROLL_DEBOUNCE_DELAY = 150;
+// const PROGRAMMATIC_SCROLL_CHECK_DELAY = 400; // ms, adjust if smooth scroll takes longer/shorter
+
+// const CountryCard = () => {
+//   const [accounts, setAccounts] = useState<Account[]>([]);
+//   const containerRef = useRef<HTMLDivElement>(null);
+//   const [isHovering, setIsHovering] = useState(false);
+//   const { token } = useAuth();
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const router = useRouter();
+//   const cardWidth = 272; // Includes approximate gap
+
+//   const [canScrollLeft, setCanScrollLeft] = useState(false);
+//   const [canScrollRight, setCanScrollRight] = useState(false);
+
+//   const checkScrollability = useCallback(() => {
+//     const container = containerRef.current;
+//     if (container) {
+//       const scrollLeftVal = container.scrollLeft;
+//       const scrollWidthVal = container.scrollWidth;
+//       const clientWidthVal = container.clientWidth;
+
+//       // Round values to nearest integer to handle floating point inaccuracies
+//       const roundedScrollLeft = Math.round(scrollLeftVal);
+//       const roundedScrollWidth = Math.round(scrollWidthVal);
+//       const roundedClientWidth = Math.round(clientWidthVal);
+
+//       // Check if we can scroll left
+//       // (i.e., if current rounded scroll position is greater than 0)
+//       const newCanScrollLeft = roundedScrollLeft > 0;
+
+//       // Check if we can scroll right
+//       // (i.e., if current rounded scroll position is less than the maximum possible scroll)
+//       const maxScrollLeft = roundedScrollWidth - roundedClientWidth;
+//       const newCanScrollRight = roundedScrollLeft < maxScrollLeft;
+      
+//       // console.log(
+//       //   `checkScrollability: SL=${scrollLeftVal.toFixed(2)} (r${roundedScrollLeft}), SW=${scrollWidthVal.toFixed(2)} (r${roundedScrollWidth}), CW=${clientWidthVal.toFixed(2)} (r${roundedClientWidth}), MaxSL=${maxScrollLeft}, CanL=${newCanScrollLeft}, CanR=${newCanScrollRight}`
+//       // );
+
+//       setCanScrollLeft(prev => prev !== newCanScrollLeft ? newCanScrollLeft : prev);
+//       setCanScrollRight(prev => prev !== newCanScrollRight ? newCanScrollRight : prev);
+
+//     } else {
+//       setCanScrollLeft(false);
+//       setCanScrollRight(false);
+//     }
+//   }, []); // setCanScrollLeft/Right are stable
+
+//   useEffect(() => {
+//     const fetchAccounts = async () => {
+//       setIsLoading(true);
+//       setError(null);
+//       try {
+//         const response = await axios.get<{ data: Account[] }>("/accounts", {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+//         const fetchedAccounts =
+//           response.data?.data ??
+//           (Array.isArray(response.data) ? response.data : []);
+//         setAccounts(fetchedAccounts);
+//       } catch (err: unknown) {
+//         let errorMessage = "Failed to fetch accounts";
+//         if (axios.isAxiosError(err)) {
+//           errorMessage =
+//             err.response?.data?.message || err.message || errorMessage;
+//         } else if (err instanceof Error) {
+//           errorMessage = err.message;
+//         }
+//         setError(errorMessage);
+//         console.error("Error fetching accounts:", err);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     if (token) {
+//       fetchAccounts();
+//     } else {
+//       // console.log("No token found, skipping account fetch.");
+//       setIsLoading(false);
+//     }
+//   }, [token]);
+
+//   useEffect(() => {
+//     const container = containerRef.current;
+//     let scrollDebounceTimer: NodeJS.Timeout;
+//     const debouncedCheckScrollOnScroll = () => {
+//       clearTimeout(scrollDebounceTimer);
+//       scrollDebounceTimer = setTimeout(checkScrollability, SCROLL_DEBOUNCE_DELAY);
+//     };
+
+//     let resizeDebounceTimer: NodeJS.Timeout;
+//     const debouncedCheckScrollOnResize = () => {
+//       clearTimeout(resizeDebounceTimer);
+//       resizeDebounceTimer = setTimeout(checkScrollability, SCROLL_DEBOUNCE_DELAY);
+//     };
+
+//     if (container) {
+//       checkScrollability(); // Initial check, and when accounts/isLoading changes
+      
+//       container.addEventListener("scroll", debouncedCheckScrollOnScroll, { passive: true });
+//       window.addEventListener("resize", debouncedCheckScrollOnResize);
+
+//       return () => {
+//         container.removeEventListener("scroll", debouncedCheckScrollOnScroll);
+//         window.removeEventListener("resize", debouncedCheckScrollOnResize);
+//         clearTimeout(scrollDebounceTimer);
+//         clearTimeout(resizeDebounceTimer);
+//       };
+//     }
+//   }, [isLoading, accounts, checkScrollability]); // checkScrollability is memoized
+
+//   const scrollGeneric = (direction: 'left' | 'right') => {
+//     if (containerRef.current) {
+//       const scrollAmount = cardWidth * 1.5; // Scroll by 1.5 card widths
+//       containerRef.current.scrollBy({
+//         left: direction === 'left' ? -scrollAmount : scrollAmount,
+//         behavior: "smooth",
+//       });
+//       setTimeout(checkScrollability, PROGRAMMATIC_SCROLL_CHECK_DELAY);
+//     }
+//   };
+
+//   const scrollLeft = () => scrollGeneric('left');
+//   const scrollRight = () => scrollGeneric('right');
+
+//   const handleCurrencyAdded = (newAccount: Account) => {
+//     setAccounts((prevAccounts) => [...prevAccounts, newAccount]);
+//     setIsModalOpen(false);
+//     setTimeout(checkScrollability, 50); // Check after DOM update
+//   };
+
+//   if (isLoading) {
+//     // Skeleton UI (unchanged)
+//     return (
+//       <section className="Country-card">
+//         <div
+//           className="flex overflow-x-auto scroll-smooth scrollbar-hide gap-3 p-2"
+//           style={{
+//             scrollSnapType: "x mandatory",
+//             WebkitOverflowScrolling: "touch",
+//           }}
+//         >
+//           {Array(4)
+//             .fill(0)
+//             .map((_, index) => (
+//               <div
+//                 key={index}
+//                 className="w-64 shrink-0"
+//                 style={{ scrollSnapAlign: "start" }}
+//               >
+//                 <div className="p-6 bg-primarybox rounded-2xl flex flex-col justify-between h-[176px]">
+//                   <div className="flex items-center gap-4">
+//                     <Skeleton className="h-12 w-12 rounded-full bg-background/50" />
+//                     <Skeleton className="h-5 w-24 rounded-md bg-background/50" />
+//                   </div>
+//                   <div className="pt-16">
+//                     <Skeleton className="h-6 w-32 rounded-md bg-background/50" />
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+
+//           <div className="w-64 shrink-0" style={{ scrollSnapAlign: "start" }}>
+//             <Skeleton className="p-6 h-[176px] bg-primarybox/70 rounded-2xl flex flex-col justify-center items-center border-2 border-dashed" />
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   if (error) {
+//     // Error UI (unchanged)
+//     return (
+//        <div
+//         className="mb-8 bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-xl relative flex items-center"
+//         role="alert"
+//       >
+//         <AlertCircle className="h-5 w-5 mr-2" />
+//         <span className="block sm:inline">Error loading accounts: {error}</span>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <section className="Country-card">
+//       <div
+//         onMouseEnter={() => setIsHovering(true)}
+//         onMouseLeave={() => setIsHovering(false)}
+//         className="relative z-0"
+//       >
+//         <AnimatePresence>
+//           {isHovering && canScrollLeft && (
+//             <motion.button
+//               key="scroll-left-button"
+//               initial={{ opacity: 0, scale: 0.8, x: 10 }}
+//               animate={{ opacity: 1, scale: 1, x: 0 }}
+//               exit={{ opacity: 0, scale: 0.8, x: 10 }}
+//               transition={{ duration: 0.2 }}
+//               onClick={scrollLeft}
+//               className="absolute left-0 md:left-6 top-1/2 transform -translate-y-1/2 bg-primary shadow text-neutral-900 dark:text-background p-2 rounded-full sm:block hidden cursor-pointer z-20"
+//               aria-label="Scroll left"
+//             >
+//               <IoIosArrowBack size={22} />
+//             </motion.button>
+//           )}
+//         </AnimatePresence>
+//         <AnimatePresence>
+//           {isHovering && canScrollRight && (
+//             <motion.button
+//               key="scroll-right-button"
+//               initial={{ opacity: 0, scale: 0.8, x: -10 }}
+//               animate={{ opacity: 1, scale: 1, x: 0 }}
+//               exit={{ opacity: 0, scale: 0.8, x: -10 }}
+//               transition={{ duration: 0.2 }}
+//               onClick={scrollRight}
+//               className="absolute right-0 md:right-6 top-1/2 transform -translate-y-1/2 bg-primary shadow text-neutral-900 dark:text-background p-2 rounded-full sm:block hidden cursor-pointer z-20"
+//               aria-label="Scroll right"
+//             >
+//               <IoIosArrowForward size={22} />
+//             </motion.button>
+//           )}
+//         </AnimatePresence>
+
+//         <div
+//           ref={containerRef}
+//           className="flex overflow-x-auto scroll-smooth scrollbar-hide gap-3"
+//           style={{
+//             scrollBehavior: "smooth",
+//             scrollSnapType: "x mandatory",
+//             WebkitOverflowScrolling: "touch",
+//           }}
+//         >
+//           {accounts.map((account) => (
+//             <Link
+//               key={account._id}
+//               href={`/dashboard/balances/${account._id}`}
+//               passHref
+//               className="w-64 shrink-0"
+//               style={{ scrollSnapAlign: "start" }}
+//               aria-label={`View balance for ${
+//                 account.currency?.code || "account"
+//               }`}
+//             >
+//               <div className="p-6 bg-primarybox hover:bg-[#2f373b] rounded-2xl flex flex-col justify-between h-[176px] transition-all duration-150 ease-linear cursor-pointer">
+//                 <div className="flex items-center gap-4">
+//                   <Image
+//                     src={
+//                       account.currency?.code
+//                         ? `/assets/icon/${account.currency.code.toLowerCase()}.svg`
+//                         : "/assets/icon/default.svg"
+//                     }
+//                     alt={
+//                       account.currency?.code
+//                         ? `${account.currency.code} flag`
+//                         : "Default currency flag"
+//                     }
+//                     width={50}
+//                     height={50}
+//                     className="rounded-full object-contain"
+//                     onError={(e) => {
+//                       console.warn(
+//                         `Warning: Could not load image for ${
+//                           account?.currency?.code || "unknown currency"
+//                         }. Using default.`
+//                       );
+//                       (e.target as HTMLImageElement).src =
+//                         "/assets/icon/default.svg";
+//                     }}
+//                   />
+//                   <span className="text-mainheadingWhite text-xl font-semibold">
+//                     {account.currency?.code || "N/A"}
+//                   </span>
+//                 </div>
+//                 <div className="pt-12">
+//                   <span className="text-mainheadingWhite text-2xl font-semibold">
+//                     {account.balance != null &&
+//                     !isNaN(parseFloat(account.balance))
+//                       ? parseFloat(account.balance).toLocaleString(undefined, {
+//                           minimumFractionDigits: 2,
+//                           maximumFractionDigits: 2,
+//                         })
+//                       : "0.00"}
+//                   </span>
+//                 </div>
+//               </div>
+//             </Link>
+//           ))}
+
+//           <div
+//             onClick={() => setIsModalOpen(true)}
+//             className="p-6 bg-primarybox hover:bg-[#2f373b] rounded-2xl flex flex-col justify-between items-start w-64 shrink-0 cursor-pointer transition-all duration-150 ease-linear border-2 border-dashed border-gray-400 h-[176px] group"
+//             style={{ scrollSnapAlign: "start" }}
+//             role="button"
+//             tabIndex={0}
+//             onKeyPress={(e) => e.key === "Enter" && setIsModalOpen(true)}
+//             aria-label="Add another currency account"
+//           >
+//             <div className="rounded-full border-2 border-gray-400/40 p-2 flex items-center justify-center mb-2 transition-transform duration-150 ease-in-out">
+//               <GoPlus size={30} className="text-white" />
+//             </div>
+//             <span className="text-sm text-white">
+//               Add new currency to your account.
+//             </span>
+//           </div>
+//         </div>
+//       </div>
+
+//       <CurrencySelectorModal
+//         isOpen={isModalOpen}
+//         onClose={() => setIsModalOpen(false)}
+//         onCurrencyAdded={handleCurrencyAdded}
+//       />
+//     </section>
+//   );
+// };
+
+// export default CountryCard;
+
+
+
+
 // No changes needed in this file. It correctly passes props and handles state.
 "use client";
 import React, { useRef, useState, useEffect, useCallback } from "react";
@@ -2371,6 +2724,12 @@ interface Currency {
   code: string;
 }
 
+// Added interface for the full currency details from the /currencies endpoint
+interface CurrencyDetail {
+  code: string;
+  currencyName?: string;
+}
+
 interface Account {
   _id: string;
   balance: string;
@@ -2382,6 +2741,8 @@ const PROGRAMMATIC_SCROLL_CHECK_DELAY = 400; // ms, adjust if smooth scroll take
 
 const CountryCard = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
+   // Added state to store currency names for easy lookup
+  const [currencyDetails, setCurrencyDetails] = useState<Map<string, string | undefined>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const { token } = useAuth();
@@ -2428,20 +2789,36 @@ const CountryCard = () => {
     }
   }, []); // setCanScrollLeft/Right are stable
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
+ useEffect(() => {
+    const fetchInitialData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await axios.get<{ data: Account[] }>("/accounts", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // Fetch accounts and currency details in parallel for better performance
+        const [accountsResponse, currenciesResponse] = await Promise.all([
+          axios.get<{ data: Account[] }>("/accounts", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get<CurrencyDetail[]>("/currencies"),
+        ]);
+
+        // Process accounts
         const fetchedAccounts =
-          response.data?.data ??
-          (Array.isArray(response.data) ? response.data : []);
+          accountsResponse.data?.data ??
+          (Array.isArray(accountsResponse.data) ? accountsResponse.data : []);
         setAccounts(fetchedAccounts);
+
+        // Process currencies into a lookup map
+        const currencyMap = new Map<string, string | undefined>();
+        if (currenciesResponse.data && Array.isArray(currenciesResponse.data)) {
+            currenciesResponse.data.forEach(currency => {
+                currencyMap.set(currency.code, currency.currencyName);
+            });
+        }
+        setCurrencyDetails(currencyMap);
+
       } catch (err: unknown) {
-        let errorMessage = "Failed to fetch accounts";
+        let errorMessage = "Failed to fetch account data";
         if (axios.isAxiosError(err)) {
           errorMessage =
             err.response?.data?.message || err.message || errorMessage;
@@ -2449,16 +2826,15 @@ const CountryCard = () => {
           errorMessage = err.message;
         }
         setError(errorMessage);
-        console.error("Error fetching accounts:", err);
+        console.error("Error fetching initial data:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (token) {
-      fetchAccounts();
+      fetchInitialData();
     } else {
-      // console.log("No token found, skipping account fetch.");
       setIsLoading(false);
     }
   }, [token]);
@@ -2625,7 +3001,18 @@ const CountryCard = () => {
               }`}
             >
               <div className="p-6 bg-primarybox hover:bg-[#2f373b] rounded-2xl flex flex-col justify-between h-[176px] transition-all duration-150 ease-linear cursor-pointer">
-                <div className="flex items-center gap-4">
+                <div className="flex justify-between items-center gap-4">
+                  <div className="flex-1">
+                    <span className="text-mainheadingWhite text-xl font-semibold">
+                      {account.currency?.code || "N/A"}
+                    </span>
+                    {/* currency name */}
+                    <span className="block text-sm text-subheadingWhite mt-0.5">
+                      {account.currency?.code
+                        ? currencyDetails.get(account.currency.code) || 'Currency'
+                        : ''}
+                    </span>
+                  </div>
                   <Image
                     src={
                       account.currency?.code
@@ -2649,10 +3036,7 @@ const CountryCard = () => {
                       (e.target as HTMLImageElement).src =
                         "/assets/icon/default.svg";
                     }}
-                  />
-                  <span className="text-mainheadingWhite text-xl font-semibold">
-                    {account.currency?.code || "N/A"}
-                  </span>
+                  />              
                 </div>
                 <div className="pt-12">
                   <span className="text-mainheadingWhite text-2xl font-semibold">
@@ -2698,6 +3082,3 @@ const CountryCard = () => {
 };
 
 export default CountryCard;
-
-
-
