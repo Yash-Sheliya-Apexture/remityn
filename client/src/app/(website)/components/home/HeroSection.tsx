@@ -877,8 +877,10 @@ const HeroSection: React.FC = () => {
           />
         </div>
       </div>
+      
     </section>
   );
 };
+
 
 export default React.memo(HeroSection);
