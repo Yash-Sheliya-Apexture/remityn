@@ -11363,20 +11363,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user, loading, router, isMounted, isAdmin]);
 
 
-//   const contextValue: AuthContextType = useMemo(() => ({
-//     user, token, loading, login, logout: logoutRef.current, isAdmin, refetchUser, updateAuthUserKyc,
-//     unreadMessageCount, fetchUnreadInboxCount,
-//   }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKyc, unreadMessageCount, fetchUnreadInboxCount]);
-
-const contextValue: AuthContextType = useMemo(() => ({
+  const contextValue: AuthContextType = useMemo(() => ({
     user, token, loading, login, logout: logoutRef.current, isAdmin, refetchUser, updateAuthUserKyc,
     unreadMessageCount, fetchUnreadInboxCount,
   }), [user, token, loading, login, isAdmin, refetchUser, updateAuthUserKyc, unreadMessageCount, fetchUnreadInboxCount]);
 
   return (
     <AuthContext.Provider value={contextValue}>
-      {/* {(!loading && isMounted) ? children : null} */}
-       {children}
+      {(!loading && isMounted) ? children : null}
     </AuthContext.Provider>
   );
 };
