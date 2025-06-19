@@ -92,7 +92,7 @@ const HowItWorksSection = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {/* Left Sticky Column */}
-          <div className="lg:sticky lg:top-20 h-max lg:max-w-xl max-w-full">
+          <div className="lg:sticky lg:top-30 h-max lg:max-w-xl max-w-full">
             <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
               Send Money in{" "}
               <span className="text-primary">4 Simple Steps</span>
@@ -116,7 +116,7 @@ const HowItWorksSection = () => {
                 className={`sm:p-8 p-4 rounded-4xl bg-primary-foreground`}
               >
                 <div className="space-y-4">
-                    <span className="rounded-full bg-background px-3 py-1 text-sm font-semibold text-primary">
+                    <span className="rounded-full bg-background px-3 py-1 sm:text-base text-sm font-semibold text-primary">
                         Step {step.id}
                     </span>
                     <h3 className="sm:text-3xl text-2xl font-semibold text-mainheadingWhite mt-4">

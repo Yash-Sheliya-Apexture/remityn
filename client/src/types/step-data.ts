@@ -33,6 +33,7 @@ export interface StepData {
   id: number;
   iconDefault: IconType;
   iconActive: IconType;
+  tabName: string; // <-- ADD THIS LINE
   contentTitle: string;
   contentSubtitle: React.ReactNode; // Can be string or JSX
   contentImages: {
