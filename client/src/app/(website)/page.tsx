@@ -56,6 +56,7 @@ import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
 import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
+import ReviewSection from './components/ReviewSection';
 // import ReviewSection from './components/ReviewSection';
 
 
@@ -96,7 +97,7 @@ export default function Home() {
       <InternationalTransferSection />
       <SecuritySection />
       <FeaturesList />
-      {/* <ReviewSection /> */}
+      <ReviewSection />
       <ClientTestimonialSection />
       <StepCardContent />
       <CallToActionSection />

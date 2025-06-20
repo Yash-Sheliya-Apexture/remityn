@@ -1520,6 +1520,9 @@
 // export default ClientTestimonialSection;
 
 
+
+
+
 "use client";
 
 import React, { useState } from "react";
@@ -1679,6 +1682,7 @@ const ClientTestimonialSection: React.FC = () => {
                     thousands rely on us every day. Real experiences from real
                     people proof that your money is in trusted hands.
                   </p>
+
                 </div>
 
                 <div className="flex justify-center md:justify-start mt-7">
