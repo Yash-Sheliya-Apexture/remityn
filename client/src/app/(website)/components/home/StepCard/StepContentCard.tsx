@@ -2213,7 +2213,7 @@ const stepsData: StepData[] = [
         tabName: "Sign Up",
         contentTitle: "Sign Up and Get Verified",
         contentSubtitle: "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
-        contentImages: { img: "/assets/images/Register-and-verify.svg", imgTitle: "Remityn showing registration and verification screen", },
+        contentImages: { img: "/assets/images/Register-and-verify.png", imgTitle: "Remityn showing registration and verification screen", },
         contentBlocks: [ { text: "Instant account setup", type: "success" }, { text: "Seamless KYC verification", type: "secondry" }, { text: "Unlock full access", type: "warning" }, ],
     },
     {
@@ -2223,7 +2223,7 @@ const stepsData: StepData[] = [
         tabName: "Wallet",
         contentTitle: " Create & Fund Your Currency Wallet",
         contentSubtitle: "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
-        contentImages: { img: "/assets/images/Create-a-Digital-Wallet.svg", imgTitle: "Remityn showing add fund screen", },
+        contentImages: { img: "/assets/images/Create-a-Digital-Wallet.png", imgTitle: "Remityn showing add fund screen", },
         contentBlocks: [ { text: "Choose your currency", type: "success" }, { text: "Add funds to your wallet", type: "secondry" }, { text: "Available to transfer money", type: "warning" }, ],
     },
     {
@@ -2233,7 +2233,7 @@ const stepsData: StepData[] = [
         tabName: "Recipient",
         contentTitle: "Add Your Recipient",
         contentSubtitle: "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
-        contentImages: { img: "/assets/images/Add-Recipients.svg", imgTitle: "Remityn showing add recipients screen with a list of recipients", },
+        contentImages: { img: "/assets/images/Add-Recipients.png", imgTitle: "Remityn showing add recipients screen with a list of recipients", },
         contentBlocks: [ { text: "Manage multiple recipients", type: "success" }, { text: "Saved recipient details", type: "secondry" }, { text: "Useful for the future", type: "warning" }, ],
     },
     {
@@ -2243,7 +2243,7 @@ const stepsData: StepData[] = [
         tabName: "Send",
         contentTitle: "Transfer Money Seamlessly",
         contentSubtitle: "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
-        contentImages: { img: "/assets/images/Transfer-Money.svg", imgTitle: "Remityn showing transfer money screen with currency conversion details", },
+        contentImages: { img: "/assets/images/Transfer-Money.png", imgTitle: "Remityn showing transfer money screen with currency conversion details", },
         contentBlocks: [ { text: "Initiate your transfer", type: "success" }, { text: "Transparent transactions", type: "secondry" }, { text: "24/7 Secure Transactions", type: "warning" }, ],
     },
 ];
