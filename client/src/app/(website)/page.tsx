@@ -97,7 +97,7 @@ export default function Home() {
       <InternationalTransferSection />
       <SecuritySection />
       <FeaturesList />
-      <ReviewSection />
+      {/* <ReviewSection /> */}
       <ClientTestimonialSection />
       <StepCardContent />
       <CallToActionSection />
