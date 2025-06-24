@@ -46,6 +46,54 @@
 //   );
 // }
 
+// // src/app/(website)/page.tsx
+// import { Metadata } from 'next';
+// import dynamic from 'next/dynamic';
+// import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
+// import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
+
+// // Dynamic imports for sections below the fold or less critical for initial interaction
+// const FeatureMarquee = dynamic(() => import("./components/home/FeatureMarquee"));
+// const InternationalTransferSection = dynamic(() => import("./components/home/InternationalTransferSection"));
+// const SecuritySection = dynamic(() => import("./components/home/SecuritySection"));
+// const ClientTestimonialSection = dynamic(() => import("./components/home/ClientTestimonialSection"));
+// const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
+// const StepCardContent = dynamic(() => import("./components/home/StepCard/StepContentCard"));
+// const CallToActionSection = dynamic(() => import("./components/home/CallToActionSection"));
+
+// export const metadata: Metadata = {
+//   title: 'Fast & Secure International Money Transfers',
+//   description: 'Join Remityn for the best rates on international money transfers. Send money to family and friends worldwide with ease.',
+//   openGraph: {
+//     title: 'Fast & Secure International Money Transfers by Remityn',
+//     description: 'Join Remityn for the best rates on international money transfers.',
+//   },
+//   twitter: {
+//     title: 'Fast & Secure International Money Transfers by Remityn',
+//     description: 'Join Remityn for the best rates on international money transfers.',
+//   },
+//   alternates: {
+//     canonical: '/',
+//   },
+// };
+
+// export default function Home() {
+//   return (
+//     <>
+//       <HeroSection />
+//       <CalculetingSection />
+//       <FeatureMarquee/>
+//       <InternationalTransferSection />
+//       <SecuritySection />
+//       <FeaturesList />
+//       <ClientTestimonialSection />
+//       <StepCardContent />
+//       <CallToActionSection />
+//     </>
+//   );
+// }
+
+// src/app/(website)/page.tsx
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
@@ -82,12 +130,20 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Fast & Secure International Money Transfers by Remityn",
     description:
-      "Join Remityn for the best rates on international money transfers.",
+      "Join Remityn for the best rates on international money transfers. Send money to family and friends worldwide with ease.", // Added full description here for better social sharing
+    images: [
+      {
+        url: "/assets/images/hero-preview-image.jpg", // <-- IMPORTANT: Replace with your actual desired image path
+        width: 1200, // Recommended width for Open Graph images
+        height: 630, // Recommended height for Open Graph images
+        alt: "Fast and Secure International Money Transfers with Remityn", // Descriptive alt text
+      },
+    ],
   },
   twitter: {
     title: "Fast & Secure International Money Transfers by Remityn",
     description:
-      "Join Remityn for the best rates on international money transfers.",
+      "Join Remityn for the best rates on international money transfers. Send money to family and friends worldwide with ease.", // Added full description here for better social sharing
   },
   alternates: {
     canonical: "/",

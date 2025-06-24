@@ -2450,7 +2450,7 @@ const ReviewSection: React.FC = () => {
     [currentOffset, slideAmountPx]
   );
 
-  const responsiveCardClasses = "w-[22rem] lg:w-[24rem]";
+  const responsiveCardClasses = "w-[21.5rem] lg:w-[24rem]";
 
   return (
     <section

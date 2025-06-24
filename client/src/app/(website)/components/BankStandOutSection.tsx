@@ -1371,9 +1371,9 @@ const BankStandOutSection: React.FC = () => {
   return (
     <div className="bg-background py-10 md:py-16 px-4">
       <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row gap-4 lg:gap-16 items-center">
+        <div className="flex flex-col lg:flex-row gap-4 items-center lg:gap-16">
           {/* Left Column: Title and Image */}
-          <div className="w-full md:w-1/2 lg:w-[45%]">
+          <div className="w-full lg:w-[45%]">
             <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-mainheadingWhite">
               Secure & Trusted{" "}
               <span className="text-primary">Global Exchange Rates</span>
@@ -1399,6 +1399,7 @@ const BankStandOutSection: React.FC = () => {
                     style={{
                       objectFit: "cover",
                     }}
+                    className="w-full"
                     priority={currentImageSrc === accordionData[0].imageSrc}
                   />
                 </motion.div>
@@ -1407,7 +1408,7 @@ const BankStandOutSection: React.FC = () => {
           </div>
 
           {/* Right Column: Accordion */}
-          <div className="w-full md:w-1/2 lg:w-[55%] flex flex-col lg:mt-26">
+          <div className="w-full lg:w-[55%] flex flex-col lg:mt-26">
             <div className="lg:space-y-5 space-y-0">
               {accordionData.map((item) => (
                 <div key={item.id}>
@@ -1416,6 +1417,7 @@ const BankStandOutSection: React.FC = () => {
                     aria-expanded={activeItemId === item.id}
                     aria-controls={`accordion-content-${item.id}`}
                     className="w-full flex items-center gap-3 cursor-pointer text-left py-4 focus:outline-none group"
+                  
                   >
                     <h3
                       id={`accordion-title-${item.id}`}
