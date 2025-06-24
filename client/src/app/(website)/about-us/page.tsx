@@ -31,6 +31,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic'; // Import next/dynamic
+import FinancialAssistPage from '../components/About/FinancialAssistPage';
 
 // Dynamically import components for this page
 const TrustedCurrencyPartner = dynamic(() => import('../components/About/TrustedCurrencyPartner'), {
@@ -43,6 +44,8 @@ const CurrencyExchangeServices = dynamic(() => import('../components/About/Curre
 const WhyChooseUs = dynamic(() => import('../components/About/WhyChooseUs'), {
     // loading: () => <div className="h-96 bg-gray-800 rounded animate-pulse" />,
 });
+
+
 
 export const metadata: Metadata = {
   title: 'About Remityn',
@@ -61,6 +64,7 @@ const AboutUsPage = () => {
         <TrustedCurrencyPartner />
         <CurrencyExchangeServices />
         <WhyChooseUs />
+        {/* <FinancialAssistPage/> */}
     </div>
   );
 };
