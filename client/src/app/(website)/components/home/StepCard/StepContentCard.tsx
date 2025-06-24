@@ -264,7 +264,6 @@
 //   );
 // };
 
-
 // // Main StepCardContent component to display all cards in a grid
 // const StepCardContent: React.FC = () => {
 //   return (
@@ -281,8 +280,6 @@
 // };
 
 // export default StepCardContent;
-
-
 
 // "use client";
 // import React, { useEffect, useRef } from "react";
@@ -401,7 +398,6 @@
 //     ],
 //   },
 // ];
-
 
 // // --- Framer Motion Animation Variants for *internal* card content (remain the same) ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
@@ -585,7 +581,6 @@
 
 // export default StepCardContent;
 
-
 // "use client";
 // import React, { useEffect, useRef } from "react";
 // import Image from "next/image";
@@ -704,7 +699,6 @@
 //   },
 // ];
 
-
 // // --- Framer Motion Animation Variants for *internal* card content ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
 // const ANIMATION_DURATION_IMAGE = 0.6;
@@ -779,7 +773,6 @@
 //   );
 // };
 
-
 // const StepCardContent: React.FC = () => {
 //   const sectionRef = useRef<HTMLElement>(null);
 
@@ -851,7 +844,6 @@
 //         sectionRef.current.style.paddingBottom = `${lastCardHeight + topOffsetPx + 100}px`; // 100px extra buffer
 //       }
 
-
 //       return () => {
 //         timelines.forEach(tl => {
 //           if (tl.scrollTrigger) tl.scrollTrigger.kill();
@@ -903,9 +895,6 @@
 // };
 
 // export default StepCardContent;
-
-
-
 
 // "use client";
 // import React from "react";
@@ -1020,7 +1009,6 @@
 //     ],
 //   },
 // ];
-
 
 // // --- Framer Motion Animation Variants for *internal* card content ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
@@ -1158,7 +1146,6 @@
 //   );
 // };
 
-
 // const StepCardContent: React.FC = () => {
 //   return (
 //     <section className="relative bg-neutral-100 dark:bg-black py-20">
@@ -1180,8 +1167,7 @@
 
 // export default StepCardContent;
 
-
-// // Proper Code 
+// // Proper Code
 // "use client";
 // import React, { useRef } from "react";
 // import Image from "next/image";
@@ -1295,7 +1281,6 @@
 //     ],
 //   },
 // ];
-
 
 // // --- Framer Motion Animation Variants for *internal* card content ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
@@ -1466,7 +1451,6 @@
 //   // If numSteps is 1, numTransitions should be 1 to avoid division by zero and to make ranges work.
 //   const numTransitions = numSteps > 1 ? numSteps - 1 : 1;
 
-
 //   return (
 //     <section className="relative bg-neutral-100 dark:bg-black py-20">
 //       {/* The containerRef is on the direct parent of the sticky cards */}
@@ -1514,7 +1498,7 @@
 //                 { clamp: true }
 //               );
 //             }
-            
+
 //             const cardStyle: MotionStyle = {
 //               scale,
 //               translateY,
@@ -1543,8 +1527,7 @@
 
 // export default StepCardContent;
 
-
-// // Proper Code with GSAP Animation 
+// // Proper Code with GSAP Animation
 // "use client";
 // import React, { useEffect, useRef } from "react";
 // import Image from "next/image";
@@ -1834,7 +1817,7 @@
 //         <div
 //           ref={cardsContainerRef}
 //           className="relative flex flex-col gap-20"
-          
+
 //         >
 //           {stepsData.map((step, index) => (
 //             <div
@@ -1854,8 +1837,6 @@
 
 // export default StepCardContent;
 
-
-
 // // src/app/StepCardContent.tsx (or your component's location)
 // "use client";
 // import React, { useEffect, useRef } from "react";
@@ -1872,7 +1853,6 @@
 
 // // --- Register GSAP Plugin ---
 // gsap.registerPlugin(ScrollTrigger);
-
 
 // // --- Data (remains here or could be moved to a separate data file) ---
 // const stepsData: StepData[] = [
@@ -2033,9 +2013,9 @@
 //               className="sticky-card sticky top-24 origin-top"
 //             >
 //               {/* Use the imported component */}
-//               <IndividualStepCard 
-//                 step={step} 
-//                 isFirst={index === 0} 
+//               <IndividualStepCard
+//                 step={step}
+//                 isFirst={index === 0}
 //                 index={index} // <-- ADD THIS LINE
 //                 />
 //             </div>
@@ -2047,9 +2027,6 @@
 // };
 
 // export default StepCardContent;
-
-
-
 
 // // src/app/(website)/components/home/StepCard/StepContentCard.tsx
 // "use client";
@@ -2106,7 +2083,6 @@
 //         contentBlocks: [ { text: "Initiate your transfer", type: "success" }, { text: "Transparent transactions", type: "secondry" }, { text: "24/7 Secure Transactions", type: "warning" }, ],
 //     },
 // ];
-
 
 // const StepContentCard: React.FC = () => {
 //     const sectionRef = useRef<HTMLElement>(null);
@@ -2190,155 +2166,796 @@
 // // Assuming the component filename is StepContentCard.tsx
 // export default StepContentCard;
 
+// // src/app/(website)/components/home/StepCard/StepContentCard.tsx
+// "use client";
+// import React, { useRef, useState } from "react"; // Removed useEffect as it's no longer needed
+// // Import the icons since they are part of the data structure
+// import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa";
+// import { FaMoneyBillTransfer } from "react-icons/fa6";
+// import { motion, AnimatePresence } from "framer-motion";
 
+// // --- Imports and Data (remain the same) ---
+// import { StepData } from "../../../../../types/step-data";
+// import IndividualStepCard from "./IndividualStepCard";
+
+// // --- DATA (remains the same) ---
+// const stepsData: StepData[] = [
+//   {
+//     id: 0,
+//     iconDefault: FaCheckCircle,
+//     iconActive: FaCheckCircle,
+//     tabName: "Sign Up",
+//     contentTitle: "Sign Up and Get Verified",
+//     contentSubtitle:
+//       "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
+//     contentImages: {
+//       img: "/assets/images/Register-and-verify.png",
+//       imgTitle: "Remityn showing registration and verification screen",
+//     },
+//     contentBlocks: [
+//       { text: "Instant account setup", type: "success" },
+//       { text: "Seamless KYC verification", type: "secondry" },
+//       { text: "Unlock full access", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 1,
+//     iconDefault: FaWallet,
+//     iconActive: FaWallet,
+//     tabName: "Wallet",
+//     contentTitle: " Create & Fund Your Currency Wallet",
+//     contentSubtitle:
+//       "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
+//     contentImages: {
+//       img: "/assets/images/Create-a-Digital-Wallet.png",
+//       imgTitle: "Remityn showing add fund screen",
+//     },
+//     contentBlocks: [
+//       { text: "Choose your currency", type: "success" },
+//       { text: "Add funds to your wallet", type: "secondry" },
+//       { text: "Available to transfer money", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     iconDefault: FaUserFriends,
+//     iconActive: FaUserFriends,
+//     tabName: "Recipient",
+//     contentTitle: "Add Your Recipient",
+//     contentSubtitle:
+//       "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
+//     contentImages: {
+//       img: "/assets/images/Add-Recipients.png",
+//       imgTitle:
+//         "Remityn showing add recipients screen with a list of recipients",
+//     },
+//     contentBlocks: [
+//       { text: "Manage multiple recipients", type: "success" },
+//       { text: "Saved recipient details", type: "secondry" },
+//       { text: "Useful for the future", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     iconDefault: FaMoneyBillTransfer,
+//     iconActive: FaMoneyBillTransfer,
+//     tabName: "Send",
+//     contentTitle: "Transfer Money Seamlessly",
+//     contentSubtitle:
+//       "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
+//     contentImages: {
+//       img: "/assets/images/Transfer-Money.png",
+//       imgTitle:
+//         "Remityn showing transfer money screen with currency conversion details",
+//     },
+//     contentBlocks: [
+//       { text: "Initiate your transfer", type: "success" },
+//       { text: "Transparent transactions", type: "secondry" },
+//       { text: "24/7 Secure Transactions", type: "warning" },
+//     ],
+//   },
+// ];
+
+// const StepContentCard: React.FC = () => {
+//   // sectionRef is no longer needed for this logic, but can be kept for other purposes
+//   const [activeTab, setActiveTab] = useState(0);
+//   const tabContainerRef = useRef<HTMLDivElement>(null);
+
+//   // --- REMOVED THE useEffect HOOK ---
+//   // No more automatic scrolling on load
+
+//   const handleTabClick = (index: number) => {
+//     // 1. Update the active tab state
+//     setActiveTab(index);
+
+//     // 2. Perform the scroll action based on the clicked tab's index
+//     const tabElement = tabContainerRef.current?.children[index] as HTMLElement;
+//     if (tabElement) {
+//       tabElement.scrollIntoView({
+//         behavior: "smooth",
+//         block: "nearest",
+//         inline: "center",
+//       });
+//     }
+//   };
+
+//   const activeStepData = stepsData[activeTab];
+
+//   return (
+//     // Note: I removed the sectionRef as it wasn't being used for this logic.
+//     // You can add it back if it's used for something else.
+//     <section className="StePCardSection relative py-10 sm:py-16">
+//       <div className="container mx-auto px-4">
+//         <div className="space-y-4 text-center">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             4 easy steps to
+//             <span className="text-primary"> Transfer to India </span>
+//           </h3>
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-4xl max-w-full mx-auto">
+//             Transfer funds internationally to India with ease, speed, and
+//             security. We offer competitive exchange rates and a seamless
+//             experience for your INR remittances.
+//           </p>
+//         </div>
+
+//         <div className="mt-16 sm:mt-25">
+//           <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
+//             <div
+//               ref={tabContainerRef}
+//               className="relative flex justify-between items-center rounded-full p-1 bg-subheading w-full h-auto whitespace-nowrap overflow-x-auto scrollbar-hide"
+//             >
+//               {stepsData.map((step, index) => (
+//                 <button
+//                   key={step.id}
+//                   // Use the new handler function
+//                   onClick={() => handleTabClick(index)}
+//                   className="relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none cursor-pointer"
+//                   style={{ WebkitTapHighlightColor: "transparent" }}
+//                 >
+//                   {activeTab === index && (
+//                     <motion.div
+//                       layoutId="active-tab-background"
+//                       className="absolute inset-0 bg-primary rounded-full"
+//                       transition={{ stiffness: 350, damping: 30 }}
+//                     />
+//                   )}
+//                   <span
+//                     className={`relative z-10 transition-all duration-75 ease-linear ${
+//                       activeTab === index
+//                         ? "text-mainheading"
+//                         : "text-subheadingWhite"
+//                     }`}
+//                   >
+//                     {step.tabName}
+//                   </span>
+//                 </button>
+//               ))}
+//             </div>
+//           </div>
+
+//           <AnimatePresence mode="wait">
+//             <motion.div
+//               key={activeTab}
+//               initial={{ opacity: 0, y: 20 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               exit={{ opacity: 0, y: -20 }}
+//               transition={{ duration: 0.3, ease: "easeInOut" }}
+//             >
+//               {activeStepData && (
+//                 <IndividualStepCard
+//                   step={activeStepData}
+//                   isFirst={activeTab === 0}
+//                   index={activeTab}
+//                 />
+//               )}
+//             </motion.div>
+//           </AnimatePresence>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default StepContentCard;
+
+// // src/app/(website)/components/home/StepCard/StepContentCard.tsx
+// "use client";
+// import React, { useRef, useState, useEffect } from "react";
+// import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa";
+// import { FaMoneyBillTransfer } from "react-icons/fa6";
+// import { motion, AnimatePresence, PanInfo } from "framer-motion"; // Added PanInfo
+
+// import { StepData } from "../../../../../types/step-data";
+// import IndividualStepCard from "./IndividualStepCard";
+
+// // --- DATA (remains the same) ---
+// const stepsData: StepData[] = [
+//   {
+//     id: 0,
+//     iconDefault: FaCheckCircle,
+//     iconActive: FaCheckCircle,
+//     tabName: "Sign Up",
+//     contentTitle: "Sign Up and Get Verified",
+//     contentSubtitle:
+//       "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
+//     contentImages: {
+//       img: "/assets/images/Register-and-verify.png",
+//       imgTitle: "Remityn showing registration and verification screen",
+//     },
+//     contentBlocks: [
+//       { text: "Instant account setup", type: "success" },
+//       { text: "Seamless KYC verification", type: "secondry" },
+//       { text: "Unlock full access", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 1,
+//     iconDefault: FaWallet,
+//     iconActive: FaWallet,
+//     tabName: "Wallet",
+//     contentTitle: " Create & Fund Your Currency Wallet",
+//     contentSubtitle:
+//       "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
+//     contentImages: {
+//       img: "/assets/images/Create-a-Digital-Wallet.png",
+//       imgTitle: "Remityn showing add fund screen",
+//     },
+//     contentBlocks: [
+//       { text: "Choose your currency", type: "success" },
+//       { text: "Add funds to your wallet", type: "secondry" },
+//       { text: "Available to transfer money", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     iconDefault: FaUserFriends,
+//     iconActive: FaUserFriends,
+//     tabName: "Recipient",
+//     contentTitle: "Add Your Recipient",
+//     contentSubtitle:
+//       "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
+//     contentImages: {
+//       img: "/assets/images/Add-Recipients.png",
+//       imgTitle:
+//         "Remityn showing add recipients screen with a list of recipients",
+//     },
+//     contentBlocks: [
+//       { text: "Manage multiple recipients", type: "success" },
+//       { text: "Saved recipient details", type: "secondry" },
+//       { text: "Useful for the future", type: "warning" },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     iconDefault: FaMoneyBillTransfer,
+//     iconActive: FaMoneyBillTransfer,
+//     tabName: "Send",
+//     contentTitle: "Transfer Money Seamlessly",
+//     contentSubtitle:
+//       "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
+//     contentImages: {
+//       img: "/assets/images/Transfer-Money.png",
+//       imgTitle:
+//         "Remityn showing transfer money screen with currency conversion details",
+//     },
+//     contentBlocks: [
+//       { text: "Initiate your transfer", type: "success" },
+//       { text: "Transparent transactions", type: "secondry" },
+//       { text: "24/7 Secure Transactions", type: "warning" },
+//     ],
+//   },
+// ];
+
+// const StepContentCard: React.FC = () => {
+//   const [activeTab, setActiveTab] = useState(0);
+//   const [isDraggingTab, setIsDraggingTab] = useState(false); // For tab button dragging
+//   const [direction, setDirection] = useState(0); // For card swipe animation: 0 initial, 1 next, -1 prev
+//   const tabContainerRef = useRef<HTMLDivElement>(null);
+
+//   // Helper function to change active tab, set direction, and scroll tab indicator
+//   const changeActiveTab = (newIndex: number, newDirection?: number) => {
+//     if (newIndex === activeTab) return; // No change if already active
+
+//     if (newDirection !== undefined) {
+//       setDirection(newDirection);
+//     } else {
+//       if (newIndex > activeTab) {
+//         setDirection(1); // Next
+//       } else {
+//         setDirection(-1); // Previous
+//       }
+//     }
+//     setActiveTab(newIndex);
+
+//     // Scroll tab indicator into view
+//     const tabElement = tabContainerRef.current?.children[
+//       newIndex
+//     ] as HTMLElement;
+//     if (tabElement) {
+//       tabElement.scrollIntoView({
+//         behavior: "smooth",
+//         block: "nearest",
+//         inline: "center",
+//       });
+//     }
+//   };
+
+//   // Handler for mouse down on a tab button (for dragging over tabs)
+//   const handleTabButtonMouseDown = (index: number) => {
+//     setIsDraggingTab(true);
+//     if (activeTab !== index) {
+//       changeActiveTab(index);
+//     }
+//     if (tabContainerRef.current) {
+//       tabContainerRef.current.style.cursor = "grabbing";
+//     }
+//     document.body.style.userSelect = "none";
+//   };
+
+//   // Handler for mouse enter on a tab button (for dragging over tabs)
+//   const handleTabButtonMouseEnter = (index: number) => {
+//     if (isDraggingTab && activeTab !== index) {
+//       changeActiveTab(index);
+//     }
+//   };
+
+//   // Handler for standard click on a tab button
+//   const handleTabButtonClick = (index: number) => {
+//     if (!isDraggingTab || activeTab !== index) {
+//       changeActiveTab(index);
+//     }
+//   };
+
+//   // Effect to handle global mouse up for stopping tab button drag
+//   useEffect(() => {
+//     const handleGlobalMouseUp = () => {
+//       if (isDraggingTab) {
+//         setIsDraggingTab(false);
+//         if (tabContainerRef.current) {
+//           tabContainerRef.current.style.cursor = "default";
+//         }
+//         document.body.style.userSelect = "";
+//       }
+//     };
+
+//     if (isDraggingTab) {
+//       window.addEventListener("mouseup", handleGlobalMouseUp);
+//     }
+//     return () => {
+//       window.removeEventListener("mouseup", handleGlobalMouseUp);
+//       if (tabContainerRef.current) {
+//         tabContainerRef.current.style.cursor = "default";
+//       }
+//       document.body.style.userSelect = "";
+//     };
+//   }, [isDraggingTab]);
+
+//   // Handler for card content swipe
+//   const handleCardDragEnd = (
+//     event: MouseEvent | TouchEvent | PointerEvent,
+//     info: PanInfo
+//   ) => {
+//     const swipeThreshold = 50; // Min distance in pixels for a swipe
+//     const velocityThreshold = 300; // Min velocity for a swipe
+
+//     const swipeDistance = info.offset.x;
+//     const swipeVelocity = info.velocity.x;
+
+//     if (swipeDistance < -swipeThreshold || swipeVelocity < -velocityThreshold) {
+//       // Swiped Left (to Next Tab)
+//       if (activeTab < stepsData.length - 1) {
+//         changeActiveTab(activeTab + 1, 1);
+//       }
+//     } else if (
+//       swipeDistance > swipeThreshold ||
+//       swipeVelocity > velocityThreshold
+//     ) {
+//       // Swiped Right (to Previous Tab)
+//       if (activeTab > 0) {
+//         changeActiveTab(activeTab - 1, -1);
+//       }
+//     }
+//     // If not a strong enough swipe, the card snaps back due to dragConstraints.
+//     // The animation is handled by AnimatePresence if the tab actually changes.
+//   };
+
+//   // Animation variants for the card content
+//   const cardVariants = {
+//     enter: (direction: number) => ({
+//       x: direction === 0 ? 0 : direction > 0 ? "100%" : "-100%",
+//       opacity: 0,
+//     }),
+//     center: {
+//       zIndex: 1,
+//       x: 0,
+//       opacity: 1,
+//     },
+//     exit: (direction: number) => ({
+//       zIndex: 0,
+//       x: direction > 0 ? "-100%" : "100%", // if new card enters from right (dir=1), old exits left
+//       opacity: 0,
+//     }),
+//   };
+
+//   const activeStepData = stepsData[activeTab];
+
+//   return (
+//     <section className="StePCardSection relative py-10 sm:py-16 overflow-hidden">
+//       {" "}
+//       {/* Added overflow-hidden for safety */}
+//       <div className="container mx-auto px-4">
+//         <div className="space-y-4 text-center">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             4 easy steps to
+//             <span className="text-primary"> Transfer to India </span>
+//           </h3>
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-4xl max-w-full mx-auto">
+//             Transfer funds internationally to India with ease, speed, and
+//             security. We offer competitive exchange rates and a seamless
+//             experience for your INR remittances.
+//           </p>
+//         </div>
+
+//         <div className="mt-16 sm:mt-25">
+//           {/* Tab Buttons */}
+//           <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
+//             <div
+//               ref={tabContainerRef}
+//               className="relative flex justify-between items-center rounded-full p-1 bg-subheading w-full h-auto whitespace-nowrap overflow-x-auto scrollbar-hide"
+//             >
+//               {stepsData.map((step, index) => (
+//                 <button
+//                   key={step.id}
+//                   onClick={() => handleTabButtonClick(index)}
+//                   onMouseDown={() => handleTabButtonMouseDown(index)}
+//                   onMouseEnter={() => handleTabButtonMouseEnter(index)}
+//                   className={`relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none
+//                               ${
+//                                 isDraggingTab
+//                                   ? "cursor-grabbing"
+//                                   : "cursor-pointer"
+//                               }`}
+//                   style={{ WebkitTapHighlightColor: "transparent" }}
+//                   aria-pressed={activeTab === index}
+//                   aria-label={`Step ${index + 1}: ${step.tabName}`}
+//                 >
+//                   {activeTab === index && (
+//                     <motion.div
+//                       layoutId="active-tab-background"
+//                       className="absolute inset-0 bg-primary rounded-full"
+//                       transition={{
+//                         type: "spring",
+//                         stiffness: 350,
+//                         damping: 30,
+//                       }}
+//                     />
+//                   )}
+//                   <span
+//                     className={`relative z-10 transition-colors duration-200 ease-linear ${
+//                       activeTab === index
+//                         ? "text-mainheading"
+//                         : "text-subheadingWhite"
+//                     }`}
+//                   >
+//                     {step.tabName}
+//                   </span>
+//                 </button>
+//               ))}
+//             </div>
+//           </div>
+
+//           {/* Card Content with Swipe */}
+//           <div className="relative">
+//             {" "}
+//             {/* Added relative for positioning context if needed by animations */}
+//             <AnimatePresence initial={true} custom={direction} mode="wait">
+//               <motion.div
+//                 key={activeTab} // Crucial for AnimatePresence to detect change
+//                 custom={direction}
+//                 variants={cardVariants}
+//                 initial="enter"
+//                 animate="center"
+//                 exit="exit"
+//                 transition={{
+//                   x: { type: "spring", stiffness: 300, damping: 30 },
+//                   opacity: { duration: 0.2 },
+//                 }}
+//                 drag="x"
+//                 dragConstraints={{ left: 0, right: 0 }} // Card snaps back if swipe isn't enough
+//                 dragElasticity={0.1} // Allow a little "give" when dragging
+//                 onDragEnd={handleCardDragEnd}
+//                 className="w-full cursor-grab active:cursor-grabbing" // Visual cue for dragging
+//               >
+//                 {activeStepData && (
+//                   <IndividualStepCard
+//                     step={activeStepData}
+//                     isFirst={activeTab === 0}
+//                     index={activeTab}
+//                   />
+//                 )}
+//               </motion.div>
+//             </AnimatePresence>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default StepContentCard;
 
 // src/app/(website)/components/home/StepCard/StepContentCard.tsx
 "use client";
-import React, { useRef, useState } from "react"; // Removed useEffect as it's no longer needed
-// Import the icons since they are part of the data structure
+import React, { useRef, useState, useEffect } from "react";
 import { FaCheckCircle, FaWallet, FaUserFriends } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 
-// --- Imports and Data (remain the same) ---
 import { StepData } from "../../../../../types/step-data";
 import IndividualStepCard from "./IndividualStepCard";
 
 // --- DATA (remains the same) ---
 const stepsData: StepData[] = [
-    {
-        id: 0,
-        iconDefault: FaCheckCircle,
-        iconActive: FaCheckCircle,
-        tabName: "Sign Up",
-        contentTitle: "Sign Up and Get Verified",
-        contentSubtitle: "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
-        contentImages: { img: "/assets/images/Register-and-verify.png", imgTitle: "Remityn showing registration and verification screen", },
-        contentBlocks: [ { text: "Instant account setup", type: "success" }, { text: "Seamless KYC verification", type: "secondry" }, { text: "Unlock full access", type: "warning" }, ],
+  {
+    id: 0,
+    iconDefault: FaCheckCircle,
+    iconActive: FaCheckCircle,
+    tabName: "Sign Up",
+    contentTitle: "Sign Up and Get Verified",
+    contentSubtitle:
+      "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
+    contentImages: {
+      img: "/assets/images/Register-and-verify.png",
+      imgTitle: "Remityn showing registration and verification screen",
     },
-    {
-        id: 1,
-        iconDefault: FaWallet,
-        iconActive: FaWallet,
-        tabName: "Wallet",
-        contentTitle: " Create & Fund Your Currency Wallet",
-        contentSubtitle: "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
-        contentImages: { img: "/assets/images/Create-a-Digital-Wallet.png", imgTitle: "Remityn showing add fund screen", },
-        contentBlocks: [ { text: "Choose your currency", type: "success" }, { text: "Add funds to your wallet", type: "secondry" }, { text: "Available to transfer money", type: "warning" }, ],
+    contentBlocks: [
+      { text: "Instant account setup", type: "success" },
+      { text: "Seamless KYC verification", type: "secondry" },
+      { text: "Unlock full access", type: "warning" },
+    ],
+  },
+  {
+    id: 1,
+    iconDefault: FaWallet,
+    iconActive: FaWallet,
+    tabName: "Wallet",
+    contentTitle: " Create & Fund Your Currency Wallet",
+    contentSubtitle:
+      "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
+    contentImages: {
+      img: "/assets/images/Create-a-Digital-Wallet.png",
+      imgTitle: "Remityn showing add fund screen",
     },
-    {
-        id: 2,
-        iconDefault: FaUserFriends,
-        iconActive: FaUserFriends,
-        tabName: "Recipient",
-        contentTitle: "Add Your Recipient",
-        contentSubtitle: "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
-        contentImages: { img: "/assets/images/Add-Recipients.png", imgTitle: "Remityn showing add recipients screen with a list of recipients", },
-        contentBlocks: [ { text: "Manage multiple recipients", type: "success" }, { text: "Saved recipient details", type: "secondry" }, { text: "Useful for the future", type: "warning" }, ],
+    contentBlocks: [
+      { text: "Choose your currency", type: "success" },
+      { text: "Add funds to your wallet", type: "secondry" },
+      { text: "Available to transfer money", type: "warning" },
+    ],
+  },
+  {
+    id: 2,
+    iconDefault: FaUserFriends,
+    iconActive: FaUserFriends,
+    tabName: "Recipient",
+    contentTitle: "Add Your Recipient",
+    contentSubtitle:
+      "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
+    contentImages: {
+      img: "/assets/images/Add-Recipients.png",
+      imgTitle:
+        "Remityn showing add recipients screen with a list of recipients",
     },
-    {
-        id: 3,
-        iconDefault: FaMoneyBillTransfer,
-        iconActive: FaMoneyBillTransfer,
-        tabName: "Send",
-        contentTitle: "Transfer Money Seamlessly",
-        contentSubtitle: "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
-        contentImages: { img: "/assets/images/Transfer-Money.png", imgTitle: "Remityn showing transfer money screen with currency conversion details", },
-        contentBlocks: [ { text: "Initiate your transfer", type: "success" }, { text: "Transparent transactions", type: "secondry" }, { text: "24/7 Secure Transactions", type: "warning" }, ],
+    contentBlocks: [
+      { text: "Manage multiple recipients", type: "success" },
+      { text: "Saved recipient details", type: "secondry" },
+      { text: "Useful for the future", type: "warning" },
+    ],
+  },
+  {
+    id: 3,
+    iconDefault: FaMoneyBillTransfer,
+    iconActive: FaMoneyBillTransfer,
+    tabName: "Send",
+    contentTitle: "Transfer Money Seamlessly",
+    contentSubtitle:
+      "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
+    contentImages: {
+      img: "/assets/images/Transfer-Money.png",
+      imgTitle:
+        "Remityn showing transfer money screen with currency conversion details",
     },
+    contentBlocks: [
+      { text: "Initiate your transfer", type: "success" },
+      { text: "Transparent transactions", type: "secondry" },
+      { text: "24/7 Secure Transactions", type: "warning" },
+    ],
+  },
 ];
 
 const StepContentCard: React.FC = () => {
-    // sectionRef is no longer needed for this logic, but can be kept for other purposes
-    const [activeTab, setActiveTab] = useState(0);
-    const tabContainerRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState(0);
+  const [isDraggingTabButton, setIsDraggingTabButton] = useState(false);
+  const tabContainerRef = useRef<HTMLDivElement>(null);
 
-    // --- REMOVED THE useEffect HOOK ---
-    // No more automatic scrolling on load
+  const changeActiveTabAndUpdateScroll = (index: number) => {
+    if (index === activeTab) return;
+    setActiveTab(index);
+    const tabElement = tabContainerRef.current?.children[index] as HTMLElement;
+    if (tabElement) {
+      tabElement.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  };
 
-    const handleTabClick = (index: number) => {
-        // 1. Update the active tab state
-        setActiveTab(index);
+  const handleTabButtonMouseDown = (index: number) => {
+    setIsDraggingTabButton(true);
+    if (activeTab !== index) {
+      changeActiveTabAndUpdateScroll(index);
+    }
+    if (tabContainerRef.current) {
+      tabContainerRef.current.style.cursor = "grabbing";
+    }
+    document.body.style.userSelect = "none";
+  };
 
-        // 2. Perform the scroll action based on the clicked tab's index
-        const tabElement = tabContainerRef.current?.children[index] as HTMLElement;
-        if (tabElement) {
-            tabElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'center'
-            });
+  const handleTabButtonMouseEnter = (index: number) => {
+    if (isDraggingTabButton && activeTab !== index) {
+      changeActiveTabAndUpdateScroll(index);
+    }
+  };
+
+  const handleTabButtonClick = (index: number) => {
+    if (!isDraggingTabButton || activeTab !== index) {
+      changeActiveTabAndUpdateScroll(index);
+    }
+  };
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (isDraggingTabButton) {
+        setIsDraggingTabButton(false);
+        if (tabContainerRef.current) {
+          tabContainerRef.current.style.cursor = "default";
         }
+        document.body.style.userSelect = "";
+      }
     };
 
-    const activeStepData = stepsData[activeTab];
+    if (isDraggingTabButton) {
+      window.addEventListener("mouseup", handleGlobalMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
+      if (tabContainerRef.current) {
+        tabContainerRef.current.style.cursor = "default";
+      }
+      document.body.style.userSelect = "";
+    };
+  }, [isDraggingTabButton]);
 
-    return (
-        // Note: I removed the sectionRef as it wasn't being used for this logic.
-        // You can add it back if it's used for something else.
-        <section className="StePCardSection relative py-10 sm:py-16">
-            <div className="container mx-auto px-4">
-                <div className="space-y-4 text-center">
-                    <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                        4 easy steps to<span className="text-primary"> Transfer to India </span>
-                    </h3>
-                    <p className="text-subheadingWhite md:text-lg text-base lg:max-w-4xl max-w-full mx-auto">
-                        Transfer funds internationally to India with ease, speed, and
-                        security. We offer competitive exchange rates and a seamless
-                        experience for your INR remittances.
-                    </p>
-                </div>
+  const handleCardSwipeEnd = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    const swipeThreshold = 50;
+    const velocityThreshold = 200;
 
-                <div className="mt-16 sm:mt-25">
-                    <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
-                        <div
-                            ref={tabContainerRef}
-                            className="relative flex justify-between items-center rounded-full p-1 bg-subheading w-full h-auto whitespace-nowrap overflow-x-auto scrollbar-hide"
-                        >
-                            {stepsData.map((step, index) => (
-                                <button
-                                    key={step.id}
-                                    // Use the new handler function
-                                    onClick={() => handleTabClick(index)}
-                                    className="relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none cursor-pointer"
-                                    style={{ WebkitTapHighlightColor: "transparent" }}
-                                >
-                                    {activeTab === index && (
-                                        <motion.div
-                                            layoutId="active-tab-background"
-                                            className="absolute inset-0 bg-primary rounded-full"
-                                            transition={{ stiffness: 350, damping: 30 }}
-                                        />
-                                    )}
-                                    <span className={`relative z-10 transition-all duration-75 ease-linear ${activeTab === index ? "text-mainheading" : "text-subheadingWhite"}`}>
-                                        {step.tabName}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+    const swipeDistance = info.offset.x;
+    const swipeVelocity = info.velocity.x;
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                        >
-                            {activeStepData && (
-                                <IndividualStepCard
-                                    step={activeStepData}
-                                    isFirst={activeTab === 0}
-                                    index={activeTab}
-                                />
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+    if (swipeDistance < -swipeThreshold || swipeVelocity < -velocityThreshold) {
+      if (activeTab < stepsData.length - 1) {
+        changeActiveTabAndUpdateScroll(activeTab + 1);
+      }
+    } else if (
+      swipeDistance > swipeThreshold ||
+      swipeVelocity > velocityThreshold
+    ) {
+      if (activeTab > 0) {
+        changeActiveTabAndUpdateScroll(activeTab - 1);
+      }
+    }
+  };
+
+  const activeStepData = stepsData[activeTab];
+
+  return (
+    <section className="StePCardSection relative py-10 sm:py-16 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="space-y-4 text-center">
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+            4 easy steps to
+            <span className="text-primary"> Transfer to India </span>
+          </h3>
+          <p className="text-subheadingWhite md:text-lg text-base lg:max-w-4xl max-w-full mx-auto">
+            Transfer funds internationally to India with ease, speed, and
+            security. We offer competitive exchange rates and a seamless
+            experience for your INR remittances.
+          </p>
+        </div>
+
+        <div className="mt-16 sm:mt-25">
+          {/* Tab Buttons */}
+          <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
+            <div
+              ref={tabContainerRef}
+              className="relative flex justify-between items-center rounded-full p-1 bg-subheading w-full h-auto whitespace-nowrap overflow-x-auto scrollbar-hide"
+            >
+              {stepsData.map((step, index) => (
+                <button
+                  key={step.id}
+                  onClick={() => handleTabButtonClick(index)}
+                  onMouseDown={() => handleTabButtonMouseDown(index)}
+                  onMouseEnter={() => handleTabButtonMouseEnter(index)}
+                  className={`relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none 
+                              ${
+                                isDraggingTabButton
+                                  ? "cursor-grabbing"
+                                  : "cursor-pointer"
+                              }`}
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                  aria-pressed={activeTab === index}
+                  aria-label={`Step ${index + 1}: ${step.tabName}`}
+                >
+                  {activeTab === index && (
+                    <motion.div
+                      layoutId="active-tab-background"
+                      className="absolute inset-0 bg-primary rounded-full"
+                      transition={{
+                        type: "spring",
+                        stiffness: 350,
+                        damping: 30,
+                      }}
+                    />
+                  )}
+                  <span
+                    className={`relative z-10 transition-colors duration-200 ease-linear ${
+                      activeTab === index
+                        ? "text-mainheading"
+                        : "text-subheadingWhite"
+                    }`}
+                  >
+                    {step.tabName}
+                  </span>
+                </button>
+              ))}
             </div>
-        </section>
-    );
+          </div>
+
+          {/* Card Content Area - This motion.div is now draggable */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab} // This key triggers the animation when activeTab changes
+              // Animation props (simple fade/y-offset)
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              // Drag props for swipe detection on the card itself
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }} // Keep card visually in place during drag gesture
+              dragElastic={0.1} // CORRECTED: Allow a little "give" when dragging, adjust as needed (0 to 1)
+              onDragEnd={handleCardSwipeEnd}
+              className="w-full cursor-grab active:cursor-grabbing" // Visual cue for dragging
+              // This div wraps the actual card content
+            >
+              {activeStepData && (
+                <IndividualStepCard
+                  step={activeStepData}
+                  isFirst={activeTab === 0}
+                  index={activeTab}
+                  // IndividualStepCard itself should not be a motion component for this drag to work best on its wrapper
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default StepContentCard;

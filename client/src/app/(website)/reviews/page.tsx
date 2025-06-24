@@ -25,7 +25,7 @@ const ReviewsDisplayPage = () => {
     // <AllReviewsPage />
     // <AttioWallOfLove />\
     // <TestimonialsSection />
-    <div className="Review-Page"> 
+    <div className="Review-Page">
       <ReviewCards />
       <ReviewFaq />
     </div>

@@ -1,10 +1,10 @@
 import React from "react";
 import FeatureHero from "../components/Feature/FeatureHero";
 import CallToActionSection from "../components/home/CallToActionSection";
-import SendMoneySteps from "../components/Feature/SendMoneySteps";
 import HowItWorksSection from "../components/Feature/HowItWorksSection";
 import ChooseFeature from "../components/ChooseFeature";
 import TransferWaySection from "../components/Feature/TransferWaySection";
+import WhyUsSection from "../components/WhyUsSection";
 
 const page = () => {
   return (
@@ -12,6 +12,7 @@ const page = () => {
       {/* <ChooseFeature /> */}
       <FeatureHero />
       {/* <SendMoneySteps /> */}
+      {/* <WhyUsSection /> */}
       <HowItWorksSection />
       <TransferWaySection />
       <CallToActionSection />
