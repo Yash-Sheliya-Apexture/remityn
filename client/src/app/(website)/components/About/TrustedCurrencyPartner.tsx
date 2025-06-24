@@ -301,12 +301,9 @@ const TrustedCurrencyPartner = () => {
   const buttonLink = user ? "/dashboard" : "/auth/register";
 
   return (
-    <section
-      className="TrustedCurrencySection sm:py-16 py-10 overflow-hidden"
-      id="about-us"
-    >
+    <section className="TrustedCurrencySection sm:py-16 sm:pb-6 py-10" id="about-us">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-center gap-8">
+        <div className="flex flex-col lg:flex-row items-center sm:gap-8">
           <div className="w-full lg:w-1/2 order-2 md:order-1">
             {/* ... (content remains the same) ... */}
             <div className="space-y-4 text-center md:text-left">
@@ -326,7 +323,13 @@ const TrustedCurrencyPartner = () => {
                 </p> */}
 
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-                  At Remityn, we simplify the way you send money across borders. With real-time exchange rates, <span className="text-primary capitalize font-medium">zero hidden fees</span> and top-tier security, our platform ensures your funds move quickly, safely, and affordably.
+                  At Remityn, we simplify the way you send money across borders.
+                  With real-time exchange rates,{" "}
+                  <span className="text-primary capitalize font-medium">
+                    zero hidden fees
+                  </span>{" "}
+                  and top-tier security, our platform ensures your funds move
+                  quickly, safely, and affordably.
                 </p>
               </div>
 
@@ -350,17 +353,75 @@ const TrustedCurrencyPartner = () => {
                 </h3>
               </div>
             </div>
-            <div className="relative w-full flex justify-center">
-              <Image
-                src="/assets/images/TrustedPartner.png"
-                width={550}
-                height={800}
-                alt="Person smiling while using a laptop and wearing headphones"
-                className="object-contain rounded-3xl"
-                priority // Assuming this is the LCP for /about-us page. If not, set loading="lazy".
-                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
-                // loading="eager" is implied by priority
-              />
+            <div className="image-container">
+              <div className="relative">
+                <Image
+                  src="/assets/images/boy.jpg"
+                  width={1000}
+                  height={1000}
+                  alt="Person smiling while using a laptop and wearing headphones"
+                  className="object-contain rounded-2xl w-[85%] h-auto"
+                  quality={100}
+                  priority // Assuming this is the LCP for /about-us page. If not, set loading="lazy".
+                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
+                  // loading="eager" is implied by priority
+                />
+                {/* Send Amount */}
+                <div className="absolute top-[40px] right-0 bg-primary-foreground h-fit sm:p-4 p-2 sm:rounded-2xl rounded-lg">
+                  <div className="flex items-center gap-4">
+                    <Image
+                      src={"/assets/icon/flags/usd.svg"}
+                      alt="USD Flag"
+                      width={64}
+                      height={64}
+                      className="sm:size-16 size-10"
+                    />
+                    <div className="flex flex-col items-start ">
+                      <span className="text-subheadingWhite font-medium sm:text-xl text-sm">
+                        Send
+                      </span>
+                      <span className="text-mainheadingWhite font-bold sm:text-2xl text-base">
+                        1,000 USD
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative bottom-[40px] flex justify-end">
+                <Image
+                  src="/assets/images/couple.webp"
+                  width={1000}
+                  height={1000}
+                  alt="Person smiling while using a laptop and wearing headphones"
+                  className="object-contain rounded-2xl w-[85%] h-auto"
+                  quality={100}
+                  priority // Assuming this is the LCP for /about-us page. If not, set loading="lazy".
+                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 768px, (max-width: 1279px) 60vw, 768px"
+                  // loading="eager" is implied by priority
+                />
+
+                {/* Received Amount */}
+                <div className="absolute bottom-[40px] left-0 bg-primary-foreground h-fit sm:p-4 p-2 sm:rounded-2xl rounded-lg">
+                  <div className="flex items-center gap-4">
+                    <Image
+                      src={"/assets/icon/flags/inr.svg"}
+                      alt="INR Flag"
+                      width={64}
+                      height={64}
+                      className="sm:size-16 size-10"
+                    />
+                    <div className="flex flex-col items-start ">
+                      <span className="text-subheadingWhite font-medium sm:text-xl text-sm">
+                        Received
+                      </span>
+                      <span className="text-mainheadingWhite font-bold sm:text-2xl text-base">
+                        86,828.02 INR
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

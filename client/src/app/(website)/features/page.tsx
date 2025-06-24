@@ -4,6 +4,7 @@ import CallToActionSection from "../components/home/CallToActionSection";
 import SendMoneySteps from "../components/Feature/SendMoneySteps";
 import HowItWorksSection from "../components/Feature/HowItWorksSection";
 import ChooseFeature from "../components/ChooseFeature";
+import TransferWaySection from "../components/Feature/TransferWaySection";
 
 const page = () => {
   return (
@@ -12,6 +13,7 @@ const page = () => {
       <FeatureHero />
       {/* <SendMoneySteps /> */}
       <HowItWorksSection />
+      <TransferWaySection />
       <CallToActionSection />
     </div>
   );
