@@ -642,6 +642,137 @@
 
 
 
+// "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
+
+// import React from "react";
+// // Import the specific icons that match the image: Target, Users, Lightbulb
+// import {
+//   Target,
+//   Users,
+//   Lightbulb,
+//   Globe,
+//   LockKeyhole,
+//   Handshake,
+// } from "lucide-react";
+
+// // Define type for FeatureItem data
+// interface FeatureItem {
+//   title: string;
+//   description: string;
+//   icons: React.ReactNode; // Using React.ReactNode for broader compatibility with icon types
+// }
+
+// // Data for the features (Kept identical to your provided WhyChooseUs data)
+// const featuresData: FeatureItem[] = [
+//   {
+//     title: "Global Transfers, Simplified",
+//     description:
+//       "Easily send and manage money across the globe. Our platform is designed to make international transfers fast, seamless, and stress-free.",
+//     icons: <Globe className="size-8 lg:size-10 text-primary" />,
+//   },
+//   {
+//     title: "Security That Never Sleeps",
+//     description:
+//       "Your peace of mind is our top priority. Enjoy 24/7 protection, bank-level encryption, and advanced two-factor authentication for every transaction.",
+//     icons: <LockKeyhole className="size-8 lg:size-10 text-primary" />,
+//   },
+//   {
+//     title: "Beyond Transfers",
+//     description:
+//       "We're more than just a currency exchange we're your trusted partner in every financial step of your journey, both personal and professional.",
+//     icons: <Handshake className="size-8 lg:size-10 text-primary" />,
+//   },
+// ];
+
+// const WhyChooseUs: React.FC = () => {
+//   // Keep the data structure and count here for clarity, though totalItems is calculated inside the map
+//   const totalItems = featuresData.length;
+
+//   return (
+//     // Section with white background (or no background class for default white) and vertical padding
+//     <section className="WhyChooseUs sm:py-16 py-10 overflow-hidden bg-background">
+//       <div className="mx-auto container px-4">
+//         {/* Header Section - Centered text (Kept identical) */}
+//         <div className="mx-auto max-w-4xl text-center space-y-4">
+//           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
+//             Remityn: Where Your Money {"  "}
+//             <span className="text-primary">Journey Truly Matters</span>
+//           </h3>
+
+//           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//             Your money isn’t just currency. it represents care, commitment and
+//             connection. Remityn ensures every transfer is secure, fast and
+//             personally supported.
+//           </p>
+//         </div>
+
+//         {/*
+//           Features Grid - Modified to match InternationalTransferSection logic:
+//           - Mobile (default): 1 column
+//           - Tablet (md): 2 columns, with the last item spanning both (if total items is 3)
+//           - Desktop (lg): 3 columns (if total items is 3, the 3rd item goes back to 1 column)
+
+//           Added md:grid-cols-2 lg:grid-cols-3 from the reference.
+//           Kept the existing gap-6 and mt-12 classes.
+//         */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+//           {featuresData.map((feature, index) => {
+//             // Calculate totalItems inside map for potential edge cases, though defined above too
+//             const currentTotalItems = featuresData.length;
+
+//             // Specific check for the third item (index 2) in a list of exactly three items
+//             // This item will span 2 columns on 'md' (tablet)
+//             const isThirdItemInThree = currentTotalItems === 3 && index === 2;
+
+//             // Define the base classes that should always apply to the item wrapper
+//             const baseItemClasses = "bg-primarybox rounded-2xl sm:p-6 p-4";
+
+//             // Define the conditional classes for column spanning
+//             // If it's the 3rd item in 3, apply md:col-span-2 and reset lg:col-span-1
+//             const conditionalSpanClasses = isThirdItemInThree
+//               ? "md:col-span-2 lg:col-span-1"
+//               : "";
+
+//             // Combine base classes and conditional classes
+//             const itemWrapperClasses = `${baseItemClasses} ${conditionalSpanClasses}`;
+
+//             return (
+//               // Individual Card - ClassName now uses the calculated variable
+//               <div
+//                 key={feature.title + index}
+//                 className={itemWrapperClasses.trim()} // Use trim() to clean up potential extra space
+//               >
+//                 {/* Icon Container: (Kept identical) */}
+//                 <div className="flex mb-12">
+//                   {" "}
+//                   <div className="size-16 lg:size-20 rounded-full bg-secondarybox flex items-center justify-center">
+//                     {feature.icons}
+//                   </div>
+//                 </div>
+
+//                 {/* Title: (Kept identical) */}
+//                 <h3 className="text-xl lg:text-2xl text-white font-semibold mb-4">
+//                   {" "}
+//                   {feature.title}
+//                 </h3>
+
+//                 {/* Description: (Kept identical) */}
+//                 <p className="text-subheadingWhite lg:text-lg text-base leading-normal">
+//                   {feature.description}
+//                 </p>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default React.memo(WhyChooseUs);
+
+
+
 "use client"; // This component uses React state/effects implicitly or explicitly via icons, so "use client" is appropriate.
 
 import React from "react";
@@ -654,12 +785,25 @@ import {
   LockKeyhole,
   Handshake,
 } from "lucide-react";
+import { GrSecure } from "react-icons/gr";
+import { BsFillShieldLockFill } from "react-icons/bs";
+import { AiFillLike, AiFillStar	} from "react-icons/ai";
+import { FaHeart } from "react-icons/fa";
+import { RiFileList3Fill } from "react-icons/ri";
+import { IoMdFlash } from "react-icons/io";
+import { LiaExchangeAltSolid } from "react-icons/lia";
 
 // Define type for FeatureItem data
 interface FeatureItem {
   title: string;
   description: string;
   icons: React.ReactNode; // Using React.ReactNode for broader compatibility with icon types
+}
+
+// Define type for the feature tags
+interface FeatureTag {
+  text: string;
+  icon: React.ReactNode;
 }
 
 // Data for the features (Kept identical to your provided WhyChooseUs data)
@@ -682,6 +826,17 @@ const featuresData: FeatureItem[] = [
       "We're more than just a currency exchange we're your trusted partner in every financial step of your journey, both personal and professional.",
     icons: <Handshake className="size-8 lg:size-10 text-primary" />,
   },
+];
+
+// Array for the feature tags/cards wrapper
+const featureTags: FeatureTag[] = [
+  { text: "Money Safe", icon: <BsFillShieldLockFill size={20} /> },
+  { text: "Fast Payouts", icon: <IoMdFlash size={20} /> },
+  { text: "Customers Loves", icon: <FaHeart size={20} /> },
+  { text: "Reliable Payment", icon: <RiFileList3Fill size={20} /> },
+  { text: "Easy", icon: <AiFillLike size={20} /> },
+  { text: "Great Experience", icon: <AiFillStar size={20} /> },
+  { text: "Best Exchange Rate", icon: <LiaExchangeAltSolid size={20} /> },
 ];
 
 const WhyChooseUs: React.FC = () => {
@@ -725,7 +880,7 @@ const WhyChooseUs: React.FC = () => {
             const isThirdItemInThree = currentTotalItems === 3 && index === 2;
 
             // Define the base classes that should always apply to the item wrapper
-            const baseItemClasses = "bg-primarybox rounded-2xl sm:p-6 p-4";
+            const baseItemClasses = "bg-primarybox rounded-2xl sm:p-6 p-4 flex flex-col items-center";
 
             // Define the conditional classes for column spanning
             // If it's the 3rd item in 3, apply md:col-span-2 and reset lg:col-span-1
@@ -757,12 +912,26 @@ const WhyChooseUs: React.FC = () => {
                 </h3>
 
                 {/* Description: (Kept identical) */}
-                <p className="text-subheadingWhite lg:text-lg text-base leading-normal">
+                <p className="text-subheadingWhite lg:text-lg text-base leading-normal text-center">
                   {feature.description}
                 </p>
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-6 lg:max-w-4xl max-w-full mx-auto flex flex-wrap items-center justify-center gap-6">
+          {featureTags.map((tag) => (
+            <div
+              key={tag.text}
+              className="bg-primary-foreground p-3 px-5 rounded-xl"
+            >
+              <div className="flex items-center text-lg gap-4">
+                <span className=" text-primary ">{tag.icon}</span>
+                <span className="text-mainheadingWhite">{tag.text}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
