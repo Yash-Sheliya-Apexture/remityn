@@ -264,7 +264,6 @@
 //   );
 // };
 
-
 // // Main StepCardContent component to display all cards in a grid
 // const StepCardContent: React.FC = () => {
 //   return (
@@ -281,8 +280,6 @@
 // };
 
 // export default StepCardContent;
-
-
 
 // "use client";
 // import React, { useEffect, useRef } from "react";
@@ -401,7 +398,6 @@
 //     ],
 //   },
 // ];
-
 
 // // --- Framer Motion Animation Variants for *internal* card content (remain the same) ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
@@ -585,7 +581,6 @@
 
 // export default StepCardContent;
 
-
 // "use client";
 // import React, { useEffect, useRef } from "react";
 // import Image from "next/image";
@@ -704,7 +699,6 @@
 //   },
 // ];
 
-
 // // --- Framer Motion Animation Variants for *internal* card content ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
 // const ANIMATION_DURATION_IMAGE = 0.6;
@@ -779,7 +773,6 @@
 //   );
 // };
 
-
 // const StepCardContent: React.FC = () => {
 //   const sectionRef = useRef<HTMLElement>(null);
 
@@ -851,7 +844,6 @@
 //         sectionRef.current.style.paddingBottom = `${lastCardHeight + topOffsetPx + 100}px`; // 100px extra buffer
 //       }
 
-
 //       return () => {
 //         timelines.forEach(tl => {
 //           if (tl.scrollTrigger) tl.scrollTrigger.kill();
@@ -903,9 +895,6 @@
 // };
 
 // export default StepCardContent;
-
-
-
 
 // "use client";
 // import React from "react";
@@ -1020,7 +1009,6 @@
 //     ],
 //   },
 // ];
-
 
 // // --- Framer Motion Animation Variants for *internal* card content ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
@@ -1158,7 +1146,6 @@
 //   );
 // };
 
-
 // const StepCardContent: React.FC = () => {
 //   return (
 //     <section className="relative bg-neutral-100 dark:bg-black py-20">
@@ -1180,8 +1167,7 @@
 
 // export default StepCardContent;
 
-
-// // Proper Code 
+// // Proper Code
 // "use client";
 // import React, { useRef } from "react";
 // import Image from "next/image";
@@ -1295,7 +1281,6 @@
 //     ],
 //   },
 // ];
-
 
 // // --- Framer Motion Animation Variants for *internal* card content ---
 // const ANIMATION_DURATION_CONTENT = 0.5;
@@ -1466,7 +1451,6 @@
 //   // If numSteps is 1, numTransitions should be 1 to avoid division by zero and to make ranges work.
 //   const numTransitions = numSteps > 1 ? numSteps - 1 : 1;
 
-
 //   return (
 //     <section className="relative bg-neutral-100 dark:bg-black py-20">
 //       {/* The containerRef is on the direct parent of the sticky cards */}
@@ -1514,7 +1498,7 @@
 //                 { clamp: true }
 //               );
 //             }
-            
+
 //             const cardStyle: MotionStyle = {
 //               scale,
 //               translateY,
@@ -1543,8 +1527,7 @@
 
 // export default StepCardContent;
 
-
-// // Proper Code with GSAP Animation 
+// // Proper Code with GSAP Animation
 // "use client";
 // import React, { useEffect, useRef } from "react";
 // import Image from "next/image";
@@ -1834,7 +1817,7 @@
 //         <div
 //           ref={cardsContainerRef}
 //           className="relative flex flex-col gap-20"
-          
+
 //         >
 //           {stepsData.map((step, index) => (
 //             <div
@@ -1854,8 +1837,6 @@
 
 // export default StepCardContent;
 
-
-
 // // src/app/StepCardContent.tsx (or your component's location)
 // "use client";
 // import React, { useEffect, useRef } from "react";
@@ -1872,7 +1853,6 @@
 
 // // --- Register GSAP Plugin ---
 // gsap.registerPlugin(ScrollTrigger);
-
 
 // // --- Data (remains here or could be moved to a separate data file) ---
 // const stepsData: StepData[] = [
@@ -2033,9 +2013,9 @@
 //               className="sticky-card sticky top-24 origin-top"
 //             >
 //               {/* Use the imported component */}
-//               <IndividualStepCard 
-//                 step={step} 
-//                 isFirst={index === 0} 
+//               <IndividualStepCard
+//                 step={step}
+//                 isFirst={index === 0}
 //                 index={index} // <-- ADD THIS LINE
 //                 />
 //             </div>
@@ -2047,9 +2027,6 @@
 // };
 
 // export default StepCardContent;
-
-
-
 
 // // src/app/(website)/components/home/StepCard/StepContentCard.tsx
 // "use client";
@@ -2106,7 +2083,6 @@
 //         contentBlocks: [ { text: "Initiate your transfer", type: "success" }, { text: "Transparent transactions", type: "secondry" }, { text: "24/7 Secure Transactions", type: "warning" }, ],
 //     },
 // ];
-
 
 // const StepContentCard: React.FC = () => {
 //     const sectionRef = useRef<HTMLElement>(null);
@@ -2190,8 +2166,6 @@
 // // Assuming the component filename is StepContentCard.tsx
 // export default StepContentCard;
 
-
-
 // src/app/(website)/components/home/StepCard/StepContentCard.tsx
 "use client";
 import React, { useRef, useState } from "react"; // Removed useEffect as it's no longer needed
@@ -2206,139 +2180,180 @@ import IndividualStepCard from "./IndividualStepCard";
 
 // --- DATA (remains the same) ---
 const stepsData: StepData[] = [
-    {
-        id: 0,
-        iconDefault: FaCheckCircle,
-        iconActive: FaCheckCircle,
-        tabName: "Sign Up",
-        contentTitle: "Sign Up and Get Verified",
-        contentSubtitle: "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
-        contentImages: { img: "/assets/images/Register-and-verify.svg", imgTitle: "Remityn showing registration and verification screen", },
-        contentBlocks: [ { text: "Instant account setup", type: "success" }, { text: "Seamless KYC verification", type: "secondry" }, { text: "Unlock full access", type: "warning" }, ],
+  {
+    id: 0,
+    iconDefault: FaCheckCircle,
+    iconActive: FaCheckCircle,
+    tabName: "Sign Up",
+    contentTitle: "Sign Up and Get Verified",
+    contentSubtitle:
+      "Sign up quickly with our instant account setup by providing basic details. Complete a simple KYC verification process to unlock full access, including wallet creation and international money transfers.",
+    contentImages: {
+      img: "/assets/images/Register-and-verify.svg",
+      imgTitle: "Remityn showing registration and verification screen",
     },
-    {
-        id: 1,
-        iconDefault: FaWallet,
-        iconActive: FaWallet,
-        tabName: "Wallet",
-        contentTitle: " Create & Fund Your Currency Wallet",
-        contentSubtitle: "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
-        contentImages: { img: "/assets/images/Create-a-Digital-Wallet.svg", imgTitle: "Remityn showing add fund screen", },
-        contentBlocks: [ { text: "Choose your currency", type: "success" }, { text: "Add funds to your wallet", type: "secondry" }, { text: "Available to transfer money", type: "warning" }, ],
+    contentBlocks: [
+      { text: "Instant account setup", type: "success" },
+      { text: "Seamless KYC verification", type: "secondry" },
+      { text: "Unlock full access", type: "warning" },
+    ],
+  },
+  {
+    id: 1,
+    iconDefault: FaWallet,
+    iconActive: FaWallet,
+    tabName: "Wallet",
+    contentTitle: " Create & Fund Your Currency Wallet",
+    contentSubtitle:
+      "You can easily create a digital wallet for currencies like USD, EUR, or GBP. Then you can add funds to your wallet via bank transfer. Once the funds are added, you are ready to transfer money to India.",
+    contentImages: {
+      img: "/assets/images/Create-a-Digital-Wallet.svg",
+      imgTitle: "Remityn showing add fund screen",
     },
-    {
-        id: 2,
-        iconDefault: FaUserFriends,
-        iconActive: FaUserFriends,
-        tabName: "Recipient",
-        contentTitle: "Add Your Recipient",
-        contentSubtitle: "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
-        contentImages: { img: "/assets/images/Add-Recipients.svg", imgTitle: "Remityn showing add recipients screen with a list of recipients", },
-        contentBlocks: [ { text: "Manage multiple recipients", type: "success" }, { text: "Saved recipient details", type: "secondry" }, { text: "Useful for the future", type: "warning" }, ],
+    contentBlocks: [
+      { text: "Choose your currency", type: "success" },
+      { text: "Add funds to your wallet", type: "secondry" },
+      { text: "Available to transfer money", type: "warning" },
+    ],
+  },
+  {
+    id: 2,
+    iconDefault: FaUserFriends,
+    iconActive: FaUserFriends,
+    tabName: "Recipient",
+    contentTitle: "Add Your Recipient",
+    contentSubtitle:
+      "After the money is deposited in your wallet, you can add a recipient. In which you can add the recipient by entering the details like the recipient's full name, their bank account number, IFSC code of their Indian bank, etc. once the recipient details are added, you can save them for future use. and You can also easily manage multiple recipients",
+    contentImages: {
+      img: "/assets/images/Add-Recipients.svg",
+      imgTitle:
+        "Remityn showing add recipients screen with a list of recipients",
     },
-    {
-        id: 3,
-        iconDefault: FaMoneyBillTransfer,
-        iconActive: FaMoneyBillTransfer,
-        tabName: "Send",
-        contentTitle: "Transfer Money Seamlessly",
-        contentSubtitle: "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
-        contentImages: { img: "/assets/images/Transfer-Money.svg", imgTitle: "Remityn showing transfer money screen with currency conversion details", },
-        contentBlocks: [ { text: "Initiate your transfer", type: "success" }, { text: "Transparent transactions", type: "secondry" }, { text: "24/7 Secure Transactions", type: "warning" }, ],
+    contentBlocks: [
+      { text: "Manage multiple recipients", type: "success" },
+      { text: "Saved recipient details", type: "secondry" },
+      { text: "Useful for the future", type: "warning" },
+    ],
+  },
+  {
+    id: 3,
+    iconDefault: FaMoneyBillTransfer,
+    iconActive: FaMoneyBillTransfer,
+    tabName: "Send",
+    contentTitle: "Transfer Money Seamlessly",
+    contentSubtitle:
+      "Finally, to initiate your transfer, select your funded currency wallet and the intended Indian recipient, then enter the amount you wish to send money. You can track the status of the transaction after you confirm the transaction.",
+    contentImages: {
+      img: "/assets/images/Transfer-Money.svg",
+      imgTitle:
+        "Remityn showing transfer money screen with currency conversion details",
     },
+    contentBlocks: [
+      { text: "Initiate your transfer", type: "success" },
+      { text: "Transparent transactions", type: "secondry" },
+      { text: "24/7 Secure Transactions", type: "warning" },
+    ],
+  },
 ];
 
 const StepContentCard: React.FC = () => {
-    // sectionRef is no longer needed for this logic, but can be kept for other purposes
-    const [activeTab, setActiveTab] = useState(0);
-    const tabContainerRef = useRef<HTMLDivElement>(null);
+  // sectionRef is no longer needed for this logic, but can be kept for other purposes
+  const [activeTab, setActiveTab] = useState(0);
+  const tabContainerRef = useRef<HTMLDivElement>(null);
 
-    // --- REMOVED THE useEffect HOOK ---
-    // No more automatic scrolling on load
+  // --- REMOVED THE useEffect HOOK ---
+  // No more automatic scrolling on load
 
-    const handleTabClick = (index: number) => {
-        // 1. Update the active tab state
-        setActiveTab(index);
+  const handleTabClick = (index: number) => {
+    // 1. Update the active tab state
+    setActiveTab(index);
 
-        // 2. Perform the scroll action based on the clicked tab's index
-        const tabElement = tabContainerRef.current?.children[index] as HTMLElement;
-        if (tabElement) {
-            tabElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'center'
-            });
-        }
-    };
+    // 2. Perform the scroll action based on the clicked tab's index
+    const tabElement = tabContainerRef.current?.children[index] as HTMLElement;
+    if (tabElement) {
+      tabElement.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  };
 
-    const activeStepData = stepsData[activeTab];
+  const activeStepData = stepsData[activeTab];
 
-    return (
-        // Note: I removed the sectionRef as it wasn't being used for this logic.
-        // You can add it back if it's used for something else.
-        <section className="StePCardSection relative py-10 sm:py-16">
-            <div className="container mx-auto px-4">
-                <div className="space-y-4 text-center">
-                    <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
-                        4 easy steps to<span className="text-primary"> Transfer to India </span>
-                    </h3>
-                    <p className="text-subheadingWhite md:text-lg text-base lg:max-w-4xl max-w-full mx-auto">
-                        Transfer funds internationally to India with ease, speed, and
-                        security. We offer competitive exchange rates and a seamless
-                        experience for your INR remittances.
-                    </p>
-                </div>
+  return (
+    // Note: I removed the sectionRef as it wasn't being used for this logic.
+    // You can add it back if it's used for something else.
+    <section className="StePCardSection relative py-10 sm:py-16">
+      <div className="container mx-auto px-4">
+        <div className="space-y-4 text-center">
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 capitalize leading-tight text-mainheadingWhite">
+            4 easy steps to
+            <span className="text-primary"> Transfer to India </span>
+          </h3>
+          <p className="text-subheadingWhite md:text-lg text-base lg:max-w-4xl max-w-full mx-auto">
+            Transfer funds internationally to India with ease, speed, and
+            security. We offer competitive exchange rates and a seamless
+            experience for your INR remittances.
+          </p>
+        </div>
 
-                <div className="mt-16 sm:mt-25">
-                    <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
-                        <div
-                            ref={tabContainerRef}
-                            className="relative flex justify-between items-center rounded-full p-1 bg-subheading w-full h-auto whitespace-nowrap overflow-x-auto scrollbar-hide"
-                        >
-                            {stepsData.map((step, index) => (
-                                <button
-                                    key={step.id}
-                                    // Use the new handler function
-                                    onClick={() => handleTabClick(index)}
-                                    className="relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none cursor-pointer"
-                                    style={{ WebkitTapHighlightColor: "transparent" }}
-                                >
-                                    {activeTab === index && (
-                                        <motion.div
-                                            layoutId="active-tab-background"
-                                            className="absolute inset-0 bg-primary rounded-full"
-                                            transition={{ stiffness: 350, damping: 30 }}
-                                        />
-                                    )}
-                                    <span className={`relative z-10 transition-all duration-75 ease-linear ${activeTab === index ? "text-mainheading" : "text-subheadingWhite"}`}>
-                                        {step.tabName}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                        >
-                            {activeStepData && (
-                                <IndividualStepCard
-                                    step={activeStepData}
-                                    isFirst={activeTab === 0}
-                                    index={activeTab}
-                                />
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+        <div className="mt-16 sm:mt-25">
+          <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
+            <div
+              ref={tabContainerRef}
+              className="relative flex justify-between items-center rounded-full p-1 bg-subheading w-full h-auto whitespace-nowrap overflow-x-auto scrollbar-hide"
+            >
+              {stepsData.map((step, index) => (
+                <button
+                  key={step.id}
+                  // Use the new handler function
+                  onClick={() => handleTabClick(index)}
+                  className="relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none cursor-pointer"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
+                >
+                  {activeTab === index && (
+                    <motion.div
+                      layoutId="active-tab-background"
+                      className="absolute inset-0 bg-primary rounded-full"
+                      transition={{ stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  <span
+                    className={`relative z-10 transition-all duration-75 ease-linear ${
+                      activeTab === index
+                        ? "text-mainheading"
+                        : "text-subheadingWhite"
+                    }`}
+                  >
+                    {step.tabName}
+                  </span>
+                </button>
+              ))}
             </div>
-        </section>
-    );
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              {activeStepData && (
+                <IndividualStepCard
+                  step={activeStepData}
+                  isFirst={activeTab === 0}
+                  index={activeTab}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default StepContentCard;

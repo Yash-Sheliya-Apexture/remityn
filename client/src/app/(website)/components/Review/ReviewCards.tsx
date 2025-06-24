@@ -1915,18 +1915,494 @@
 
 // export default React.memo(ReviewCards);
 
-"use client";
+// "use client";
+// import React, { useState, useEffect, useMemo } from "react";
+// // --- CHANGE 1: REMOVED react-icons import ---
+// // import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { Skeleton } from "@/components/ui/skeleton";
 
+// // --- Constants ---
+// const INITIAL_REVIEWS_COUNT = 9; // Show 9 reviews initially
+
+// // --- CHANGE 2: ADDED your new custom star components ---
+
+// // Single White Star Icon for Rating
+// const SingleRatingStarIcon = () => (
+//   <svg
+//     viewBox="0 0 24 24"
+//     fill="white"
+//     xmlns="http://www.w3.org/2000/svg"
+//     className="w-full h-full" // Star fills its container
+//     aria-hidden="true"
+//   >
+//     <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.432l-7.416 4.001 1.481-8.279-6.064-5.828 8.332-1.151L12 .587z" />
+//   </svg>
+// );
+
+// // Rating Star Component (renders one of the 5 small stars)
+// const RatingStar = ({
+//   rating,
+//   starIndex,
+// }: {
+//   rating: number;
+//   starIndex: number;
+// }) => {
+//   const greenColor = "#00B67B"; // Example: Your primary color for stars
+//   const greyColor = "#4A5568"; // Example: A fitting dark-mode grey
+
+//   let backgroundStyle: React.CSSProperties = {};
+//   const starValue = starIndex + 1; // 1-indexed star
+
+//   if (rating >= starValue) {
+//     // Full star
+//     backgroundStyle = { backgroundColor: greenColor };
+//   } else if (rating > starIndex && rating < starValue) {
+//     // Partial star
+//     const percentage = (rating - starIndex) * 100;
+//     backgroundStyle = {
+//       background: `linear-gradient(to right, ${greenColor} ${percentage}%, ${greyColor} ${percentage}%)`,
+//     };
+//   } else {
+//     // Empty star
+//     backgroundStyle = { backgroundColor: greyColor };
+//   }
+
+//   return (
+//     <div
+//       className="size-5 mr-1 p-0.5 relative" // Container for each star
+//       style={backgroundStyle}
+//     >
+//       <SingleRatingStarIcon />
+//     </div>
+//   );
+// };
+
+// // --- CHANGE 3: REPLACED the implementation of StarRating ---
+// interface StarRatingProps {
+//   rating: number;
+//   maxRating?: number;
+// }
+
+// const StarRating: React.FC<StarRatingProps> = React.memo(
+//   ({ rating, maxRating = 5 }) => {
+//     // Create an array of star indexes from 0 to maxRating-1
+//     const starIndexes = Array.from({ length: maxRating }, (_, i) => i);
+
+//     return (
+//       <div className="flex items-center">
+//         {" "}
+//         {/* Use flex to align the star containers */}
+//         {starIndexes.map((index) => (
+//           <RatingStar
+//             key={`star-${index}-${rating}`} // A robust key is good for re-renders
+//             rating={rating}
+//             starIndex={index}
+//           />
+//         ))}
+//       </div>
+//     );
+//   }
+// );
+// StarRating.displayName = "StarRating";
+
+// // --- ReviewCard Component (No changes needed here) ---
+// interface ReviewCardProps {
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+//   DateAndTime: string;
+// }
+
+// const ReviewCard: React.FC<ReviewCardProps> = React.memo(
+//   ({ reviewerName, avatarUrl, rating, comment, DateAndTime }) => {
+//     return (
+//       <div className="rounded-2xl bg-primarybox border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
+//         <div className="flex justify-between items-center gap-4 w-full">
+//           <div className="flex items-center">
+//             <div className="flex flex-col items-start gap-2">
+//               <div className="lg:text-2xl text-lg capitalize text-white/90 font-medium">
+//                 {reviewerName}
+//               </div>
+
+//               {/* This now renders your new custom star component */}
+//               <StarRating rating={rating} />
+//             </div>
+//           </div>
+//         </div>
+//         <div className="text-subheadingWhite lg:text-2xl text-lg mt-5 flex-grow">
+//           {comment}
+//         </div>
+//         <div className="mt-5">
+//           <span className="text-subheadingWhite text-sm font-medium capitalize">
+//             {DateAndTime}
+//           </span>
+//         </div>
+//       </div>
+//     );
+//   }
+// );
+// ReviewCard.displayName = "ReviewCard";
+
+// // ... (The rest of your file remains unchanged) ...
+
+// // --- Types for review data ---
+// interface Review {
+//   id: string;
+//   reviewerName: string;
+//   avatarUrl: string;
+//   rating: number;
+//   comment: string;
+//   DateAndTime: string;
+//   location?: string;
+// }
+// interface ReviewGroup {
+//   id: string | number;
+//   reviews: Omit<Review, "id">[];
+// }
+// interface ReviewJson {
+//   reviewGroups: ReviewGroup[];
+// }
+
+// // --- Animation Variants ---
+// const listContainerVariants = {
+//   hidden: { opacity: 0 },
+//   visible: {
+//     opacity: 1,
+//     transition: {
+//       staggerChildren: 0.1,
+//       delayChildren: 0.2,
+//     },
+//   },
+// };
+// const cardItemVariants = {
+//   hidden: { opacity: 0, y: 20, scale: 0.95 },
+//   visible: {
+//     opacity: 1,
+//     y: 0,
+//     scale: 1,
+//     transition: {
+//       duration: 0.4,
+//       ease: "easeOut",
+//     },
+//   },
+// };
+
+// // --- ReviewCards Component (Main Logic) ---
+// const ReviewCards: React.FC = () => {
+//   const [reviewGroups, setReviewGroups] = useState<ReviewGroup[]>([]);
+//   const [initialLoading, setInitialLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<Error | null>(null);
+//   const [numVisibleReviews, setNumVisibleReviews] = useState<number>(
+//     INITIAL_REVIEWS_COUNT
+//   );
+
+//   const allReviews = useMemo(() => {
+//     let flatReviews: Review[] = [];
+//     reviewGroups.forEach((group, groupIndex) => {
+//       group.reviews.forEach((review, reviewIndex) => {
+//         const uniqueId = `review-${
+//           group.id || `group${groupIndex}`
+//         }-${reviewIndex}-${review.reviewerName
+//           .replace(/\s+/g, "-")
+//           .toLowerCase()}-${review.rating}`;
+//         flatReviews.push({
+//           ...review,
+//           id: uniqueId,
+//         });
+//       });
+//     });
+//     return flatReviews;
+//   }, [reviewGroups]);
+
+//   useEffect(() => {
+//     const fetchReviews = async () => {
+//       setInitialLoading(true);
+//       setError(null);
+//       try {
+//         const response = await fetch("/Review.json");
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         const data: ReviewJson = await response.json();
+
+//         if (!data || !Array.isArray(data.reviewGroups)) {
+//           console.error("Fetched data is not in the expected format:", data);
+//           throw new Error("Invalid review data format received from server.");
+//         }
+//         data.reviewGroups.forEach((group) => {
+//           if (!group || !Array.isArray(group.reviews)) {
+//             console.error("Invalid group structure in review data:", group);
+//             throw new Error("Invalid group structure within review data.");
+//           }
+//         });
+
+//         setReviewGroups(data.reviewGroups);
+//       } catch (err: any) {
+//         console.error("Failed to fetch or parse reviews:", err);
+//         setError(
+//           err instanceof Error
+//             ? err
+//             : new Error(
+//                 String(
+//                   err.message ||
+//                     "An unknown error occurred while fetching reviews."
+//                 )
+//               )
+//         );
+//       } finally {
+//         setInitialLoading(false);
+//       }
+//     };
+//     fetchReviews();
+//   }, []);
+
+//   const reviewsToDisplay = useMemo(() => {
+//     return allReviews.slice(0, numVisibleReviews);
+//   }, [allReviews, numVisibleReviews]);
+
+//   const tabletLayoutColumns = useMemo(() => {
+//     if (reviewsToDisplay.length === 0) return [];
+//     const columns: Review[][] = [[], []];
+//     reviewsToDisplay.forEach((review, index) => {
+//       columns[index % 2].push(review);
+//     });
+//     return columns;
+//   }, [reviewsToDisplay]);
+
+//   const desktopLayoutColumns = useMemo(() => {
+//     if (reviewsToDisplay.length === 0) return [];
+//     const columns: Review[][] = [[], [], []];
+//     reviewsToDisplay.forEach((review, index) => {
+//       columns[index % 3].push(review);
+//     });
+//     return columns;
+//   }, [reviewsToDisplay]);
+
+//   const handleLoadMore = () => {
+//     setNumVisibleReviews((prevCount) =>
+//       Math.min(prevCount + INITIAL_REVIEWS_COUNT, allReviews.length)
+//     );
+//   };
+
+//   const canLoadMore = useMemo(() => {
+//     return allReviews.length > 0 && numVisibleReviews < allReviews.length;
+//   }, [allReviews, numVisibleReviews]);
+
+//   const renderHeader = () => (
+//     <div className="space-y-4 text-center md:text-left mb-10">
+//       <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-3xl max-w-full">
+//         Honest Reviews, Real{" "}
+//         <span className="text-primary"> Travelers Like You</span>
+//       </h2>
+
+//       <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
+//         Discover what real travelers have to say about their experiences with
+//         our currency exchange services. From frequent flyers to first-time
+//         tourists, our customers share honest feedback about fast, reliable, and
+//         secure transactions.
+//       </p>
+
+//     </div>
+//   );
+
+//   if (error) {
+//     return (
+//       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
+//         <div className="container mx-auto px-4">
+//           {renderHeader()}
+//           <div className="mt-10 text-center p-6 md:p-10 border border-red-500 bg-red-900/25 rounded-lg shadow-md">
+//             <h3 className="text-xl md:text-2xl font-semibold text-red-400 mb-3">
+//               Oops! Something Went Wrong
+//             </h3>
+//             <p className="text-red-500 mb-1">
+//               We couldn't load the reviews at this time. Please try again later.
+//             </p>
+//             <p className="mt-2 text-sm text-red-500">
+//               Error details: {error.message}
+//             </p>
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   if (!initialLoading && allReviews.length === 0 && !error) {
+//     return (
+//       <section className="Reviews md:pt-14 pt-10 overflow-hidden">
+//         <div className="container mx-auto px-4">
+//           {renderHeader()}
+//           <div className="text-center p-10 mt-10 bg-primary-foreground rounded-lg">
+//             <p className="text-lg text-gray-400 dark:text-gray-300">
+//               No reviews found yet. Be the first to share your experience!
+//             </p>
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   return (
+//     <section className="Reviews md:pt-14 pt-10 overflow-hidden relative pb-10 sm:pb-16">
+//       <div className="container mx-auto px-4">
+//         {renderHeader()}
+
+//         {initialLoading && (
+//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+//             {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
+//               <div
+//                 key={`skeleton-${index}`}
+//                 className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full"
+//               >
+//                 <div className="flex justify-between items-center gap-4 w-full">
+//                   <div className="flex items-center gap-3">
+//                     <div className="space-y-2">
+//                       <Skeleton className="h-8 w-40 rounded flex-shrink-0 bg-background/30" />
+//                       <div className="flex gap-1">
+//                         <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+//                         <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+//                         <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+//                         <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+//                         <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
+//                       </div>
+//                     </div>
+//                     <div className="flex-1 space-y-2 py-1">
+//                       <Skeleton className="h-5 w-3/4 rounded bg-background/30" />
+//                       <Skeleton className="h-4 w-1/2 rounded bg-background/30 " />
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="space-y-2.5 mt-5 flex-grow">
+//                   <Skeleton className="h-4 rounded bg-background/30" />
+//                   <Skeleton className="h-4 rounded bg-background/30" />
+//                   <Skeleton className="h-4 rounded w-11/12 bg-background/30" />
+//                   <Skeleton className="h-4 rounded w-5/6 bg-background/30" />
+//                 </div>
+//                 <div className="mt-5">
+//                   <Skeleton className="h-4 w-1/2 rounded bg-background/30" />
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//         {!initialLoading && (
+//           <>
+//             {/* --- Mobile View: 1 Column --- */}
+//             <div className="block md:hidden mt-5">
+//               <motion.div
+//                 className="w-full space-y-5"
+//                 variants={listContainerVariants}
+//                 initial="hidden"
+//                 animate="visible"
+//               >
+//                 <AnimatePresence>
+//                   {reviewsToDisplay.map((review) => (
+//                     <motion.div
+//                       key={review.id}
+//                       variants={cardItemVariants}
+//                       layout
+//                     >
+//                       <ReviewCard {...review} />
+//                     </motion.div>
+//                   ))}
+//                 </AnimatePresence>
+//               </motion.div>
+//             </div>
+
+//             {/* --- Tablet View: 2 Columns --- */}
+//             <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
+//               {tabletLayoutColumns.map((columnReviews, colIndex) => (
+//                 <motion.div
+//                   key={`tablet-col-${colIndex}`}
+//                   className="space-y-5 flex flex-col"
+//                   variants={listContainerVariants}
+//                   initial="hidden"
+//                   animate="visible"
+//                 >
+//                   <AnimatePresence>
+//                     {columnReviews.map((review) => (
+//                       <motion.div
+//                         key={review.id}
+//                         variants={cardItemVariants}
+//                         layout
+//                       >
+//                         <ReviewCard {...review} />
+//                       </motion.div>
+//                     ))}
+//                   </AnimatePresence>
+//                 </motion.div>
+//               ))}
+//             </div>
+
+//             {/* --- Desktop View: 3 Columns --- */}
+//             <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
+//               {desktopLayoutColumns.map((columnReviews, colIndex) => (
+//                 <motion.div
+//                   key={`desktop-col-${colIndex}`}
+//                   className="space-y-5 flex flex-col"
+//                   variants={listContainerVariants}
+//                   initial="hidden"
+//                   animate="visible"
+//                 >
+//                   <AnimatePresence>
+//                     {columnReviews.map((review) => (
+//                       <motion.div
+//                         key={review.id}
+//                         variants={cardItemVariants}
+//                         layout
+//                       >
+//                         <ReviewCard {...review} />
+//                       </motion.div>
+//                     ))}
+//                   </AnimatePresence>
+//                 </motion.div>
+//               ))}
+//             </div>
+//           </>
+//         )}
+
+//         {/* "Read More" Button */}
+//         {!initialLoading && canLoadMore && (
+//           <div className="text-center relative z-10 mt-8">
+//             <button
+//               onClick={handleLoadMore}
+//               className="border border-gray-700/50 text-sm hover:border-gray-600 hover:text-white text-subheadingWhite cursor-pointer font-semibold py-3 px-10 rounded-full transition-all ease-linear duration-150"
+//             >
+//               Read More
+//             </button>
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Conditional Gradient Overlay for "Read More" visual cue */}
+//       {!initialLoading && canLoadMore && (
+//         <motion.div
+//           className="absolute bottom-0 left-0 right-0 sm:h-1/3 h-96 bg-gradient-to-t from-[#22282a] to-transparent pointer-events-none w-full z-0"
+//           initial={{ opacity: 0 }}
+//           animate={{ opacity: 1 }}
+//           exit={{ opacity: 0 }}
+//           transition={{ duration: 0.3 }}
+//         ></motion.div>
+//       )}
+//     </section>
+//   );
+// };
+
+// export default React.memo(ReviewCards);
+
+"use client";
 import React, { useState, useEffect, useMemo } from "react";
-// --- CHANGE 1: REMOVED react-icons import ---
-// import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+// --- CHANGE 1: REMOVED react-icons import --- (Already done in provided code)
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image"; // --- ADDED Next.js Image import ---
 
 // --- Constants ---
 const INITIAL_REVIEWS_COUNT = 9; // Show 9 reviews initially
 
-// --- CHANGE 2: ADDED your new custom star components ---
+// --- CHANGE 2: ADDED your new custom star components --- (Already done in provided code)
 
 // Single White Star Icon for Rating
 const SingleRatingStarIcon = () => (
@@ -1979,7 +2455,7 @@ const RatingStar = ({
   );
 };
 
-// --- CHANGE 3: REPLACED the implementation of StarRating ---
+// --- CHANGE 3: REPLACED the implementation of StarRating --- (Already done in provided code)
 interface StarRatingProps {
   rating: number;
   maxRating?: number;
@@ -1987,16 +2463,13 @@ interface StarRatingProps {
 
 const StarRating: React.FC<StarRatingProps> = React.memo(
   ({ rating, maxRating = 5 }) => {
-    // Create an array of star indexes from 0 to maxRating-1
     const starIndexes = Array.from({ length: maxRating }, (_, i) => i);
 
     return (
       <div className="flex items-center">
-        {" "}
-        {/* Use flex to align the star containers */}
         {starIndexes.map((index) => (
           <RatingStar
-            key={`star-${index}-${rating}`} // A robust key is good for re-renders
+            key={`star-${index}-${rating}`}
             rating={rating}
             starIndex={index}
           />
@@ -2007,7 +2480,7 @@ const StarRating: React.FC<StarRatingProps> = React.memo(
 );
 StarRating.displayName = "StarRating";
 
-// --- ReviewCard Component (No changes needed here) ---
+// --- ReviewCard Component ---
 interface ReviewCardProps {
   reviewerName: string;
   avatarUrl: string;
@@ -2019,34 +2492,47 @@ interface ReviewCardProps {
 const ReviewCard: React.FC<ReviewCardProps> = React.memo(
   ({ reviewerName, avatarUrl, rating, comment, DateAndTime }) => {
     return (
-      <div className="rounded-2xl bg-primarybox border border-gray-600/50 lg:p-6 p-4 flex flex-col sm:items-start items-end h-full">
-        <div className="flex justify-between items-center gap-4 w-full">
-          <div className="flex items-center">
-            <div className="flex flex-col items-start gap-2">
-              <div className="lg:text-2xl text-lg capitalize text-white/90 font-medium">
-                {reviewerName}
-              </div>
+      <div className="rounded-3xl bg-primarybox border border-gray-600 lg:p-6 p-4 flex flex-col h-full">
+        {/* --- MODIFIED SECTION for Avatar, Name, and Rating --- */}
+        <div className="flex items-center gap-3 w-full">
+          {/* Avatar Image */}
+          <div className="flex-shrink-0">
+            <Image
+              src={avatarUrl || "/placeholder-avatar.png"} // Provide a fallback avatar
+              alt={`${reviewerName}'s avatar`}
+              width={500} // Adjust size as needed (e.g., 14 * 4 for Tailwind w-14)
+              height={500}
+              className="rounded-full object-cover size-14 sm:size-16"
+            />
+          </div>
 
-              {/* This now renders your new custom star component */}
+          {/* Name and Rating Container */}
+          <div className="flex flex-col items-start">
+            <div className="lg:text-xl sm:text-lg text-base capitalize text-white/90 font-semibold">
+              {reviewerName}
+            </div>
+
+            <div className="mt-1">
+              {" "}
+              {/* Space between name and stars */}
               <StarRating rating={rating} />
             </div>
           </div>
         </div>
-        <div className="text-subheadingWhite lg:text-2xl text-lg mt-5 flex-grow">
+        {/* --- END OF MODIFIED SECTION --- */}
+
+        <div className="text-subheadingWhite lg:text-lg text-base my-4 sm:my-5 flex-grow leading-normal">
           {comment}
         </div>
-        <div className="mt-5">
-          <span className="text-subheadingWhite text-sm font-medium capitalize">
-            {DateAndTime}
-          </span>
-        </div>
+
+        <span className="text-subheadingWhite text-xs sm:text-sm font-medium capitalize">
+          {DateAndTime}
+        </span>
       </div>
     );
   }
 );
 ReviewCard.displayName = "ReviewCard";
-
-// ... (The rest of your file remains unchanged) ...
 
 // --- Types for review data ---
 interface Review {
@@ -2122,7 +2608,7 @@ const ReviewCards: React.FC = () => {
       setInitialLoading(true);
       setError(null);
       try {
-        const response = await fetch("/Review.json");
+        const response = await fetch("/Review.json"); // Make sure Review.json is in your /public folder
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -2197,14 +2683,12 @@ const ReviewCards: React.FC = () => {
         Honest Reviews, Real{" "}
         <span className="text-primary"> Travelers Like You</span>
       </h2>
-
       <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
         Discover what real travelers have to say about their experiences with
         our currency exchange services. From frequent flyers to first-time
         tourists, our customers share honest feedback about fast, reliable, and
         secure transactions.
       </p>
-      
     </div>
   );
 
@@ -2254,26 +2738,23 @@ const ReviewCards: React.FC = () => {
             {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
               <div
                 key={`skeleton-${index}`}
-                className="rounded-2xl bg-primary-foreground border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full"
+                className="rounded-2xl bg-primarybox border border-gray-600/50 lg:p-6 p-4 flex flex-col h-full"
               >
-                <div className="flex justify-between items-center gap-4 w-full">
-                  <div className="flex items-center gap-3">
-                    <div className="space-y-2">
-                      <Skeleton className="h-8 w-40 rounded flex-shrink-0 bg-background/30" />
-                      <div className="flex gap-1">
-                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
-                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
-                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
-                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
-                        <Skeleton className="size-6 rounded flex-shrink-0 bg-background/30" />
-                      </div>
-                    </div>
-                    <div className="flex-1 space-y-2 py-1">
-                      <Skeleton className="h-5 w-3/4 rounded bg-background/30" />
-                      <Skeleton className="h-4 w-1/2 rounded bg-background/30 " />
+                {/* --- MODIFIED SKELETON for Avatar, Name, and Rating --- */}
+                <div className="flex items-center gap-3 sm:gap-4 w-full">
+                  <Skeleton className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex-shrink-0 bg-background/30" />
+                  <div className="flex flex-col">
+                    <Skeleton className="h-6 w-32 sm:h-7 sm:w-40 mb-1.5 sm:mb-2 rounded bg-background/30" />
+                    <div className="flex gap-1">
+                      <Skeleton className="size-5 rounded bg-background/30" />
+                      <Skeleton className="size-5 rounded bg-background/30" />
+                      <Skeleton className="size-5 rounded bg-background/30" />
+                      <Skeleton className="size-5 rounded bg-background/30" />
+                      <Skeleton className="size-5 rounded bg-background/30" />
                     </div>
                   </div>
                 </div>
+                {/* --- END OF MODIFIED SKELETON --- */}
                 <div className="space-y-2.5 mt-5 flex-grow">
                   <Skeleton className="h-4 rounded bg-background/30" />
                   <Skeleton className="h-4 rounded bg-background/30" />
@@ -2366,7 +2847,7 @@ const ReviewCards: React.FC = () => {
 
         {/* "Read More" Button */}
         {!initialLoading && canLoadMore && (
-          <div className="text-center relative z-10 mt-8">
+          <div className="text-center relative z-10 mt-8 sm:mt-12">
             <button
               onClick={handleLoadMore}
               className="border border-gray-700/50 text-sm hover:border-gray-600 hover:text-white text-subheadingWhite cursor-pointer font-semibold py-3 px-10 rounded-full transition-all ease-linear duration-150"
