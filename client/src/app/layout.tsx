@@ -915,20 +915,85 @@
 
 // REMOVE "use client"; and all hooks (useState, useEffect, etc.)
 
-//app/layout.tsx
+// //app/layout.tsx
+// import './globals.css';
+// import { ReactNode } from 'react';
+// import { satoshi, montserrat, outfit, inter } from './fonts';
+// import AppShell from './components/AppShell'; // Import the new component
+// import { Metadata } from 'next';
+
+// // The metadata object you added in step 2
+// export const metadata: Metadata = {
+//     title: {
+//         template: '%s | Remityn',
+//         default: 'Remityn - Fast & Secure International Money Transfers',
+//     },
+//     description: 'Trusted by thousands for safe, fee-free remittances. Send money to family and friends worldwide with ease and the best rates.',
+// };
+
+// interface RootLayoutProps {
+//     children: ReactNode;
+// }
+
+// export default function RootLayout({ children }: RootLayoutProps) {
+//     return (
+//         <html
+//             lang="en"
+//             className={`${satoshi.variable} ${montserrat.variable} ${outfit.variable} ${inter.variable}`}
+//             suppressHydrationWarning
+//         >
+//             <body
+//                 className={`bg-background text-mainheadingWhite transition-all duration-75 ease-linear ${satoshi.className}`}
+//                 suppressHydrationWarning={true}
+//             >
+//                 <AppShell>{children}</AppShell>
+//             </body>
+//         </html>
+//     );
+// }
+
+// app/layout.tsx
 import './globals.css';
 import { ReactNode } from 'react';
 import { satoshi, montserrat, outfit, inter } from './fonts';
 import AppShell from './components/AppShell'; // Import the new component
 import { Metadata } from 'next';
 
-// The metadata object you added in step 2
 export const metadata: Metadata = {
     title: {
         template: '%s | Remityn',
         default: 'Remityn - Fast & Secure International Money Transfers',
     },
     description: 'Trusted by thousands for safe, fee-free remittances. Send money to family and friends worldwide with ease and the best rates.',
+     icons: {
+        icon: '/favicon.ico', // Path to your favicon.ico
+        shortcut: '/favicon.ico', // Path to your favicon.ico
+        apple: '/favicon.ico', // Path to your apple-icon.png
+    },
+    // Optional: Add a fallback Open Graph image for pages that don't specify one.
+    // If you have a consistent brand image, this can be useful.
+    // If you only want specific images on specific pages, leave this out and rely on page.tsx
+    // openGraph: {
+    //     images: [
+    //         {
+    //             url: '/assets/images/default-site-preview.jpg', // <-- Replace with a default image if needed
+    //             width: 1200,
+    //             height: 630,
+    //             alt: 'Remityn - Global Money Transfers',
+    //         },
+    //     ],
+    // },
+    // twitter: {
+    //     card: 'summary_large_image',
+    //     images: [
+    //         {
+    //             url: '/assets/images/default-site-preview.jpg', // <-- Replace with a default image if needed
+    //             width: 1200,
+    //             height: 675,
+    //             alt: 'Remityn - Global Money Transfers',
+    //         },
+    //     ],
+    // },
 };
 
 interface RootLayoutProps {
