@@ -2319,7 +2319,7 @@ const ContactForm: React.FC = () => {
       <div className="mx-auto container px-4">
         <div className="flex lg:flex-row flex-col lg:gap-10 gap-6 items-center">
           {/* Left Column: Contact Info */}
-          <div className="flex flex-col text-center lg:text-start lg:w-1/2 w-full sm:p-6 p-2 rounded-xl h-full">
+          <div className="flex flex-col text-start lg:w-1/2 w-full sm:p-6 p-2 rounded-xl h-full">
             <div className="space-y-8">
               <h2 className="lg:text-6xl md:text-5xl text-4xl font-semibold text-mainheadingWhite">
                 Let’s <span className="text-primary">Connect</span>
@@ -2333,37 +2333,35 @@ const ContactForm: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex justify-center lg:justify-start">
-              <div className="space-y-5 text-left flex flex-col mt-6">
-                <div className="flex items-start gap-3">
-                  <MailIcon className="size-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-medium text-white/90">
-                      Email Us
-                    </h3>
-                    <a
-                      href="mailto:contact@Remity.money"
-                      className="text-primary cursor-pointer hover:text-primaryhover transition-all ease-linear duration-150"
-                    >
-                      contact@remity.money
-                    </a>
-                  </div>
+            <div className="space-y-5 text-left flex flex-col mt-6">
+              <div className="flex items-start gap-3">
+                <MailIcon className="size-6 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-lg font-medium text-white/90">
+                    Email Us
+                  </h3>
+                  <a
+                    href="mailto:contact@Remity.money"
+                    className="text-primary cursor-pointer hover:text-primaryhover transition-all ease-linear duration-150"
+                  >
+                    contact@remity.money
+                  </a>
                 </div>
+              </div>
 
-                <div className="flex items-start gap-3">
-                  <IoChatboxEllipsesOutline className="size-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-medium text-white/90">
-                      Chat with Us
-                    </h3>
-                    <button
-                      onClick={handleLiveChatClick} // Added onClick handler
-                      className="px-6 py-1.5 bg-primary hover:bg-primaryhover transition-all ease-linear duration-150 text-mainheading cursor-pointer mt-1 lg:text-lg text-base rounded-md font-medium"
-                      aria-label="Chat with us via live chat"
-                    >
-                      <span>Start Chat</span>
-                    </button>
-                  </div>
+              <div className="flex items-start gap-3">
+                <IoChatboxEllipsesOutline className="size-6 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-lg font-medium text-white/90">
+                    Chat with Us
+                  </h3>
+                  <button
+                    onClick={handleLiveChatClick} // Added onClick handler
+                    className="px-6 py-1.5 bg-primary hover:bg-primaryhover transition-all ease-linear duration-150 text-mainheading cursor-pointer mt-1 lg:text-lg text-base rounded-md font-medium"
+                    aria-label="Chat with us via live chat"
+                  >
+                    <span>Start Chat</span>
+                  </button>
                 </div>
               </div>
             </div>

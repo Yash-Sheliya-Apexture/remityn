@@ -397,7 +397,9 @@ const CurrencyExchangeServices: React.FC<
             {/* ... (rest of the content) ... */}
             <div className="block md:hidden">
               <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full pt-8 text-center">
-                At Remityn, simplify global currency exchange by breaking down financial borders and building trust through transparent, reliable and fair-rate services.
+                At Remityn, simplify global currency exchange by breaking down
+                financial borders and building trust through transparent,
+                reliable and fair-rate services.
               </p>
 
               <div className="flex justify-center md:justify-start mt-7">
@@ -419,7 +421,9 @@ const CurrencyExchangeServices: React.FC<
                   <span className="text-primary">Building Global Trust</span>
                 </h3>
                 <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full">
-                  At Remityn, simplify global currency exchange by breaking down financial borders and building trust through transparent, reliable and fair-rate services.
+                  At Remityn, simplify global currency exchange by breaking down
+                  financial borders and building trust through transparent,
+                  reliable and fair-rate services.
                 </p>
               </div>
             </div>

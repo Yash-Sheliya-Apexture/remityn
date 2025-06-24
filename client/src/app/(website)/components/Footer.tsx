@@ -2218,7 +2218,6 @@ interface ContactInfoItem {
   ariaLabel?: string;
 }
 
-
 const navLinks: NavLinkItem[] = [
   { href: "/", label: "Home" },
   { href: "/about-us", label: "About" },
@@ -2356,9 +2355,8 @@ const Footer: React.FC = () => {
                     item.href ? "hover:text-[#A5CC3D]" : "cursor-default"
                   } transition-all duration-150 ease-linear group`}
                 >
-                  <item.icon className="sm:size-6 size-5 text-primary transition-all duration-150 shrink-0" />{" "}
                   {/* Added shrink-0 */}
-                  <span className="text-subheadingWhite max-w-48 sm:max-w-full">
+                  <span className="text-subheadingWhite hover:text-primary transition-all duration-150 ease-linear max-w-48 sm:max-w-full">
                     {item.text}
                   </span>
                 </a>
@@ -2392,7 +2390,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
           <div className="mt-2 lg:hidden block">
-              {/* Copyright Text */}
+            {/* Copyright Text */}
             <p className="text-subheadingWhite text-center order-2 sm:order-none">
               {" "}
               {/* Adjusted order for desktop */}
