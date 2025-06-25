@@ -2203,6 +2203,8 @@
 "use client";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import Image from "next/image"; // Import Next.js Image component
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 
 // Icons for arrows (no changes from your original)
 const ArrowLeftIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
@@ -2454,7 +2456,7 @@ const ReviewSection: React.FC = () => {
 
   return (
     <section
-      className={`py-10 lg:py-18 bg-background w-full overflow-hidden relative`}
+      className={`py-10 lg:py-16 bg-background w-full overflow-hidden relative`}
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row lg:space-x-10 xl:space-x-16">
@@ -2472,28 +2474,28 @@ const ReviewSection: React.FC = () => {
                 <button
                   onClick={handlePrev}
                   disabled={isPrevDisabled}
-                  className={`size-14 md:size-16 rounded-full flex items-center justify-center transition-all duration-150 ease-linear
+                  className={`size-14 md:size-16 rounded-full flex items-center justify-center transition-all duration-75 ease-linear
                             ${
                               isPrevDisabled
-                                ? "bg-primarybox/40 text-subheadingWhite cursor-not-allowed"
+                                ? "bg-primarybox/40 text-subheadingWhite/50 cursor-not-allowed"
                                 : "bg-primarybox cursor-pointer text-mainheadingWhite hover:bg-primarybox/80"
                             }`}
                   aria-label="Previous review"
                 >
-                  <ArrowLeftIcon className="size-6 md:size-7" />
+                  <FaArrowLeft className="size-6 md:size-7" />
                 </button>
                 <button
                   onClick={handleNext}
                   disabled={isNextDisabled}
-                  className={`size-14 md:size-16 rounded-full flex items-center justify-center transition-all duration-150 ease-linear
+                  className={`size-14 md:size-16 rounded-full flex items-center justify-center transition-all duration-75 ease-linear
                             ${
                               isNextDisabled
-                                ? "bg-primarybox/40 text-subheadingWhite cursor-not-allowed"
+                                ? "bg-primarybox/40 text-subheadingWhite/50 cursor-not-allowed"
                                 : "bg-primarybox cursor-pointer text-mainheadingWhite hover:bg-primarybox/80"
                             }`}
                   aria-label="Next review"
                 >
-                  <ArrowRightIcon className="size-6 md:size-7" />
+                  <FaArrowRight className="size-6 md:size-7" />
                 </button>
               </div>
             </div>
@@ -2593,12 +2595,12 @@ const ReviewSection: React.FC = () => {
                   className={`size-14 rounded-full flex items-center justify-center transition-all duration-150 ease-linear
                             ${
                               isPrevDisabled
-                                ? "bg-primarybox/40 text-subheadingWhite cursor-not-allowed"
+                                ? "bg-primarybox/40 text-subheadingWhite/50 cursor-not-allowed"
                                 : "bg-primarybox cursor-pointer text-mainheadingWhite hover:bg-primarybox/80"
                             }`}
                   aria-label="Previous review"
                 >
-                  <ArrowLeftIcon className="size-6" />
+                  <FaArrowLeft className="size-6" />
                 </button>
                 <button
                   onClick={handleNext}
@@ -2606,12 +2608,12 @@ const ReviewSection: React.FC = () => {
                   className={`size-14 rounded-full flex items-center justify-center transition-all duration-150 ease-linear
                             ${
                               isNextDisabled
-                                ? "bg-primarybox/40 text-subheadingWhite cursor-not-allowed"
+                                ? "bg-primarybox/40 text-subheadingWhite/50 cursor-not-allowed"
                                 : "bg-primarybox cursor-pointer text-mainheadingWhite hover:bg-primarybox/80"
                             }`}
                   aria-label="Next review"
                 >
-                  <ArrowRightIcon className="size-6" />
+                  <FaArrowRight className="size-6" />
                 </button>
               </div>
             </div>
