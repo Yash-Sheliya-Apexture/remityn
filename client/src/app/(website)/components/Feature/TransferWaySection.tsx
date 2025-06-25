@@ -330,7 +330,7 @@ const destinationCurrency = {
 
 const TransferWaySection = () => {
   const [activeTab, setActiveTab] = useState<"cheapest" | "fastest">(
-    tabs[1].id as "cheapest" | "fastest"
+    tabs[0].id as "cheapest" | "fastest"
   );
 
   // --- DYNAMIC DAILY CALCULATIONS ---
@@ -358,7 +358,11 @@ const TransferWaySection = () => {
   const transferData = {
     cheapest: {
       headline: "Cheapest Way to",
-      description: `The cheapest way to send ${formattedAmount} ${fromCurrency.code} to ${destinationCurrency.code} is from a Remityn balance and costs 0% ${fromCurrency.code}. We use the mid-market exchange rate, the fairest rate and always show your fees upfront.`,
+      description: (
+        <>
+          The cheapest way to send ${formattedAmount} ${fromCurrency.code} to ${destinationCurrency.code} is using your Remityn balance with <strong>zero transfer fees</strong>. We offer the mid-market exchange rate, which is the most transparent and fair rate available, and we always show you the full cost upfront.
+        </>
+      ),
       table: {
         headerLeft: `Sending ${formattedAmount} ${fromCurrency.code}`,
         headerRight: "Transfer Cost",
@@ -368,7 +372,7 @@ const TransferWaySection = () => {
     fastest: {
       headline: "Fastest Way to",
       description:
-        "Sending money with Remityn is super fast: 64% of transfers arrive in under 30 seconds, and 95% in less than a day. How long it takes depends on how you pay.",
+        "Remityn offers one of the fastest money transfer services: 64% of transfers arrive in under 30 seconds, and 95% arrive within a day. The delivery time depends on your payment method.",
       table: {
         headerLeft: `Sending ${formattedAmount} ${fromCurrency.code}`,
         headerRight: "Should arrive",
