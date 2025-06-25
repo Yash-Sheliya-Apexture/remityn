@@ -2684,6 +2684,8 @@
 
 // export default StepContentCard;
 
+
+
 // src/app/(website)/components/home/StepCard/StepContentCard.tsx
 "use client";
 import React, { useRef, useState, useEffect } from "react";
@@ -2891,11 +2893,11 @@ const StepContentCard: React.FC = () => {
                   onMouseDown={() => handleTabButtonMouseDown(index)}
                   onMouseEnter={() => handleTabButtonMouseEnter(index)}
                   className={`relative flex-shrink-0 w-36 py-2.5 px-2 font-semibold rounded-full focus:outline-none 
-                              ${
-                                isDraggingTabButton
-                                  ? "cursor-grabbing"
-                                  : "cursor-pointer"
-                              }`}
+                                ${
+                                  isDraggingTabButton
+                                    ? "cursor-grabbing"
+                                    : "cursor-pointer"
+                                }`}
                   style={{ WebkitTapHighlightColor: "transparent" }}
                   aria-pressed={activeTab === index}
                   aria-label={`Step ${index + 1}: ${step.tabName}`}

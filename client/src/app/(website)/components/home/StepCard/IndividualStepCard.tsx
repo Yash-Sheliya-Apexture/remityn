@@ -76,6 +76,8 @@
 
 // export default IndividualStepCard;
 
+
+
 // src/components/IndividualStepCard.tsx
 import React from "react";
 import Image from "next/image";
@@ -98,7 +100,7 @@ const getBlockClasses = (type: ContentBlock["type"]) => {
 export interface IndividualStepCardProps {
   step: StepData;
   isFirst: boolean; // To prioritize loading the first image
-  index: number;    // To determine odd/even positioning
+  index: number; // To determine odd/even positioning
 }
 
 const IndividualStepCard: React.FC<IndividualStepCardProps> = ({
@@ -122,7 +124,10 @@ const IndividualStepCard: React.FC<IndividualStepCardProps> = ({
       <div className="relative flex justify-center h-full lg:mt-20 mt-10">
         <Image
           src={step.contentImages.img}
-          alt={step.contentImages.imgTitle || `Step ${index + 1}: ${step.contentTitle}`} // Fallback alt text
+          alt={
+            step.contentImages.imgTitle ||
+            `Step ${index + 1}: ${step.contentTitle}`
+          } // Fallback alt text
           width={1000} // Intrinsic width of the source image (largest version)
           height={1000} // Intrinsic height of the source image (largest version)
           priority={isFirst} // Preload the first image, lazy load others
@@ -136,9 +141,7 @@ const IndividualStepCard: React.FC<IndividualStepCardProps> = ({
 
   // Define Text Content Column JSX
   const TextContentColumn = (
-    <div
-      className="lg:w-2/5 w-full flex flex-col justify-between items-start sm:p-8 p-4"
-    >
+    <div className="lg:w-2/5 w-full flex flex-col justify-between items-start sm:p-8 p-4">
       {/* Title and Subtitle */}
       <div className="space-y-3 mb-4 lg:mb-6">
         <h3 className="lg:text-[26px] text-2xl text-mainheadingWhite font-semibold">
@@ -155,7 +158,9 @@ const IndividualStepCard: React.FC<IndividualStepCardProps> = ({
           {step.contentBlocks.map((block, blockIndex) => (
             <div
               key={blockIndex}
-              className={`${getBlockClasses(block.type)} px-6 py-2 rounded-full `}
+              className={`${getBlockClasses(
+                block.type
+              )} px-6 py-2 rounded-full `}
             >
               <p className="lg:text-base text-sm font-medium ">{block.text}</p>
             </div>

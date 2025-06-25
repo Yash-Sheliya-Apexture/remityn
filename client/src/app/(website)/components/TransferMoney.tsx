@@ -3245,6 +3245,7 @@ const TransferSteps: React.FC = () => {
     }
   };
 
+  
   return (
     <motion.section
       ref={ref}
