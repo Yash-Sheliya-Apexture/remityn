@@ -13,25 +13,25 @@ const serviceItems: ServiceItemProps[] = [
     icon: <Shield className="w-full h-full" />,
     title: "Rock-solid technology",
     description:
-      "Super smart Wisers have built our industry-leading security systems from scratch over the last 5 years.",
+      "Our experts built cutting-edge security systems from the ground up over the last 5 years.",
   },
   {
     icon: <UsersRound className="w-full h-full" />,
     title: "People who care, 24/7",
     description:
-      "With over 100 anti-fraud specialists, and real human help available every minute, we’re on hand when you’ve got questions.",
+      "100+ anti-fraud specialists and real humans available every minute ready whenever you need us.",
   },
   {
     icon: <Globe className="w-full h-full" />, // Updated icon
     title: "Your money, not ours",
     description:
-      "Your money is safeguarded, and held completely separate from ours, so it’s available to you all the time.",
+      "We keep your funds fully separate and always accessible your money stays yours.",
   },
   {
     icon: <Activity className="w-full h-full" />, // Updated icon
     title: "Transparent Rates, Always",
     description:
-      "We believe in complete honesty no hidden fees, no surprises.You’ll always see the real exchange rate upfront.",
+      "No hidden fees, no surprises. See the real exchange rate up front, every time.",
   },
 ];
 
@@ -64,7 +64,7 @@ const WhyUsSection: React.FC = () => {
                 <h3 className="text-lg sm:text-2xl font-semibold text-mainheadingWhite">
                   {item.title}
                 </h3>
-                <p className="text-subheadingWhite text-sm sm:text-base">
+                <p className="text-subheadingWhite sm:text-lg text-base">
                   {item.description}
                 </p>
               </div>

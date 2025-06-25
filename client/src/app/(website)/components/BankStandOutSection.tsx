@@ -1417,7 +1417,7 @@
 //                     aria-expanded={activeItemId === item.id}
 //                     aria-controls={`accordion-content-${item.id}`}
 //                     className="w-full flex items-center gap-3 cursor-pointer text-left py-4 focus:outline-none group"
-                  
+
 //                   >
 //                     <h3
 //                       id={`accordion-title-${item.id}`}
@@ -1491,8 +1491,7 @@
 
 // export default BankStandOutSection;
 
-
-
+/* BankStandSection */
 "use client";
 // components/BankStandOutSection.tsx
 import React, { useState, useEffect } from "react";
@@ -1536,15 +1535,19 @@ const BankStandOutSection: React.FC = () => {
   // Determine initial states, safely handling the case where accordionData might be empty.
   // These are calculated before useState calls.
   const initialActiveId = accordionData.length > 0 ? accordionData[0].id : "";
-  const initialImageSrc = accordionData.length > 0 ? accordionData[0].imageSrc : "";
-  const initialImageAlt = accordionData.length > 0 
-    ? (accordionData[0].title || "Bank feature image") 
-    : "Feature image"; // Default alt if no data
+  const initialImageSrc =
+    accordionData.length > 0 ? accordionData[0].imageSrc : "";
+  const initialImageAlt =
+    accordionData.length > 0
+      ? accordionData[0].title || "Bank feature image"
+      : "Feature image"; // Default alt if no data
 
   // Call Hooks unconditionally at the top level of the component.
   const [activeItemId, setActiveItemId] = useState<string>(initialActiveId);
-  const [currentImageSrc, setCurrentImageSrc] = useState<string>(initialImageSrc);
-  const [currentImageAlt, setCurrentImageAlt] = useState<string>(initialImageAlt);
+  const [currentImageSrc, setCurrentImageSrc] =
+    useState<string>(initialImageSrc);
+  const [currentImageAlt, setCurrentImageAlt] =
+    useState<string>(initialImageAlt);
 
   useEffect(() => {
     const activeItem = accordionData.find((item) => item.id === activeItemId);
@@ -1561,8 +1564,8 @@ const BankStandOutSection: React.FC = () => {
     // If accordionData is initially empty, activeItemId will be "", activeItem will be undefined,
     // and no state update will occur here, which is correct.
   }, [activeItemId, currentImageSrc]); // accordionData is a module-level constant, so it's stable and
-                                       // not strictly required in the dependency array by some linters.
-                                       // If it were a prop or component state, it would be essential to include it.
+  // not strictly required in the dependency array by some linters.
+  // If it were a prop or component state, it would be essential to include it.
 
   // Conditional early return: Now placed AFTER all hook calls.
   if (accordionData.length === 0) {
@@ -1584,17 +1587,17 @@ const BankStandOutSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-background py-10 md:py-16 px-4">
-      <div className="container mx-auto">
-        <div className="flex flex-col lg:flex-row gap-4 items-center lg:gap-16">
+    <div className="bg-background py-10 md:py-16">
+      <div className="container mx-auto px-4">
+        <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-mainheadingWhite">
+          Secure & Trusted{" "}
+          <span className="text-primary">Global Exchange Rates</span>
+        </h3>
+
+        <div className="flex flex-col lg:flex-row gap-4 items-center lg:gap-10 lg:mt-16 mt-10">
           {/* Left Column: Title and Image */}
           <div className="w-full lg:w-[45%]">
-            <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-mainheadingWhite">
-              Secure & Trusted{" "}
-              <span className="text-primary">Global Exchange Rates</span>
-            </h3>
-
-            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mt-6">
+            <div className="relative aspect-square w-full rounded-3xl overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentImageSrc} // Crucial for AnimatePresence to detect changes
@@ -1608,11 +1611,12 @@ const BankStandOutSection: React.FC = () => {
                   <Image
                     src={currentImageSrc}
                     alt={currentImageAlt}
-                    fill
+                    height={1500}
+                    width={1500}
                     style={{
                       objectFit: "cover",
                     }}
-                    className="w-full"
+                    className="w-full h-full"
                     // accordionData[0] is safe to access here because we've already
                     // returned early if accordionData.length === 0.
                     priority={currentImageSrc === accordionData[0].imageSrc}
@@ -1623,7 +1627,7 @@ const BankStandOutSection: React.FC = () => {
           </div>
 
           {/* Right Column: Accordion */}
-          <div className="w-full lg:w-[55%] flex flex-col lg:mt-26">
+          <div className="w-full lg:w-[55%] flex flex-col">
             <div className="lg:space-y-5 space-y-0">
               {accordionData.map((item) => (
                 <div key={item.id}>
@@ -1688,7 +1692,7 @@ const BankStandOutSection: React.FC = () => {
                     }`}
                   >
                     <div
-                      className={`overflow-hidden pb-5 lg:pr-8 sm:text-2xl max-w-3xl leading-normal text-subheadingWhite`}
+                      className={`overflow-hidden pb-5 lg:pr-8 xl:text-2xl text-lg max-w-3xl leading-normal text-subheadingWhite`}
                     >
                       <p>{item.content}</p>
                     </div>
