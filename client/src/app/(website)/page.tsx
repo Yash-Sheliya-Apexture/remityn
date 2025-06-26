@@ -93,27 +93,25 @@
 //   );
 // }
 
+
+
 // src/app/(website)/page.tsx
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
-import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
-import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
 import ReviewSection from "./components/ReviewSection";
-import BankStandOutSection from "./components/BankStandOutSection";
-// import ReviewSection from './components/ReviewSection';
 
 // Dynamic imports for sections below the fold or less critical for initial interaction
+const HeroSection = dynamic(() => import("./components/home/HeroSection"));
+
+const CalculetingSection = dynamic(
+  () => import("./components/home/CalculetingSection")
+);
+
 const FeatureMarquee = dynamic(
   () => import("./components/home/FeatureMarquee")
 );
 const InternationalTransferSection = dynamic(
   () => import("./components/home/InternationalTransferSection")
-);
-const SecuritySection = dynamic(
-  () => import("./components/home/SecuritySection")
-);
-const ClientTestimonialSection = dynamic(
-  () => import("./components/home/ClientTestimonialSection")
 );
 const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
 const StepCardContent = dynamic(
@@ -122,6 +120,11 @@ const StepCardContent = dynamic(
 const CallToActionSection = dynamic(
   () => import("./components/home/CallToActionSection")
 );
+
+const BankStandOutSection = dynamic(
+  () => import("./components/home/BankStandOutSection")
+);
+
 
 export const metadata: Metadata = {
   title: "Fast & Secure International Money Transfers",
@@ -150,6 +153,8 @@ export const metadata: Metadata = {
   },
 };
 
+
+
 export default function Home() {
   return (
     <>
@@ -158,10 +163,8 @@ export default function Home() {
       <FeatureMarquee />
       <InternationalTransferSection />
       <BankStandOutSection />
-      {/* <SecuritySection /> */}
       <FeaturesList />
       <ReviewSection />
-      {/* <ClientTestimonialSection /> */}
       <StepCardContent />
       <CallToActionSection />
     </>

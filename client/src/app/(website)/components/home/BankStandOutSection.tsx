@@ -1491,6 +1491,226 @@
 
 // export default BankStandOutSection;
 
+// /* BankStandSection */
+// "use client";
+// // components/BankStandOutSection.tsx
+// import React, { useState, useEffect } from "react";
+// import Image from "next/image";
+// import { motion, AnimatePresence } from "framer-motion";
+
+// // Define the structure for each accordion item's data
+// interface AccordionItemData {
+//   id: string;
+//   title: string;
+//   content: string;
+//   imageSrc: string;
+// }
+
+// // Data for the accordion items
+// const accordionData: AccordionItemData[] = [
+//   {
+//     id: "innovation",
+//     title: "Innovation",
+//     content:
+//       "We bring cutting-edge solutions to simplify currency exchange. From automated rate tracking to seamless transfers, our platform continuously evolves to meet your financial needs quickly, securely, and efficiently.",
+//     imageSrc: "/assets/images/invocation.jpg",
+//   },
+//   {
+//     id: "technology",
+//     title: "Technology",
+//     content:
+//       "Our advanced technology infrastructure ensures fast processing, accurate conversion, and 24/7 system reliability. With AI-powered tools and real-time updates, we deliver the best possible rates and service in every transaction.",
+//     imageSrc: "/assets/images/technology.jpg",
+//   },
+//   {
+//     id: "security",
+//     title: "Security",
+//     content:
+//       "Your money and data are protected with bank-grade encryption, two-factor authentication, and regulatory compliance. We prioritize your safety at every step of the exchange process.",
+//     imageSrc: "/assets/images/security.jpg",
+//   },
+// ];
+
+// const BankStandOutSection: React.FC = () => {
+//   // Determine initial states, safely handling the case where accordionData might be empty.
+//   // These are calculated before useState calls.
+//   const initialActiveId = accordionData.length > 0 ? accordionData[0].id : "";
+//   const initialImageSrc =
+//     accordionData.length > 0 ? accordionData[0].imageSrc : "";
+//   const initialImageAlt =
+//     accordionData.length > 0
+//       ? accordionData[0].title || "Bank feature image"
+//       : "Feature image"; // Default alt if no data
+
+//   // Call Hooks unconditionally at the top level of the component.
+//   const [activeItemId, setActiveItemId] = useState<string>(initialActiveId);
+//   const [currentImageSrc, setCurrentImageSrc] =
+//     useState<string>(initialImageSrc);
+//   const [currentImageAlt, setCurrentImageAlt] =
+//     useState<string>(initialImageAlt);
+
+//   useEffect(() => {
+//     const activeItem = accordionData.find((item) => item.id === activeItemId);
+//     if (activeItem) {
+//       // Only update if the image source or alt text needs to change.
+//       // This check is important because currentImageSrc is in the dependency array,
+//       // and this prevents unnecessary state updates or potential loops.
+//       if (activeItem.imageSrc !== currentImageSrc) {
+//         setCurrentImageSrc(activeItem.imageSrc);
+//         // It's good practice to update alt text when image source changes
+//         setCurrentImageAlt(activeItem.title || "Bank feature image");
+//       }
+//     }
+//     // If accordionData is initially empty, activeItemId will be "", activeItem will be undefined,
+//     // and no state update will occur here, which is correct.
+//   }, [activeItemId, currentImageSrc]); // accordionData is a module-level constant, so it's stable and
+//   // not strictly required in the dependency array by some linters.
+//   // If it were a prop or component state, it would be essential to include it.
+
+//   // Conditional early return: Now placed AFTER all hook calls.
+//   if (accordionData.length === 0) {
+//     return (
+//       <div className="bg-background py-10 md:py-16 px-4 text-center text-mainheadingWhite">
+//         No bank features to display.
+//       </div>
+//     );
+//   }
+
+//   const handleItemClick = (id: string) => {
+//     setActiveItemId(id);
+//   };
+
+//   const imageVariants = {
+//     initial: { opacity: 0, scale: 1 },
+//     animate: { opacity: 1, scale: 1 },
+//     exit: { opacity: 0, scale: 1 },
+//   };
+
+//   return (
+//     <div className="bg-background py-10 md:py-16">
+//       <div className="container mx-auto px-4">
+//         <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-mainheadingWhite">
+//           Secure & Trusted{" "}
+//           <span className="text-primary">Global Exchange Rates</span>
+//         </h3>
+
+//         <div className="flex flex-col lg:flex-row gap-4 items-center lg:gap-10 lg:mt-16 mt-10">
+//           {/* Left Column: Title and Image */}
+//           <div className="w-full lg:w-[45%]">
+//             <div className="relative aspect-square w-full rounded-3xl overflow-hidden">
+//               <AnimatePresence mode="wait">
+//                 <motion.div
+//                   key={currentImageSrc} // Crucial for AnimatePresence to detect changes
+//                   variants={imageVariants}
+//                   initial="initial"
+//                   animate="animate"
+//                   exit="exit"
+//                   transition={{ duration: 0.3, ease: "easeIn" }}
+//                   className="absolute inset-0" // Ensure motion.div fills the parent
+//                 >
+//                   <Image
+//                     src={currentImageSrc}
+//                     alt={currentImageAlt}
+//                     height={1500}
+//                     width={1500}
+//                     style={{
+//                       objectFit: "cover",
+//                     }}
+//                     className="w-full h-full"
+//                     // accordionData[0] is safe to access here because we've already
+//                     // returned early if accordionData.length === 0.
+//                     priority={currentImageSrc === accordionData[0].imageSrc}
+//                   />
+//                 </motion.div>
+//               </AnimatePresence>
+//             </div>
+//           </div>
+
+//           {/* Right Column: Accordion */}
+//           <div className="w-full lg:w-[55%] flex flex-col">
+//             <div className="lg:space-y-5 space-y-0">
+//               {accordionData.map((item) => (
+//                 <div key={item.id}>
+//                   <button
+//                     onClick={() => handleItemClick(item.id)}
+//                     aria-expanded={activeItemId === item.id}
+//                     aria-controls={`accordion-content-${item.id}`}
+//                     className="w-full flex items-center gap-3 cursor-pointer text-left py-4 focus:outline-none group"
+//                   >
+//                     <h3
+//                       id={`accordion-title-${item.id}`}
+//                       className={`lg:text-4xl md:text-3xl text-2xl font-medium transition-all duration-150 ease-linear ${
+//                         activeItemId === item.id
+//                           ? "text-primary"
+//                           : "text-mainheadingWhite/50"
+//                       }`}
+//                     >
+//                       {item.title}
+//                     </h3>
+
+//                     {activeItemId === item.id ? (
+//                       <svg
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         fill="none"
+//                         viewBox="0 0 24 24"
+//                         strokeWidth={2.5}
+//                         stroke="currentColor"
+//                         className="md:size-6 size-5 text-primary transition-all duration-150 ease-linear"
+//                       >
+//                         <path
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                           d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+//                         />
+//                       </svg>
+//                     ) : (
+//                       <svg
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         fill="none"
+//                         viewBox="0 0 24 24"
+//                         strokeWidth={2.5}
+//                         stroke="currentColor"
+//                         className={`md:size-6 size-5 text-mainheadingWhite/50 transition-all duration-150 ease-linear`}
+//                       >
+//                         <path
+//                           strokeLinecap="round"
+//                           strokeLinejoin="round"
+//                           d="M8.25 4.5l7.5 7.5-7.5 7.5"
+//                         />
+//                       </svg>
+//                     )}
+//                   </button>
+
+//                   <div
+//                     id={`accordion-content-${item.id}`}
+//                     role="region"
+//                     aria-labelledby={`accordion-title-${item.id}`}
+//                     className={`grid transition-[grid-template-rows,opacity] duration-300 ease-linear ${
+//                       activeItemId === item.id
+//                         ? "grid-rows-[1fr] opacity-100"
+//                         : "grid-rows-[0fr] opacity-0"
+//                     }`}
+//                   >
+//                     <div
+//                       className={`overflow-hidden pb-5 lg:pr-8 xl:text-2xl text-lg max-w-3xl leading-normal text-subheadingWhite`}
+//                     >
+//                       <p>{item.content}</p>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default BankStandOutSection;
+
+
+
 /* BankStandSection */
 "use client";
 // components/BankStandOutSection.tsx
@@ -1513,36 +1733,33 @@ const accordionData: AccordionItemData[] = [
     title: "Innovation",
     content:
       "We bring cutting-edge solutions to simplify currency exchange. From automated rate tracking to seamless transfers, our platform continuously evolves to meet your financial needs quickly, securely, and efficiently.",
-    imageSrc: "/assets/images/invocation.jpg",
+    imageSrc: "/assets/images/TeamMetting.png",
   },
   {
     id: "technology",
     title: "Technology",
     content:
       "Our advanced technology infrastructure ensures fast processing, accurate conversion, and 24/7 system reliability. With AI-powered tools and real-time updates, we deliver the best possible rates and service in every transaction.",
-    imageSrc: "/assets/images/technology.jpg",
+    imageSrc: "/assets/images/Technology.png",
   },
   {
     id: "security",
     title: "Security",
     content:
       "Your money and data are protected with bank-grade encryption, two-factor authentication, and regulatory compliance. We prioritize your safety at every step of the exchange process.",
-    imageSrc: "/assets/images/security.jpg",
+    imageSrc: "/assets/images/whitelady.png",
   },
 ];
 
 const BankStandOutSection: React.FC = () => {
-  // Determine initial states, safely handling the case where accordionData might be empty.
-  // These are calculated before useState calls.
   const initialActiveId = accordionData.length > 0 ? accordionData[0].id : "";
   const initialImageSrc =
     accordionData.length > 0 ? accordionData[0].imageSrc : "";
   const initialImageAlt =
     accordionData.length > 0
       ? accordionData[0].title || "Bank feature image"
-      : "Feature image"; // Default alt if no data
+      : "Feature image";
 
-  // Call Hooks unconditionally at the top level of the component.
   const [activeItemId, setActiveItemId] = useState<string>(initialActiveId);
   const [currentImageSrc, setCurrentImageSrc] =
     useState<string>(initialImageSrc);
@@ -1552,22 +1769,13 @@ const BankStandOutSection: React.FC = () => {
   useEffect(() => {
     const activeItem = accordionData.find((item) => item.id === activeItemId);
     if (activeItem) {
-      // Only update if the image source or alt text needs to change.
-      // This check is important because currentImageSrc is in the dependency array,
-      // and this prevents unnecessary state updates or potential loops.
       if (activeItem.imageSrc !== currentImageSrc) {
         setCurrentImageSrc(activeItem.imageSrc);
-        // It's good practice to update alt text when image source changes
         setCurrentImageAlt(activeItem.title || "Bank feature image");
       }
     }
-    // If accordionData is initially empty, activeItemId will be "", activeItem will be undefined,
-    // and no state update will occur here, which is correct.
-  }, [activeItemId, currentImageSrc]); // accordionData is a module-level constant, so it's stable and
-  // not strictly required in the dependency array by some linters.
-  // If it were a prop or component state, it would be essential to include it.
+  }, [activeItemId, currentImageSrc]);
 
-  // Conditional early return: Now placed AFTER all hook calls.
   if (accordionData.length === 0) {
     return (
       <div className="bg-background py-10 md:py-16 px-4 text-center text-mainheadingWhite">
@@ -1586,8 +1794,15 @@ const BankStandOutSection: React.FC = () => {
     exit: { opacity: 0, scale: 1 },
   };
 
+  // Variants for the accordion content
+  const contentVariants = {
+    initial: { gridTemplateRows: "0fr", opacity: 0 },
+    animate: { gridTemplateRows: "1fr", opacity: 1 },
+    exit: { gridTemplateRows: "0fr", opacity: 0 },
+  };
+
   return (
-    <div className="bg-background py-10 md:py-16">
+    <div className="bg-background py-10 lg:py-16">
       <div className="container mx-auto px-4">
         <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-mainheadingWhite">
           Secure & Trusted{" "}
@@ -1600,13 +1815,13 @@ const BankStandOutSection: React.FC = () => {
             <div className="relative aspect-square w-full rounded-3xl overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={currentImageSrc} // Crucial for AnimatePresence to detect changes
+                  key={currentImageSrc}
                   variants={imageVariants}
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   transition={{ duration: 0.3, ease: "easeIn" }}
-                  className="absolute inset-0" // Ensure motion.div fills the parent
+                  className="absolute inset-0"
                 >
                   <Image
                     src={currentImageSrc}
@@ -1617,8 +1832,6 @@ const BankStandOutSection: React.FC = () => {
                       objectFit: "cover",
                     }}
                     className="w-full h-full"
-                    // accordionData[0] is safe to access here because we've already
-                    // returned early if accordionData.length === 0.
                     priority={currentImageSrc === accordionData[0].imageSrc}
                   />
                 </motion.div>
@@ -1629,16 +1842,16 @@ const BankStandOutSection: React.FC = () => {
           {/* Right Column: Accordion */}
           <div className="w-full lg:w-[55%] flex flex-col">
             <div className="lg:space-y-5 space-y-0">
-              {accordionData.map((item) => (
+              {accordionData.map((item, index) => (
                 <div key={item.id}>
                   <button
                     onClick={() => handleItemClick(item.id)}
                     aria-expanded={activeItemId === item.id}
-                    aria-controls={`accordion-content-${item.id}`}
+                    aria-controls={`accordion-content-${item.id}`} // Still useful for aria relationship
                     className="w-full flex items-center gap-3 cursor-pointer text-left py-4 focus:outline-none group"
                   >
                     <h3
-                      id={`accordion-title-${item.id}`}
+                      id={`accordion-title-${item.id}`} // For aria-labelledby
                       className={`lg:text-4xl md:text-3xl text-2xl font-medium transition-all duration-150 ease-linear ${
                         activeItemId === item.id
                           ? "text-primary"
@@ -1681,22 +1894,31 @@ const BankStandOutSection: React.FC = () => {
                     )}
                   </button>
 
-                  <div
-                    id={`accordion-content-${item.id}`}
-                    role="region"
-                    aria-labelledby={`accordion-title-${item.id}`}
-                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-linear ${
-                      activeItemId === item.id
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div
-                      className={`overflow-hidden pb-5 lg:pr-8 xl:text-2xl text-lg max-w-3xl leading-normal text-subheadingWhite`}
-                    >
-                      <p>{item.content}</p>
-                    </div>
-                  </div>
+                  {/* MODIFIED: Conditionally rendered and animated content */}
+                  <AnimatePresence>
+                    {activeItemId === item.id && (
+                      <motion.div
+                        key={`content-${item.id}`} // Unique key for AnimatePresence
+                        id={`accordion-content-${item.id}`}
+                        role="region"
+                        aria-labelledby={`accordion-title-${item.id}`}
+                        className={`grid ${
+                          index === accordionData.length - 1 ? "" : "pb-5"
+                        }`}
+                        variants={contentVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.3, ease: "linear" }} // Matches original 'ease-linear' and 'duration-300'
+                      >
+                        <div
+                          className={`overflow-hidden  xl:text-2xl text-lg max-w-3xl leading-normal text-subheadingWhite`}
+                        >
+                          <p>{item.content}</p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ))}
             </div>
@@ -1707,4 +1929,4 @@ const BankStandOutSection: React.FC = () => {
   );
 };
 
-export default BankStandOutSection;
+export default React.memo(BankStandOutSection);
