@@ -360,7 +360,7 @@ const TransferWaySection = () => {
       headline: "Cheapest Way to",
       description: (
         <>
-          The cheapest way to send ${formattedAmount} ${fromCurrency.code} to ${destinationCurrency.code} is using your Remityn balance with <strong>zero transfer fees</strong>. We offer the mid-market exchange rate, which is the most transparent and fair rate available, and we always show you the full cost upfront.
+          The cheapest way to send {formattedAmount} {fromCurrency.code} to {destinationCurrency.code} is using your Remityn balance with <strong>zero transfer fees</strong>. We offer the mid-market exchange rate, which is the most transparent and fair rate available, and we always show you the full cost upfront.
         </>
       ),
       table: {
@@ -384,9 +384,9 @@ const TransferWaySection = () => {
   const currentData = transferData[activeTab];
 
   return (
-    <section className="py-10 sm:py-16">
+    <section className="TransferWaySection py-10 lg:py-16">
       <div className="container mx-auto px-4">
-        <div className="mx-auto max-w-4xl text-center space-y-4">
+        <div className="mx-auto max-w-4xl text-center">
           {/* Tab Switcher (no changes) */}
           <div className="flex items-center justify-center mb-6">
             <div className="bg-primary-foreground p-1.5 rounded-full flex items-center gap-2 sm:w-auto w-full">
@@ -417,7 +417,7 @@ const TransferWaySection = () => {
           </div>
 
           {/* Dynamic Headline (no changes) */}
-          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold leading-tight text-mainheadingWhite">
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
             {currentData.headline}{" "}
             <span className="text-primary">Send Money</span>
           </h3>
@@ -428,7 +428,7 @@ const TransferWaySection = () => {
           </p>
         </div>
 
-        <div className="mt-8 space-y-8">
+        <div className="mt-8 flex flex-col justify-center items-center gap-8">
           {/* --- UPDATED: Currency Display now fully dynamic --- */}
           <div className="flex items-center justify-center gap-4">
             <CurrencyFlag code={fromCurrency.code} flagSrc={fromCurrency.flagSrc} />

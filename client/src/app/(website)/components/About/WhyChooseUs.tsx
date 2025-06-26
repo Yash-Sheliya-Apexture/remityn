@@ -845,7 +845,7 @@ const WhyChooseUs: React.FC = () => {
 
   return (
     // Section with white background (or no background class for default white) and vertical padding
-    <section className="WhyChooseUs sm:py-16 py-10 overflow-hidden bg-background">
+    <section className="WhyChooseUs lg:py-16 py-10 overflow-hidden bg-background">
       <div className="mx-auto container px-4">
         {/* Header Section - Centered text (Kept identical) */}
         <div className="mx-auto max-w-4xl text-center space-y-4">

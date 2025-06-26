@@ -2865,7 +2865,7 @@ const StepContentCard: React.FC = () => {
   const activeStepData = stepsData[activeTab];
 
   return (
-    <section className="StePCardSection relative py-10 sm:py-16 overflow-hidden">
+    <section className="StePCardSection relative py-10 lg:py-16 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="space-y-4 text-center">
           <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite">
@@ -2879,7 +2879,7 @@ const StepContentCard: React.FC = () => {
           </p>
         </div>
 
-        <div className="mt-16 sm:mt-25">
+        <div className="lg:mt-16 mt-10">
           {/* Tab Buttons */}
           <div className="lg:max-w-2xl max-w-full mx-auto mb-8">
             <div

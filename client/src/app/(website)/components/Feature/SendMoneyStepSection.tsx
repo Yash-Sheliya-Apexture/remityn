@@ -7,7 +7,7 @@ import {
   CurrencyWalletGraphic,
   RecipientsGraphic,
   SendMoneyGraphic,
-} from "./HowItWorksGraphics";
+} from "./SendMoneyStepGraphic";
 
 // Define the type for a single step
 interface Step {
@@ -48,7 +48,7 @@ const steps: Step[] = [
   }
 ];
 
-const HowItWorksSection = () => {
+const SendMoneyStepSection = () => {
   // State to track the currently active step
   const [activeStep, setActiveStep] = useState<number>(1);
 
@@ -88,7 +88,7 @@ const HowItWorksSection = () => {
   }, []);
 
   return (
-    <section className="StepSection sm:py-16 py-10">
+    <section className="StepSection lg:py-16 py-10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           {/* Left Sticky Column */}
@@ -137,4 +137,4 @@ const HowItWorksSection = () => {
   );
 };
 
-export default HowItWorksSection;
+export default SendMoneyStepSection;

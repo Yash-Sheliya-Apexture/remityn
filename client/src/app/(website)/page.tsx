@@ -98,7 +98,7 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
 import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
-import ReviewSection from "./components/ReviewSection";
+// import ReviewSection from "./components/ReviewSection";
 import BankStandOutSection from "./components/BankStandOutSection";
 // import ReviewSection from './components/ReviewSection';
 
@@ -109,13 +109,8 @@ const FeatureMarquee = dynamic(
 const InternationalTransferSection = dynamic(
   () => import("./components/home/InternationalTransferSection")
 );
-const SecuritySection = dynamic(
-  () => import("./components/home/SecuritySection")
-);
-const ClientTestimonialSection = dynamic(
-  () => import("./components/home/ClientTestimonialSection")
-);
 const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
+const ReviewSection = dynamic(() => import("./components/home/ReviewSection"))
 const StepCardContent = dynamic(
   () => import("./components/home/StepCard/StepContentCard")
 );
@@ -158,10 +153,8 @@ export default function Home() {
       <FeatureMarquee />
       <InternationalTransferSection />
       <BankStandOutSection />
-      {/* <SecuritySection /> */}
       <FeaturesList />
       <ReviewSection />
-      {/* <ClientTestimonialSection /> */}
       <StepCardContent />
       <CallToActionSection />
     </>
