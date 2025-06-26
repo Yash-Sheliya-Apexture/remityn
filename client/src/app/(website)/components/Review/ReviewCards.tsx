@@ -2678,7 +2678,7 @@ const ReviewCards: React.FC = () => {
   }, [allReviews, numVisibleReviews]);
 
   const renderHeader = () => (
-    <div className="space-y-4 text-center md:text-left mb-10">
+    <div className="space-y-4 text-center md:text-left">
       <h2 className="text-4xl md:text-5xl xl:text-6xl font-bold mb-6 leading-tight text-mainheadingWhite lg:max-w-3xl max-w-full">
         Honest Reviews, Real{" "}
         <span className="text-primary"> Travelers Like You</span>
@@ -2729,12 +2729,12 @@ const ReviewCards: React.FC = () => {
   }
 
   return (
-    <section className="Reviews md:pt-14 pt-10 overflow-hidden relative pb-10 sm:pb-16">
+    <section className="Reviews sm:py-16 py-10 overflow-hidden relative">
       <div className="container mx-auto px-4">
         {renderHeader()}
 
         {initialLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:mt-16 mt-10">
             {Array.from({ length: INITIAL_REVIEWS_COUNT }).map((_, index) => (
               <div
                 key={`skeleton-${index}`}
@@ -2772,7 +2772,7 @@ const ReviewCards: React.FC = () => {
         {!initialLoading && (
           <>
             {/* --- Mobile View: 1 Column --- */}
-            <div className="block md:hidden mt-5">
+            <div className="block md:hidden mt-10">
               <motion.div
                 className="w-full space-y-5"
                 variants={listContainerVariants}
@@ -2794,7 +2794,7 @@ const ReviewCards: React.FC = () => {
             </div>
 
             {/* --- Tablet View: 2 Columns --- */}
-            <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-5">
+            <div className="hidden md:grid md:grid-cols-2 lg:hidden gap-5 mt-10">
               {tabletLayoutColumns.map((columnReviews, colIndex) => (
                 <motion.div
                   key={`tablet-col-${colIndex}`}
@@ -2819,7 +2819,7 @@ const ReviewCards: React.FC = () => {
             </div>
 
             {/* --- Desktop View: 3 Columns --- */}
-            <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-5">
+            <div className="hidden lg:grid lg:grid-cols-3 gap-5 mt-16">
               {desktopLayoutColumns.map((columnReviews, colIndex) => (
                 <motion.div
                   key={`desktop-col-${colIndex}`}
@@ -2847,10 +2847,10 @@ const ReviewCards: React.FC = () => {
 
         {/* "Read More" Button */}
         {!initialLoading && canLoadMore && (
-          <div className="text-center relative z-10 mt-8 sm:mt-12">
+          <div className="text-center relative z-10 mt-8 sm:mt-10">
             <button
               onClick={handleLoadMore}
-              className="border border-gray-700/50 text-sm hover:border-gray-600 hover:text-white text-subheadingWhite cursor-pointer font-semibold py-3 px-10 rounded-full transition-all ease-linear duration-150"
+              className="border text-sm hover:border-stock-hover hover:text-white text-subheadingWhite cursor-pointer font-semibold py-3 px-10 rounded-full transition-all ease-linear duration-75"
             >
               Read More
             </button>

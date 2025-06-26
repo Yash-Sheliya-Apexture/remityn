@@ -381,7 +381,7 @@ import Link from "next/link";
 const SecuritySection: React.FC = () => {
   return (
     <section
-      className="Security-section sm:py-16 py-10 overflow-hidden" // overflow-hidden can be useful if animations might extend slightly
+      className="Security-section lg:py-16 py-10 overflow-hidden" // overflow-hidden can be useful if animations might extend slightly
       id="security"
     >
       <div className="container mx-auto px-4">

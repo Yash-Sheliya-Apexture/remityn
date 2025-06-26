@@ -142,7 +142,7 @@ const MarqueeRow = ({ features, toRight = false }: { features: string[]; toRight
 
 const FeatureMarquee = () => {
   return (
-    <section className="FeatureMarqueeSection bg-background sm:py-16 py-10 ">
+    <section className="FeatureMarqueeSection bg-background lg:py-16 py-10 ">
       <div className="container mx-auto px-4 relative">
         <div className="flex flex-col gap-6">
           {/* Row 1: Scrolls Left */}

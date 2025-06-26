@@ -619,9 +619,9 @@ const CurrencyExchangeServices: React.FC<
   const buttonLink = user ? "/dashboard" : "/auth/register";
 
   return (
-    <section className="CurrencyExchangeServicesSection sm:py-16 py-10 overflow-hidden">
+    <section className="CurrencyExchangeServicesSection lg:py-16 py-10 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-center gap-8">
+        <div className="flex flex-col lg:flex-row items-center sm:gap-8">
           {/* Left Column with Image */}
           <div className="w-full lg:w-1/2 lg:order-1 order-2">
             {/* ... (your existing code for mobile title) ... */}

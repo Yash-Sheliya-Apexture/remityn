@@ -98,7 +98,6 @@
 // src/app/(website)/page.tsx
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
-import ReviewSection from "./components/ReviewSection";
 
 // Dynamic imports for sections below the fold or less critical for initial interaction
 const HeroSection = dynamic(() => import("./components/home/HeroSection"));
@@ -114,6 +113,7 @@ const InternationalTransferSection = dynamic(
   () => import("./components/home/InternationalTransferSection")
 );
 const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
+const ReviewSection = dynamic(() => import("./components/home/ReviewSection"));
 const StepCardContent = dynamic(
   () => import("./components/home/StepCard/StepContentCard")
 );

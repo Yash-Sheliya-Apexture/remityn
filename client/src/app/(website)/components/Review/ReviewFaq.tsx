@@ -294,15 +294,15 @@ const ReviewFaq: React.FC = () => {
   }, []); // Empty dependency array: function doesn't depend on props or other state from parent scope
 
   return (
-    <section className="lg:py-20 py-10 sm:py-16 overflow-hidden" id="faq">
+    <section className="sm:py-16 py-10 overflow-hidden" id="faq">
       {" "}
       {/* Added sm:py-16 */}
       <div className="container mx-auto px-4">
-        <div className="mb-12 md:mb-16 lg:mb-20 text-center md:text-left">
+        <div className="mb-4 lg:mb-6 text-center md:text-left">
           {" "}
           {/* Added text-center md:text-left */}
-          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold capitalize mb-6 lg:max-w-2xl max-w-full leading-tight text-mainheadingWhite">
-            Honest Answers for {" "}
+          <h3 className="text-4xl md:text-5xl xl:text-6xl font-bold capitalize mb-6 leading-tight text-mainheadingWhite">
+            Honest Answers for{" "}
             <span className="text-primary">Smart Travelers.</span>
           </h3>
           <p className="text-subheadingWhite md:text-lg text-base lg:max-w-5xl max-w-full mx-auto md:mx-0">
@@ -325,7 +325,7 @@ const ReviewFaq: React.FC = () => {
             return (
               <div
                 key={item.id} // Essential for React list rendering
-                className="flex flex-col overflow-hidden py-6 md:py-8 lg:py-10 border-t border-t-gray-600/50 first:border-t-0" // Removed top border for the first item
+                className="flex flex-col overflow-hidden py-6 lg:py-10 border-t border-t-gray-600/50 first:border-t-0" // Removed top border for the first item
               >
                 <h3 // Using h3 for semantic structure, though button inside handles interaction
                   data-orientation="vertical"

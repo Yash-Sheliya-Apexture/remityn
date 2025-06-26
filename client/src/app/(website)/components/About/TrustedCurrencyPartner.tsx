@@ -301,7 +301,7 @@ const TrustedCurrencyPartner = () => {
   const buttonLink = user ? "/dashboard" : "/auth/register";
 
   return (
-    <section className="TrustedCurrencySection sm:py-16 sm:pb-6 py-10" id="about-us">
+    <section className="TrustedCurrencySection lg:py-16 sm:pb-6 py-10" id="about-us">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center sm:gap-8">
           <div className="w-full lg:w-1/2 order-2 md:order-1">

@@ -327,7 +327,7 @@ const individualsProductsData: Product[] = [
 
 const InternationalTransferSection: React.FC = () => {
   return (
-    <section className="InternationalTransferSection sm:py-14 pt-7.5 pb-10">
+    <section className="InternationalTransferSection lg:py-16 pb-2 py-10">
       <div className="container mx-auto px-4">
         {/* Header Section */}
         <div className="text-center lg:text-left">
@@ -345,7 +345,7 @@ const InternationalTransferSection: React.FC = () => {
           - Tablet (md): 2 columns, with the last item spanning both
           - Desktop (lg): 3 columns
         */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:mt-16 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:mt-16 mt-10">
           {individualsProductsData.map((product, index) => {
             const totalItems = individualsProductsData.length;
 
@@ -363,7 +363,7 @@ const InternationalTransferSection: React.FC = () => {
                 className={itemWrapperClasses}
               >
                 {/* Content Area with Padding */}
-                <div className="px-5 py-8 text-center space-y-4">
+                <div className="px-0 sm:px-5 py-8 text-center space-y-4">
                   <div className="flex justify-center">
                     <div className="w-20 h-20 rounded-full icon-outer-wrapper flex items-center justify-center">
                       <div className="w-14 h-14 rounded-full icon-inner-background flex items-center justify-center">
