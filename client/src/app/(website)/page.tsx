@@ -93,16 +93,19 @@
 //   );
 // }
 
+
+
 // src/app/(website)/page.tsx
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
-import HeroSection from "./components/home/HeroSection"; // Likely LCP, load eagerly
-import CalculetingSection from "./components/home/CalculetingSection"; // Core interactive element, load eagerly
-// import ReviewSection from "./components/ReviewSection";
-import BankStandOutSection from "./components/BankStandOutSection";
-// import ReviewSection from './components/ReviewSection';
 
 // Dynamic imports for sections below the fold or less critical for initial interaction
+const HeroSection = dynamic(() => import("./components/home/HeroSection"));
+
+const CalculetingSection = dynamic(
+  () => import("./components/home/CalculetingSection")
+);
+
 const FeatureMarquee = dynamic(
   () => import("./components/home/FeatureMarquee")
 );
@@ -110,13 +113,18 @@ const InternationalTransferSection = dynamic(
   () => import("./components/home/InternationalTransferSection")
 );
 const FeaturesList = dynamic(() => import("./components/home/FeaturesList"));
-const ReviewSection = dynamic(() => import("./components/home/ReviewSection"))
+const ReviewSection = dynamic(() => import("./components/home/ReviewSection"));
 const StepCardContent = dynamic(
   () => import("./components/home/StepCard/StepContentCard")
 );
 const CallToActionSection = dynamic(
   () => import("./components/home/CallToActionSection")
 );
+
+const BankStandOutSection = dynamic(
+  () => import("./components/home/BankStandOutSection")
+);
+
 
 export const metadata: Metadata = {
   title: "Fast & Secure International Money Transfers",
@@ -144,6 +152,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
+
+
 
 export default function Home() {
   return (
